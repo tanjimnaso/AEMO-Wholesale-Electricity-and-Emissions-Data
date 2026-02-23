@@ -1,7 +1,7 @@
 """
 AEMO Dispatch SCADA Data Importer
 Scrapes NEMWEB for 5-minute dispatch SCADA ZIP files,
-extracts CSVs, and appends new data to a local CSV.
+extracts CSVs, and appends new data to Azure SQL Database.
 """
 
 import os
@@ -10,14 +10,49 @@ import zipfile
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+from sqlalchemy import create_engine, text
 
 # ── Config ────────────────────────────────────────────────────────
 BASE_URL = "https://nemweb.com.au"
 SCADA_URL = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"
-OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "data", "dispatch_scada.csv")
 
-# Columns we actually want (the first 4 are AEMO record-type markers)
+# Columns we actually want
 KEEP_COLUMNS = ["SETTLEMENTDATE", "DUID", "SCADAVALUE"]
+
+TABLE_NAME = "dispatch_scada"
+
+
+def get_engine():
+    """Create SQLAlchemy engine from environment variables."""
+    server   = os.environ["AZURE_SQL_SERVER"]
+    database = os.environ["AZURE_SQL_DATABASE"]
+    username = os.environ["AZURE_SQL_USERNAME"]
+    password = os.environ["AZURE_SQL_PASSWORD"]
+
+    connection_string = (
+        f"mssql+pyodbc://{username}:{password}"
+        f"@{server}/{database}"
+        f"?driver=ODBC+Driver+18+for+SQL+Server"
+    )
+    return create_engine(connection_string)
+
+
+def get_max_date(engine):
+    """Return the latest SETTLEMENTDATE already in the database, or None."""
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(
+                text(f"SELECT MAX(SETTLEMENTDATE) FROM {TABLE_NAME}")
+            )
+            max_date = result.scalar()
+            if max_date:
+                print(f"Latest date in database: {max_date}")
+            else:
+                print("Table is empty — will load all available data")
+            return max_date
+    except Exception:
+        print("Table does not exist yet — will create on first insert")
+        return None
 
 
 def get_zip_links():
@@ -56,12 +91,11 @@ def download_and_extract(links):
             print(f"  Error processing {link}: {e}")
             continue
 
-        # Progress update every 50 files
         if (i + 1) % 50 == 0:
             print(f"  Downloaded {i + 1}/{len(links)}")
 
     if not all_frames:
-        print("No new data extracted.")
+        print("No data extracted.")
         return pd.DataFrame(columns=KEEP_COLUMNS)
 
     new_data = pd.concat(all_frames, ignore_index=True)
@@ -69,54 +103,46 @@ def download_and_extract(links):
     return new_data
 
 
-def load_existing():
-    """Load the existing CSV if it exists, otherwise return empty DataFrame."""
-    if os.path.exists(OUTPUT_CSV):
-        existing = pd.read_csv(OUTPUT_CSV)
-        print(f"Loaded {len(existing)} existing rows from {OUTPUT_CSV}")
-        return existing
-    else:
-        print("No existing CSV found — starting fresh")
-        return pd.DataFrame(columns=KEEP_COLUMNS)
-
-
-def save(df):
-    """Write DataFrame to CSV, creating the data/ directory if needed."""
-    os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
-    df.to_csv(OUTPUT_CSV, index=False)
-    print(f"Saved {len(df)} rows to {OUTPUT_CSV}")
-
-
 def main():
     print("=" * 60)
     print("AEMO Dispatch SCADA Importer")
     print("=" * 60)
 
-    # 1. Scrape the NEMWEB directory for ZIP links
+    # 1. Connect to Azure SQL
+    engine = get_engine()
+
+    # 2. Get the latest date already loaded — skip anything older
+    max_date = get_max_date(engine)
+
+    # 3. Scrape NEMWEB for ZIP links
     links = get_zip_links()
 
-    # 2. Download ZIPs, extract CSVs, build DataFrame
+    # 4. Download and extract
     new_data = download_and_extract(links)
 
     if new_data.empty:
-        print("Nothing new to save.")
+        print("Nothing to save.")
         return
 
-    # 3. Load existing data (if any)
-    existing = load_existing()
+    # 5. Filter to only rows newer than what's already in the database
+    if max_date:
+        new_data["SETTLEMENTDATE"] = pd.to_datetime(new_data["SETTLEMENTDATE"])
+        new_data = new_data[new_data["SETTLEMENTDATE"] > pd.to_datetime(max_date)]
+        print(f"After deduplication filter: {len(new_data)} new rows to insert")
 
-    # 4. Merge and deduplicate
-    combined = pd.concat([existing, new_data], ignore_index=True)
-    before = len(combined)
-    combined.drop_duplicates(subset=["SETTLEMENTDATE", "DUID"], inplace=True)
-    dupes = before - len(combined)
-    print(f"Dropped {dupes} duplicate rows")
+    if new_data.empty:
+        print("No new rows to insert — database is already up to date.")
+        return
 
-    # 5. Sort by time then generator
-    combined.sort_values(["SETTLEMENTDATE", "DUID"], inplace=True)
-
-    # 6. Save
-    save(combined)
+    # 6. Append to Azure SQL
+    new_data.to_sql(
+        TABLE_NAME,
+        engine,
+        if_exists="append",
+        index=False,
+        chunksize=1000
+    )
+    print(f"Inserted {len(new_data)} rows into {TABLE_NAME}")
 
     print("=" * 60)
     print("Done!")
