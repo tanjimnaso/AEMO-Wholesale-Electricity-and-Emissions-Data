@@ -18,7 +18,7 @@ This project models that calculation from publicly available AEMO generation and
 
 ### Process
 
-#### Sourcing Data
+#### 1. Sourcing Data
 
 AEMO supplies demand and generation data in numerous tables, such as daily averages (dispatch summary), and in 5 minute intervals.
 
@@ -32,14 +32,14 @@ https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-n
 
 Emissions data is calculated as generation from fuel type multiplied by emission per mwh, based on fact sheet.
 
-#### Importing and Normalising
+#### 2. Importing and Normalising
 
 API, Python
 
-#### Power BI
+#### 3. Power BI
 
 -
-#### Streamlit Interactive Dashboard
+#### 4. Streamlit Interactive Dashboard
 
 In a production environment this pipeline would be orchestrated via Azure Data Factory and Microsoft Fabric.
 
@@ -58,6 +58,6 @@ A 'national emissions data pipeline' incorporating WEM and NT data sources is ou
 
 While reading the process of this project, the UNSW NEMED tool may have come to mind.
 
-NEMED is a Python library that gives researchers a package to pull emissions data programmatically, it's designed for a different audience and purpose.
+NEMED is a Python library that gives researchers a package to pull emissions data programmatically, it's designed for a different audience and purpose. It was not used for this project as data requirements and processing are different.
 
-This project demonstrates a data engineering pipeline, from ingestion, warehouse schema, SQL stored procedures to Power BI reporting, framed around ESG reporting obligations.
+This project demonstrates an end-to-end data engineering pipeline, from ingestion, warehouse schema, SQL stored procedures to Power BI reporting, framed around ESG reporting obligations.

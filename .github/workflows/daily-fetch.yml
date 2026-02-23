@@ -1,0 +1,33 @@
+name: Daily AEMO Data Fetch
+
+on:
+  schedule:
+    - cron: '0 20 * * *'  # 6 AM AEST (UTC+10) = 8 PM UTC previous day
+  workflow_dispatch:       # Allows you to manually trigger from GitHub UI
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run import script
+        run: python "1. Import Data.py"
+
+      - name: Commit updated CSV back to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/dispatch_scada.csv
+          git diff --staged --quiet || git commit -m "Auto: Update dispatch_scada.csv $(date -u +%Y-%m-%d)"
+          git push
