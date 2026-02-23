@@ -16,8 +16,37 @@ Australian companies above the reporting threshold are now subject to mandatory 
 A core data requirement is Scope 2 emissions, which depend on grid emissions intensity at the time of electricity consumption.
 This project models that calculation from publicly available AEMO generation and emissions data."
 
-### How
+### Process
 
-Python HTML parser -> Raw data to SQL Server -> SQL stored procedure creates tables -> PowerBI for reports
+#### Sourcing Data
+
+AEMO supplies demand and generation data in numerous tables, such as daily averages (dispatch summary), and in 5 minute intervals.
+
+Each generator unit uses different fuels, and it's notable that the AEMO Data Dashboard's Renewable Penetration report illustrates that the maximum recorded over a 30 minute interval was in October 2025 at 78.6%.
+
+By knowing the output of each genunit and their fuel types, we can visualise a more accurate understanding of emmissions numbers.
+
+So data is sourced from 5 minute intervals, not daily averages.
+
+https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/operational-demand-data
+
+Emissions data is calculated as generation from fuel type multiplied by emission per mwh, based on fact sheet.
+
+#### Importing and Normalising
+
+API, Python
+
+#### Power BI
+
+-
+#### Streamlit Interactive Dashboard
 
 In a production environment this pipeline would be orchestrated via Azure Data Factory and Microsoft Fabric.
+
+### Limitations and Scope
+
+AEMO data covers QLD, NSW, VIC and TAS, as they are connected in a grid
+
+WA has a separate grid, Wholesale Electricity Market (WEM) supplies separate data.
+
+NT has three grids for Darwin-Katherine, Tennant Creek and Alice Springs, with some data supplied by Interim Northern Territory Electricity Market (I-NTEM)
