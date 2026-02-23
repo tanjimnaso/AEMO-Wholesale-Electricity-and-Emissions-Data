@@ -3,7 +3,7 @@ name: Daily AEMO Data Fetch
 on:
   schedule:
     - cron: '0 20 * * *'  # 6 AM AEST (UTC+10) = 8 PM UTC previous day
-  workflow_dispatch:       # Allows you to manually trigger from GitHub UI
+  workflow_dispatch:       # Allows manual trigger from GitHub UI
 
 jobs:
   fetch-data:
@@ -18,20 +18,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install ODBC Driver 18 for SQL Server
-        run: |
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
-
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run import script
-        env:
-          AZURE_SQL_SERVER: ${{ secrets.AZURE_SQL_SERVER }}
-          AZURE_SQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE }}
-          AZURE_SQL_USERNAME: ${{ secrets.AZURE_SQL_USERNAME }}
-          AZURE_SQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
-        run: python "1. Import Data.py"
+        run: python "importdata.py"
+
+      - name: Commit updated CSV back to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/dispatch_scada.csv
+          git diff --staged --quiet || git commit -m "Auto: Update dispatch_scada.csv $(date -u +%Y-%m-%d)"
+          git push

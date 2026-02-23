@@ -1,7 +1,7 @@
 """
 AEMO Dispatch SCADA Data Importer
 Scrapes NEMWEB for 5-minute dispatch SCADA ZIP files,
-extracts CSVs, and appends new data to Azure SQL Database.
+extracts CSVs, and appends new data to a local CSV.
 """
 
 import os
@@ -10,56 +10,20 @@ import zipfile
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-from sqlalchemy import create_engine, text
 
 # ── Config ────────────────────────────────────────────────────────
-BASE_URL = "https://nemweb.com.au"
-SCADA_URL = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"
+BASE_URL   = "https://nemweb.com.au"
+SCADA_URL  = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"
+OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "data", "dispatch_scada.csv")
 
-# Columns we actually want
 KEEP_COLUMNS = ["SETTLEMENTDATE", "DUID", "SCADAVALUE"]
-
-TABLE_NAME = "dispatch_scada"
-
-
-def get_engine():
-    """Create SQLAlchemy engine from environment variables."""
-    server   = os.environ["AZURE_SQL_SERVER"]
-    database = os.environ["AZURE_SQL_DATABASE"]
-    username = os.environ["AZURE_SQL_USERNAME"]
-    password = os.environ["AZURE_SQL_PASSWORD"]
-
-    connection_string = (
-        f"mssql+pyodbc://{username}:{password}"
-        f"@{server}/{database}"
-        f"?driver=ODBC+Driver+18+for+SQL+Server"
-    )
-    return create_engine(connection_string)
-
-
-def get_max_date(engine):
-    """Return the latest SETTLEMENTDATE already in the database, or None."""
-    try:
-        with engine.connect() as conn:
-            result = conn.execute(
-                text(f"SELECT MAX(SETTLEMENTDATE) FROM {TABLE_NAME}")
-            )
-            max_date = result.scalar()
-            if max_date:
-                print(f"Latest date in database: {max_date}")
-            else:
-                print("Table is empty — will load all available data")
-            return max_date
-    except Exception:
-        print("Table does not exist yet — will create on first insert")
-        return None
 
 
 def get_zip_links():
     """Scrape the NEMWEB directory for all .zip file links."""
     response = requests.get(SCADA_URL)
     response.raise_for_status()
-    soup = BeautifulSoup(response.content, "html.parser")
+    soup  = BeautifulSoup(response.content, "html.parser")
     links = [a["href"] for a in soup.find_all("a") if a["href"].endswith(".zip")]
     print(f"Found {len(links)} ZIP files on NEMWEB")
     return links
@@ -75,18 +39,11 @@ def download_and_extract(links):
             r = requests.get(url)
             r.raise_for_status()
             z = zipfile.ZipFile(io.BytesIO(r.content))
-
             for csv_name in z.namelist():
                 df = pd.read_csv(z.open(csv_name), skiprows=1)
-
-                # Drop the AEMO footer row ("C, END OF REPORT, ...")
                 df = df[df.iloc[:, 0] != "C"]
-
-                # Keep only the useful columns
                 df = df[KEEP_COLUMNS]
-
                 all_frames.append(df)
-
         except Exception as e:
             print(f"  Error processing {link}: {e}")
             continue
@@ -95,7 +52,7 @@ def download_and_extract(links):
             print(f"  Downloaded {i + 1}/{len(links)}")
 
     if not all_frames:
-        print("No data extracted.")
+        print("No new data extracted.")
         return pd.DataFrame(columns=KEEP_COLUMNS)
 
     new_data = pd.concat(all_frames, ignore_index=True)
@@ -103,46 +60,44 @@ def download_and_extract(links):
     return new_data
 
 
+def load_existing():
+    """Load the existing CSV if it exists, otherwise return empty DataFrame."""
+    if os.path.exists(OUTPUT_CSV):
+        existing = pd.read_csv(OUTPUT_CSV)
+        print(f"Loaded {len(existing)} existing rows")
+        return existing
+    print("No existing CSV found — starting fresh")
+    return pd.DataFrame(columns=KEEP_COLUMNS)
+
+
+def save(df):
+    """Write DataFrame to CSV, creating the data/ directory if needed."""
+    os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
+    df.to_csv(OUTPUT_CSV, index=False)
+    print(f"Saved {len(df)} rows to {OUTPUT_CSV}")
+
+
 def main():
     print("=" * 60)
     print("AEMO Dispatch SCADA Importer")
     print("=" * 60)
 
-    # 1. Connect to Azure SQL
-    engine = get_engine()
-
-    # 2. Get the latest date already loaded — skip anything older
-    max_date = get_max_date(engine)
-
-    # 3. Scrape NEMWEB for ZIP links
-    links = get_zip_links()
-
-    # 4. Download and extract
+    links    = get_zip_links()
     new_data = download_and_extract(links)
 
     if new_data.empty:
-        print("Nothing to save.")
+        print("Nothing new to save.")
         return
 
-    # 5. Filter to only rows newer than what's already in the database
-    if max_date:
-        new_data["SETTLEMENTDATE"] = pd.to_datetime(new_data["SETTLEMENTDATE"])
-        new_data = new_data[new_data["SETTLEMENTDATE"] > pd.to_datetime(max_date)]
-        print(f"After deduplication filter: {len(new_data)} new rows to insert")
+    existing = load_existing()
+    combined = pd.concat([existing, new_data], ignore_index=True)
 
-    if new_data.empty:
-        print("No new rows to insert — database is already up to date.")
-        return
+    before = len(combined)
+    combined.drop_duplicates(subset=["SETTLEMENTDATE", "DUID"], inplace=True)
+    print(f"Dropped {before - len(combined)} duplicate rows")
 
-    # 6. Append to Azure SQL
-    new_data.to_sql(
-        TABLE_NAME,
-        engine,
-        if_exists="append",
-        index=False,
-        chunksize=1000
-    )
-    print(f"Inserted {len(new_data)} rows into {TABLE_NAME}")
+    combined.sort_values(["SETTLEMENTDATE", "DUID"], inplace=True)
+    save(combined)
 
     print("=" * 60)
     print("Done!")
