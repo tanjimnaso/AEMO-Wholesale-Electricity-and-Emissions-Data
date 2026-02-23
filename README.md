@@ -45,8 +45,19 @@ In a production environment this pipeline would be orchestrated via Azure Data F
 
 ### Limitations and Scope
 
-AEMO data covers QLD, NSW, VIC and TAS, as they are connected in a grid
+The project covers 5 NEM regions in the AEMO dispatch framework (QLD, NSW, SA, VIC and TAS).
 
-WA has a separate grid, Wholesale Electricity Market (WEM) supplies separate data.
+WA has a separate grid, Wholesale Electricity Market (WEM) which supplies separate data. Gas and coal are the primary fuel types.
 
-NT has three grids for Darwin-Katherine, Tennant Creek and Alice Springs, with some data supplied by Interim Northern Territory Electricity Market (I-NTEM)
+NT has three grids for Darwin-Katherine, Tennant Creek and Alice Springs, with some data supplied by Interim Northern Territory Electricity Market (I-NTEM).
+Gas is primary fuel type.
+
+A 'national emissions data pipeline' incorporating WEM and NT data sources is outside the current scope of this project and represents a natural extension for future development.
+
+### References 
+
+While reading the process of this project, the UNSW NEMED tool may have come to mind.
+
+NEMED is a Python library that gives researchers a package to pull emissions data programmatically, it's designed for a different audience and purpose.
+
+This project demonstrates a data engineering pipeline, from ingestion, warehouse schema, SQL stored procedures to Power BI reporting, framed around ESG reporting obligations.
