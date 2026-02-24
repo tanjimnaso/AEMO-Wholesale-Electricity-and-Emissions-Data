@@ -4,3 +4,4 @@ beautifulsoup4
 sqlalchemy
 pyodbc
 streamlit
+altair==4.2.2
