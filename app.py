@@ -73,6 +73,32 @@ st.markdown("""
 def load_data():
     base = Path(__file__).parent
 
+    # Check all required files exist and are non-empty before loading
+    required = {
+        "SCADA data":         base / "data" / "dispatch_scada.csv",
+        "DUID lookup":        base / "data" / "duid_lookup.csv",
+        "Emissions factors":  base / "data" / "emissions_factors.csv",
+    }
+    missing = []
+    empty   = []
+    for label, path in required.items():
+        if not path.exists():
+            missing.append(f"`{path.relative_to(base)}` ({label})")
+        elif path.stat().st_size == 0:
+            empty.append(f"`{path.relative_to(base)}` ({label})")
+
+    if missing or empty:
+        msg = []
+        if missing:
+            msg.append("**Missing files:**\n" + "\n".join(f"- {f}" for f in missing))
+        if empty:
+            msg.append("**Empty files (GitHub Actions may not have run yet):**\n" + "\n".join(f"- {f}" for f in empty))
+        msg.append(
+            "\n**To fix:** ensure all three CSVs are committed to the `data/` folder in your repo "
+            "and that `.gitignore` does not exclude `*.csv` or `data/`."
+        )
+        raise FileNotFoundError("\n\n".join(msg))
+
     scada = pd.read_csv(
         base / "data" / "dispatch_scada.csv",
         parse_dates=["SETTLEMENTDATE"]
@@ -119,7 +145,12 @@ def load_data():
     return df
 
 
-df = load_data()
+try:
+    df = load_data()
+except FileNotFoundError as e:
+    st.error("### ⚠️ Data files not found")
+    st.markdown(str(e))
+    st.stop()
 
 TECH_COLORS = {
     "Coal":            "#c0392b",
