@@ -241,16 +241,17 @@ st.caption(
 
 st.markdown("""
 <div class="intro-box">
-Built to demonstrate end-to-end pipeline ingesting AEMO wholesale electricity and emissions data
-into a SQL Server warehouse, with stored procedures surfacing grid emissions intensity by time-of-day
-for ESG reporting use cases, visualised in Streamlit.<br><br>
-<b>Why does it matter?</b><br>
-Under Australia's Sustainability Reporting Standards (ASRS), large organisations must disclose their
-<b>Scope 2 emissions</b> — the indirect emissions from purchased electricity. The most accurate method
-(the "market-based" or "location-based" approach) requires knowing the emissions intensity of the grid
-at the time of consumption. This dashboard calculates that intensity from AEMO's live dispatch data,
-mapped to fuel types using the official National Greenhouse Accounts (NGA) emission factors published
-by DCCEEW.
+<b>Australia's grid isn't equally clean at all hours.</b><br><br>
+Under the Australian Sustainability Reporting Standards (ASRS), large 
+organisations must disclose their <b>Scope 2 emissions</b> — the indirect 
+emissions from purchased electricity. The most accurate approach requires 
+knowing the emissions intensity of the grid <em>at the time of consumption</em>.<br><br>
+That intensity swings by up to 4x across a single day depending on how much 
+solar, wind, gas, and coal is online in your region.<br><br>
+This tool calculates that intensity in real time from AEMO's 5-minute 
+dispatch data, using official National Greenhouse Accounts (NGA) emission 
+factors from DCCEEW — so you can see not just how much electricity your 
+business uses, but <b>when</b> it matters.
 </div>
 """, unsafe_allow_html=True)
 
