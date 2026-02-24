@@ -52,7 +52,7 @@ st.markdown("""
     padding: 20px 24px;
     margin-bottom: 24px;
     line-height: 1.7;
-    font-size: 0.92rem;
+    font-size: 1.1rem;
     color: #c9d1d9;
   }
   .section-text {
@@ -242,16 +242,19 @@ st.caption(
 st.markdown("""
 <div class="intro-box">
 <b>Australia's grid isn't equally clean at all hours.</b><br><br>
+
 Under the Australian Sustainability Reporting Standards (ASRS), large 
-organisations must disclose their <b>Scope 2 emissions</b> — the indirect 
+organisations must disclose their <b>Scope 2 emissions</b>, the indirect 
 emissions from purchased electricity. The most accurate approach requires 
-knowing the emissions intensity of the grid <em>at the time of consumption</em>.<br><br>
+knowing the emissions intensity of the grid at the time of consumption.<br><br>
+
 That intensity swings by up to 4x across a single day depending on how much 
 solar, wind, gas, and coal is online in your region.<br><br>
+
 This tool calculates that intensity in real time from AEMO's 5-minute 
 dispatch data, using official National Greenhouse Accounts (NGA) emission 
 factors from DCCEEW — so you can see not just how much electricity your 
-business uses, but <b>when</b> it matters.
+business uses, but when it matters.
 </div>
 """, unsafe_allow_html=True)
 
