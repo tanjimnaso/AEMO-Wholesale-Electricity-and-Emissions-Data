@@ -3,5 +3,5 @@ requests
 beautifulsoup4
 sqlalchemy
 pyodbc
-streamlit
-altair==4.2.2
+streamlit>=1.40.0
+altair>=5.0.0
