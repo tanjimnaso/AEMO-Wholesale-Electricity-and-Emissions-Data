@@ -62,6 +62,20 @@ st.markdown("""
   section[data-testid="stSidebar"] * { color: #374151 !important; }
   section[data-testid="stSidebar"] a { color: #1a3a5c !important; }
   section[data-testid="stSidebar"] label { color: #374151 !important; }
+  /* Sidebar widget inputs — force light background */
+  section[data-testid="stSidebar"] .stSelectbox > div > div,
+  section[data-testid="stSidebar"] .stDateInput > div > div,
+  section[data-testid="stSidebar"] .stMultiSelect > div > div,
+  section[data-testid="stSidebar"] input[type="text"] {
+    background-color: #FFFFFF !important;
+    color: #1a1a2e !important;
+    border: 1px solid #D1D5DB !important;
+  }
+  /* Multiselect tag pills */
+  section[data-testid="stSidebar"] .stMultiSelect span[data-baseweb="tag"] {
+    background-color: #E0E7EF !important;
+    color: #1a3a5c !important;
+  }
   .sidebar-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
 
   /* ── Metric cards ── */
@@ -488,9 +502,9 @@ st.markdown(
 
 # ── Flexible load use cases ───────────────────────────────────
 st.markdown(
-    "<p style='font-family: IBM Plex Mono; font-size: 0.72rem; color: #9CA3AF; "
-    "letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem;'>"
-    "The expectation isn't 'turn things off' &#8212; it's 'time what you can, when the grid is cleanest'</p>",
+    "<p style='font-family: Lora, serif; font-size: 1.05rem; font-style: italic; "
+    "color: #374151; margin-bottom: 0.75rem; max-width: 860px;'>"
+    "The expectation isn't &#8216;turn things off&#8217; &#8212; it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
     unsafe_allow_html=True
 )
 
