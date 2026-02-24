@@ -54,6 +54,7 @@ st.markdown("""
     line-height: 1.7;
     font-size: 1.1rem;
     color: #c9d1d9;
+    max-width: 900px;
   }
   .section-text {
     line-height: 1.8;
