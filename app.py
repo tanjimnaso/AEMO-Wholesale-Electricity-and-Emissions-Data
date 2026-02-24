@@ -1,13 +1,10 @@
 """
 app.py — NEM Emissions Intensity Dashboard
 ==========================================
-Data flow:
-  data/dispatch_scada.csv    → raw 5-min SCADA generation (MW) per DUID
-  data/duid_lookup.csv       → DUID → Technology Type, Region, Unit Name
-  data/emissions_factors.csv → Technology Type → tCO2e/MWh (Scope 1 & 3, NGA 2025)
-
-All three files are kept separate and joined here at load time.
-Streamlit caches the result so the join only runs once per session.
+Data flow (three separate files joined at load time):
+  data/dispatch_scada.csv    → 5-min SCADA generation (MW) per DUID, ingested nightly by GitHub Actions
+  data/duid_lookup.csv       → DUID → Technology Type, Region, Unit Name  (AEMO Gen Info Jan 2026)
+  data/emissions_factors.csv → Technology Type → t CO₂-e/MWh  (NGA Factors 2025, Tables 4 & 5)
 """
 
 import streamlit as st
@@ -19,13 +16,13 @@ from pathlib import Path
 # Page config
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="NEM Emissions Intensity",
+    page_title="Australia East Emissions Intensity Dashboard",
     page_icon="⚡",
     layout="wide",
 )
 
 # ---------------------------------------------------------------------------
-# Styling — dark industrial theme
+# Styling
 # ---------------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -46,32 +43,45 @@ st.markdown("""
   .metric-label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; }
   .metric-value { font-size: 2rem; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: #58a6ff; }
   .metric-sub   { font-size: 0.75rem; color: #8b949e; }
+  .intro-box {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-left: 4px solid #58a6ff;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    line-height: 1.7;
+    font-size: 0.92rem;
+    color: #c9d1d9;
+  }
   .sidebar-note { font-size: 0.75rem; color: #8b949e; line-height: 1.6; }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
-# Load & join all three tables (cached — runs once per session)
+# Load & join all three tables (cached per session)
 # ---------------------------------------------------------------------------
 @st.cache_data(ttl=3600)
 def load_data():
     base = Path(__file__).parent
 
-    # 1. SCADA — 5-min generation (MW) per DUID
+    # 1. SCADA — 5-min MW output per DUID
     scada = pd.read_csv(
         base / "data" / "dispatch_scada.csv",
         parse_dates=["SETTLEMENTDATE"]
     )
     scada = scada[scada["SCADAVALUE"] > 0].copy()
 
-    # 2. DUID lookup — Technology Type, Region, Unit Name
-    lookup = pd.read_csv(base / "data" / "duid_lookup.csv")
-    lookup = lookup[["DUID", "Unit Name", "Technology Type", "Region"]].drop_duplicates("DUID")
+    # 2. DUID lookup — Technology Type, Region
+    lookup = (
+        pd.read_csv(base / "data" / "duid_lookup.csv")
+        [["DUID", "Unit Name", "Technology Type", "Region"]]
+        .drop_duplicates("DUID")
+    )
 
     # 3. Emissions factors — Scope 1 and Scope 3, keyed on Technology Type
     ef_raw = pd.read_csv(base / "data" / "emissions_factors.csv")
-
     ef_s1 = (
         ef_raw[ef_raw["scope"] == "scope_1"]
         [["technology_type", "emission_factor_tCO2e_MWh"]]
@@ -83,7 +93,7 @@ def load_data():
         .rename(columns={"technology_type": "Technology Type", "emission_factor_tCO2e_MWh": "ef_scope3"})
     )
 
-    # Join: SCADA → DUID lookup → Emissions factors
+    # Join: SCADA → lookup → factors
     df = (
         scada
         .merge(lookup, on="DUID", how="left")
@@ -91,24 +101,22 @@ def load_data():
         .merge(ef_s3,  on="Technology Type", how="left")
     )
 
-    # Unknown DUIDs: flag and assign gas proxy (conservative estimate)
+    # Fallback for any DUIDs still unresolved
     df["Technology Type"] = df["Technology Type"].fillna("Unknown")
-    df["ef_scope1"] = df["ef_scope1"].fillna(0.1855)  # natural gas pipeline proxy
+    df["ef_scope1"] = df["ef_scope1"].fillna(0.1855)   # natural gas proxy
     df["ef_scope3"] = df["ef_scope3"].fillna(0.0)
 
-    # Calculations
-    df["mwh"]          = df["SCADAVALUE"] * (5 / 60)      # MW × 5-min interval → MWh
+    # Energy and emissions per 5-min interval
+    df["mwh"]          = df["SCADAVALUE"] * (5 / 60)
     df["tco2e_scope1"] = df["mwh"] * df["ef_scope1"]
     df["tco2e_scope3"] = df["mwh"] * df["ef_scope3"]
     df["tco2e_total"]  = df["tco2e_scope1"] + df["tco2e_scope3"]
-    df["date"]         = df["SETTLEMENTDATE"].dt.date
 
     return df
 
 
 df = load_data()
 
-# Colour palette — one per Technology Type
 TECH_COLORS = {
     "Coal":            "#c0392b",
     "Brown coal":      "#e67e22",
@@ -120,31 +128,39 @@ TECH_COLORS = {
     "Battery Storage": "#8e44ad",
     "Unknown":         "#444444",
 }
-
 ZERO_EMISSION = {"Wind", "Solar PV", "Hydro", "Battery Storage"}
+
+RESOLUTIONS = {
+    "5 minutes":  "5min",
+    "15 minutes": "15min",
+    "30 minutes": "30min",
+}
 
 
 # ---------------------------------------------------------------------------
-# Sidebar controls
+# Sidebar
 # ---------------------------------------------------------------------------
 st.sidebar.title("⚡ Controls")
 
-date_min = df["date"].min()
-date_max = df["date"].max()
+date_min = df["SETTLEMENTDATE"].dt.date.min()
+date_max = df["SETTLEMENTDATE"].dt.date.max()
 
-c1, c2 = st.sidebar.columns(2)
-with c1:
-    date_from = st.date_input("From", value=date_min, min_value=date_min, max_value=date_max)
-with c2:
-    date_to = st.date_input("To",   value=date_max, min_value=date_min, max_value=date_max)
+# Single day view for the intraday combo chart
+selected_date = st.sidebar.date_input(
+    "Date", value=date_max, min_value=date_min, max_value=date_max
+)
+
+resolution_label = st.sidebar.selectbox(
+    "Interval",
+    list(RESOLUTIONS.keys()),
+    index=1,   # default: 15 minutes
+)
+resolution = RESOLUTIONS[resolution_label]
 
 scope_choice = st.sidebar.radio(
     "Emissions scope",
     ["Scope 1 only", "Scope 1 + 3 (combined)"],
-    help=(
-        "Scope 1 = direct combustion emissions from the generator.\n"
-        "Scope 3 = upstream extraction and transport of fuel (coal only in NGA 2025)."
-    )
+    help="Scope 1 = direct combustion. Scope 3 = upstream fuel extraction (coal only in NGA 2025)."
 )
 
 regions = sorted(df["Region"].dropna().unique().tolist())
@@ -156,75 +172,81 @@ st.sidebar.markdown("""
 <b>Data sources</b><br>
 Generation: <a href="https://nemweb.com.au" style="color:#58a6ff">AEMO NEMWEB</a> — Dispatch SCADA<br>
 Unit metadata: AEMO Generation Information (Jan 2026)<br>
-Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors"
-style="color:#58a6ff">NGA Factors 2025</a>, Tables 4 & 5<br><br>
+Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#58a6ff">NGA Factors 2025</a>, Tables 4 & 5<br><br>
 <b>Coverage</b><br>
 NEM regions only: QLD, NSW, VIC, SA, TAS.<br>
 Excludes WEM, NT grids, rooftop solar.<br><br>
 <b>Methodology</b><br>
-MWh = MW output × (5 min ÷ 60)<br>
+MWh = MW × (5 min ÷ 60)<br>
 t CO₂-e = MWh × NGA factor<br>
 Intensity = Σ t CO₂-e ÷ Σ MWh<br>
-NGA factors converted: kg CO₂-e/GJ × 3.6 ÷ 1000
+NGA factors: kg CO₂-e/GJ × 3.6 ÷ 1000
 </div>
 """, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
-# Filter
+# Filter — single day for intraday charts, full range for KPIs/summary
 # ---------------------------------------------------------------------------
-mask = (
-    (df["date"] >= date_from) &
-    (df["date"] <= date_to) &
+mask_day = (
+    (df["SETTLEMENTDATE"].dt.date == selected_date) &
     (df["Region"].isin(sel_regions))
 )
-dff = df[mask].copy()
+dff = df[mask_day].copy()
+
+# Also keep a full-dataset filter for the period summary table
+mask_all = df["Region"].isin(sel_regions)
+dff_all = df[mask_all].copy()
+
 emission_col = "tco2e_scope1" if scope_choice == "Scope 1 only" else "tco2e_total"
 
 
 # ---------------------------------------------------------------------------
-# Daily aggregates
+# Header + intro
 # ---------------------------------------------------------------------------
-daily = (
-    dff.groupby("date")
-    .agg(total_mwh=("mwh", "sum"), total_tco2e=(emission_col, "sum"))
-    .reset_index()
-)
-daily["intensity"]       = (daily["total_tco2e"] / daily["total_mwh"]).where(daily["total_mwh"] > 0)
-daily["intensity_7d_avg"] = daily["intensity"].rolling(7, min_periods=1).mean()
-daily["date"]            = pd.to_datetime(daily["date"])
-
-daily_mix = (
-    dff.groupby(["date", "Technology Type"])
-    .agg(mwh=("mwh", "sum"))
-    .reset_index()
-)
-daily_mix["date"] = pd.to_datetime(daily_mix["date"])
-
-tech_summary = (
-    dff.groupby("Technology Type")
-    .agg(total_mwh=("mwh", "sum"), total_tco2e=(emission_col, "sum"))
-    .reset_index()
-    .sort_values("total_mwh", ascending=False)
-)
-tech_summary["share_pct"]  = 100 * tech_summary["total_mwh"] / tech_summary["total_mwh"].sum()
-tech_summary["avg_factor"] = tech_summary["total_tco2e"] / tech_summary["total_mwh"]
-
-
-# ---------------------------------------------------------------------------
-# Header
-# ---------------------------------------------------------------------------
-st.title("NEM Emissions Intensity Dashboard")
+st.title("Australia East Emissions Intensity Dashboard")
 st.caption(
-    f"National Electricity Market · {date_from} → {date_to} · "
-    f"{', '.join(sel_regions) if sel_regions else 'No region selected'} · {scope_choice}"
+    f"AEMO NEM  ·  {selected_date}  ·  "
+    f"{', '.join(sel_regions) if sel_regions else 'No region selected'}  ·  "
+    f"{scope_choice}  ·  {resolution_label} intervals"
 )
-st.markdown("---")
+
+st.markdown("""
+<div class="intro-box">
+<b>What is grid emissions intensity?</b><br>
+Grid emissions intensity measures the average greenhouse gas emissions produced per unit of electricity
+consumed from the network, expressed in <b>tonnes of CO₂-equivalent per megawatt-hour (t CO₂-e/MWh)</b>.
+It varies in real time depending on which generators are running — coal and gas raise it, wind, solar and
+hydro lower it.<br><br>
+<b>Why does it matter?</b><br>
+Under Australia's Sustainability Reporting Standards (ASRS), large organisations must disclose their
+<b>Scope 2 emissions</b> — the indirect emissions from purchased electricity. The most accurate method
+(the "market-based" or "location-based" approach) requires knowing the emissions intensity of the grid
+at the time of consumption. This dashboard calculates that intensity from AEMO's live dispatch data,
+mapped to fuel types using the official National Greenhouse Accounts (NGA) emission factors published
+by DCCEEW.
+</div>
+""", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
-# KPI cards
+# KPI cards — summary for selected day
 # ---------------------------------------------------------------------------
+total_mwh     = dff["mwh"].sum()
+total_tco2e   = dff[emission_col].sum()
+avg_intensity = total_tco2e / total_mwh if total_mwh > 0 else 0
+renewable_mwh = dff[dff["Technology Type"].isin(ZERO_EMISSION)]["mwh"].sum()
+re_share      = 100 * renewable_mwh / total_mwh if total_mwh > 0 else 0
+
+# Interval-level intensity for daily low/high
+interval_intensity = (
+    dff.groupby(dff["SETTLEMENTDATE"].dt.floor(resolution))
+    .agg(mwh=("mwh","sum"), tco2e=(emission_col,"sum"))
+    .assign(intensity=lambda x: x["tco2e"] / x["mwh"])
+)
+period_low  = interval_intensity["intensity"].min() if not interval_intensity.empty else 0
+period_high = interval_intensity["intensity"].max() if not interval_intensity.empty else 0
+
 def kpi(col, label, value, sub=""):
     col.markdown(
         f'<div class="metric-card">'
@@ -235,87 +257,136 @@ def kpi(col, label, value, sub=""):
         unsafe_allow_html=True
     )
 
-total_mwh       = daily["total_mwh"].sum()
-renewable_mwh   = dff[dff["Technology Type"].isin(ZERO_EMISSION)]["mwh"].sum()
-renewable_share = 100 * renewable_mwh / total_mwh if total_mwh > 0 else 0
-latest          = daily["intensity"].iloc[-1]  if not daily.empty else 0
-avg_i           = daily["intensity"].mean()    if not daily.empty else 0
-min_i           = daily["intensity"].min()     if not daily.empty else 0
-max_i           = daily["intensity"].max()     if not daily.empty else 0
-
 k1, k2, k3, k4, k5 = st.columns(5)
-kpi(k1, "Latest Daily Intensity", f"{latest:.3f}", "t CO₂-e / MWh")
-kpi(k2, "Period Average",         f"{avg_i:.3f}",  "t CO₂-e / MWh")
-kpi(k3, "Period Low",             f"{min_i:.3f}",  "t CO₂-e / MWh")
-kpi(k4, "Period High",            f"{max_i:.3f}",  "t CO₂-e / MWh")
-kpi(k5, "Zero-Emission Share",    f"{renewable_share:.1f}%", "of total generation")
+kpi(k1, "Period Avg Intensity",   f"{avg_intensity:.3f}",  "t CO₂-e / MWh")
+kpi(k2, "Period Low (daily)",     f"{period_low:.3f}",     "t CO₂-e / MWh")
+kpi(k3, "Period High (daily)",    f"{period_high:.3f}",    "t CO₂-e / MWh")
+kpi(k4, "Total Generation",       f"{total_mwh/1e6:.2f}M", "MWh")
+kpi(k5, "Zero-Emission Share",    f"{re_share:.1f}%",       "of total generation")
 st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------------------
-# Chart 1 — Emissions intensity over time
+# Aggregate to selected interval
 # ---------------------------------------------------------------------------
-fig1 = go.Figure()
-fig1.add_trace(go.Scatter(
-    x=daily["date"], y=daily["intensity"],
-    name="Daily", mode="lines",
-    line=dict(color="#30363d", width=1),
-    fill="tozeroy", fillcolor="rgba(88,166,255,0.08)",
-))
-fig1.add_trace(go.Scatter(
-    x=daily["date"], y=daily["intensity_7d_avg"],
-    name="7-day avg", mode="lines",
-    line=dict(color="#58a6ff", width=2),
-))
-fig1.update_layout(
-    title=dict(text="Grid Emissions Intensity (t CO₂-e / MWh)", font=dict(family="IBM Plex Mono", color="#58a6ff")),
-    xaxis=dict(showgrid=False, color="#8b949e"),
-    yaxis=dict(title="t CO₂-e / MWh", showgrid=True, gridcolor="#21262d", zeroline=False, color="#8b949e"),
-    plot_bgcolor="#0e1117", paper_bgcolor="#0e1117",
-    font=dict(color="#c9d1d9", family="IBM Plex Sans"),
-    legend=dict(bgcolor="#161b22", bordercolor="#30363d"),
-    margin=dict(l=10, r=10, t=50, b=10),
-    hovermode="x unified",
+dff["period"] = dff["SETTLEMENTDATE"].dt.floor(resolution)
+
+agg = (
+    dff.groupby("period")
+    .agg(mwh=("mwh","sum"), tco2e=(emission_col,"sum"))
+    .reset_index()
 )
-st.plotly_chart(fig1, use_container_width=True)
+agg["intensity"] = (agg["tco2e"] / agg["mwh"]).where(agg["mwh"] > 0)
 
+mix = (
+    dff.groupby(["period", "Technology Type"])
+    .agg(mwh=("mwh","sum"))
+    .reset_index()
+)
 
 # ---------------------------------------------------------------------------
-# Chart 2 — Generation mix stacked bar
+# Combo chart — stacked bars (generation mix) + line (emissions intensity)
+# Mirrors the Power BI dual-axis layout
 # ---------------------------------------------------------------------------
-tech_order = [t for t in TECH_COLORS if t in daily_mix["Technology Type"].unique()]
-fig2 = go.Figure()
+from plotly.subplots import make_subplots
+
+tech_order = [t for t in TECH_COLORS if t in mix["Technology Type"].unique()]
+
+fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+# Stacked bars — one trace per technology type
 for tech in tech_order:
-    subset = daily_mix[daily_mix["Technology Type"] == tech]
-    fig2.add_trace(go.Bar(
-        x=subset["date"], y=subset["mwh"],
-        name=tech, marker_color=TECH_COLORS.get(tech, "#555"),
-    ))
-fig2.update_layout(
-    barmode="stack",
-    title=dict(text="Daily Generation Mix (MWh)", font=dict(family="IBM Plex Mono", color="#58a6ff")),
-    xaxis=dict(showgrid=False, color="#8b949e"),
-    yaxis=dict(title="MWh", showgrid=True, gridcolor="#21262d", zeroline=False, color="#8b949e"),
-    plot_bgcolor="#0e1117", paper_bgcolor="#0e1117",
-    font=dict(color="#c9d1d9", family="IBM Plex Sans"),
-    legend=dict(bgcolor="#161b22", bordercolor="#30363d"),
-    margin=dict(l=10, r=10, t=50, b=10),
+    subset = mix[mix["Technology Type"] == tech]
+    fig.add_trace(
+        go.Bar(
+            x=subset["period"],
+            y=subset["mwh"],
+            name=tech,
+            marker_color=TECH_COLORS.get(tech, "#555"),
+            hovertemplate=f"{tech}<br>%{{x|%H:%M}}<br><b>%{{y:,.0f}}</b> MWh<extra></extra>",
+        ),
+        secondary_y=False,
+    )
+
+# Emissions intensity line — right axis
+fig.add_trace(
+    go.Scatter(
+        x=agg["period"],
+        y=agg["intensity"],
+        name="Emissions Intensity",
+        mode="lines",
+        line=dict(color="#ff4444", width=2),
+        hovertemplate="%{x|%H:%M}<br><b>%{y:.4f}</b> t CO₂-e/MWh<extra></extra>",
+    ),
+    secondary_y=True,
 )
-st.plotly_chart(fig2, use_container_width=True)
+
+fig.update_layout(
+    barmode="stack",
+    title=dict(
+        text=f"Generation Mix & Emissions Intensity — {selected_date} ({resolution_label} intervals)",
+        font=dict(family="IBM Plex Mono", color="#58a6ff", size=13),
+    ),
+    xaxis=dict(
+        showgrid=False,
+        color="#8b949e",
+        tickformat="%H:%M",
+        dtick=3600000 * 2,     # tick every 2 hours in ms
+    ),
+    plot_bgcolor="#0e1117",
+    paper_bgcolor="#0e1117",
+    font=dict(color="#c9d1d9", family="IBM Plex Sans"),
+    legend=dict(
+        bgcolor="#161b22",
+        bordercolor="#30363d",
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="left",
+        x=0,
+    ),
+    margin=dict(l=10, r=10, t=80, b=10),
+    hovermode="x unified",
+    height=500,
+)
+
+fig.update_yaxes(
+    title_text="MWh",
+    showgrid=True, gridcolor="#21262d",
+    zeroline=False, color="#8b949e",
+    secondary_y=False,
+)
+fig.update_yaxes(
+    title_text="t CO₂-e / MWh",
+    showgrid=False,
+    zeroline=False, color="#ff4444",
+    secondary_y=True,
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 
 # ---------------------------------------------------------------------------
-# Period summary table + donut
+# Period summary table + donut — uses all available data (not just selected day)
 # ---------------------------------------------------------------------------
-st.markdown("### Period Summary by Technology")
+st.markdown("### All-Data Summary by Technology")
+
+tech_summary = (
+    dff_all.groupby("Technology Type")
+    .agg(total_mwh=("mwh","sum"), total_tco2e=(emission_col,"sum"))
+    .reset_index()
+    .sort_values("total_mwh", ascending=False)
+)
+tech_summary["share_pct"]  = 100 * tech_summary["total_mwh"] / tech_summary["total_mwh"].sum()
+tech_summary["avg_factor"] = tech_summary["total_tco2e"] / tech_summary["total_mwh"]
 left, right = st.columns([2, 1])
 
 with left:
     disp = tech_summary.copy()
-    disp["Total MWh"]      = disp["total_mwh"].map("{:,.0f}".format)
-    disp["Total t CO₂-e"]  = disp["total_tco2e"].map("{:,.1f}".format)
-    disp["Gen Share"]      = disp["share_pct"].map("{:.1f}%".format)
-    disp["Avg Intensity"]  = disp["avg_factor"].apply(
+    disp["Total MWh"]     = disp["total_mwh"].map("{:,.0f}".format)
+    disp["Total t CO₂-e"] = disp["total_tco2e"].map("{:,.1f}".format)
+    disp["Gen Share"]     = disp["share_pct"].map("{:.1f}%".format)
+    disp["Avg Intensity"] = disp["avg_factor"].apply(
         lambda x: f"{x:.4f} t/MWh" if pd.notna(x) and x > 0 else "0 (zero-emission)"
     )
     st.dataframe(
@@ -331,6 +402,7 @@ with right:
         marker=dict(colors=[TECH_COLORS.get(t, "#555") for t in tech_summary["Technology Type"]]),
         textinfo="percent",
         textfont=dict(size=11),
+        hovertemplate="%{label}<br><b>%{value:,.0f}</b> MWh (%{percent})<extra></extra>",
     ))
     fig_donut.update_layout(
         showlegend=False,
@@ -343,38 +415,80 @@ with right:
 
 
 # ---------------------------------------------------------------------------
-# Scope 3 note
+# Scope 3 callout
 # ---------------------------------------------------------------------------
 if scope_choice == "Scope 1 + 3 (combined)":
     s1 = dff["tco2e_scope1"].sum()
     s3 = dff["tco2e_scope3"].sum()
     if s1 > 0:
         st.info(
-            f"Scope 3 adds **{100 * s3 / s1:.1f}%** on top of Scope 1 for this period "
+            f"Scope 3 adds **{100 * s3 / s1:.1f}%** on top of Scope 1 for {selected_date} "
             f"({s3:,.0f} t upstream vs {s1:,.0f} t direct). "
-            "NGA 2025 only specifies Scope 3 factors for coal fuels."
+            "NGA 2025 specifies Scope 3 factors for coal fuels only."
         )
 
 
 # ---------------------------------------------------------------------------
 # Raw data + factor reference
 # ---------------------------------------------------------------------------
-with st.expander("📄 Raw daily data"):
+with st.expander("📄 Raw interval data"):
     st.dataframe(
-        daily.rename(columns={
-            "date": "Date", "total_mwh": "Total MWh",
-            "total_tco2e": "Total t CO₂-e",
-            "intensity": "Intensity (t CO₂-e / MWh)",
-            "intensity_7d_avg": "7-day Avg"
-        }).sort_values("Date", ascending=False),
+        agg.rename(columns={
+            "period": f"Period ({resolution_label})",
+            "mwh": "MWh",
+            "tco2e": "t CO₂-e",
+            "intensity": "Intensity (t CO₂-e/MWh)"
+        }).sort_values(f"Period ({resolution_label})", ascending=False),
         use_container_width=True, hide_index=True
     )
 
-with st.expander("🔍 Emissions factors used (NGA 2025)"):
+with st.expander("🔍 Emissions factors reference (NGA 2025)"):
     ef_display = pd.read_csv(Path(__file__).parent / "data" / "emissions_factors.csv")
     st.dataframe(ef_display, use_container_width=True, hide_index=True)
     st.caption(
         "Source: National Greenhouse Accounts Factors 2025, DCCEEW. "
-        "Table 4 (solid fuels, Scope 1 & 3), Table 5 (gaseous fuels, Scope 1). "
-        "Converted from kg CO₂-e/GJ using 3.6 GJ/MWh."
+        "Table 4 (solid fuels Scope 1 & 3), Table 5 (gaseous fuels Scope 1). "
+        "Converted: kg CO₂-e/GJ × 3.6 GJ/MWh ÷ 1000 = t CO₂-e/MWh."
     )
+
+with st.expander("⚠️ Limitations and Scope"):
+    st.markdown("""
+**Grid coverage**
+This dashboard covers the five regions of the AEMO National Electricity Market (NEM): QLD, NSW, VIC, SA, and TAS.
+It does not include:
+- **WEM** (Western Australia) — a separate wholesale electricity market operated by AEMO under distinct rules, with gas and coal as primary fuel types
+- **I-NTEM** (Northern Territory) — three isolated grids (Darwin-Katherine, Tennant Creek, Alice Springs) operated by NTESMO/PowerWater, with gas as the dominant fuel (~83%)
+
+A national pipeline incorporating WEM and NT data sources is outside current scope and represents a natural extension for future development.
+
+**Rooftop solar**
+Rooftop PV generation is not captured in AEMO Dispatch SCADA. Only grid-scale, DUID-registered generators are included.
+This means renewable share and emissions intensity figures will be slightly conservative — actual grid emissions intensity
+is likely lower than shown once rooftop solar is accounted for.
+
+**Emission factors**
+Factors are sourced from the NGA Factors 2025 workbook (DCCEEW) and applied at the technology type level (e.g. all coal
+generators use the bituminous coal Scope 1 factor). Individual plant-level factors or heat rate data are not used.
+Scope 3 factors are only available in NGA 2025 for coal fuels; gas and other fuel types show 0 Scope 3.
+
+**Data freshness**
+SCADA data is ingested nightly via GitHub Actions. The most recent day may be incomplete if the workflow has not yet run.
+""")
+
+with st.expander("📚 References"):
+    st.markdown("""
+**Data sources**
+- AEMO Dispatch SCADA — 5-minute generator output: [nemweb.com.au](https://nemweb.com.au/Reports/Current/Dispatch_SCADA/)
+- AEMO Generation Information (Jan 2026) — DUID fuel type metadata: [aemo.com.au](https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-planning-data/generation-information)
+- National Greenhouse Accounts Factors 2025 — emission factors by fuel type: [dcceew.gov.au](https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors)
+
+**Regulatory context**
+- Australian Sustainability Reporting Standards (ASRS) — mandatory climate disclosure framework: [aasb.gov.au](https://www.aasb.gov.au/australian-sustainability-reporting-standards/)
+- AEMO Carbon Dioxide Equivalent Intensity Index (CDEII) — AEMO's own daily regional emissions intensity procedure: [aemo.com.au](https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/market-operations/settlements-and-payments/settlements/carbon-dioxide-equivalent-intensity-index)
+- National Greenhouse and Energy Reporting (NGER) Act 2007 — legislative basis for Australian emissions reporting
+
+**Methodology note**
+Emissions intensity is calculated as: **Σ (MWh × emission factor) ÷ Σ MWh** across all dispatched units in the selected interval.
+MWh per interval = SCADAVALUE (MW) × (5 ÷ 60). NGA factors converted from kg CO₂-e/GJ using 3.6 GJ/MWh.
+This approach is consistent with AEMO's CDEII methodology.
+""")
