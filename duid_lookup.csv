@@ -1,0 +1,572 @@
+DUID,Unit Name,Technology Type,Region,Dispatch Type,source
+ADPBA1,ADPBA1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+ADPPV1,ADPPV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+ADPPV2,ADPPV2,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+ADVMH1,ADVMH1,Hydro,SA1,Non-scheduled,AEMO Gen Info
+AGLHAL,Hallett GT1-2,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+AGLSOM,GT1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+ALDGASF1,ADSF_GU1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+ANGAST1,Angaston:Units 1-30,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+APPIN,Appin:1-54,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+ARWF1,Ararat Wind Farm:1-75,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+AVLSF1,AVSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+BAKING1,Baking Board Solar Farm Chinchilla:1,Solar PV,QLD1,Non-scheduled,AEMO Gen Info
+BALB1,Ballarat Energy Storage System:1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+BALDHWF1,Bald Hills Wind Farm:1-52,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+BANGOWF1,Bango 973 Wind Farm:up to 30,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+BANGOWF2,Bango 999 Wind Farm,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+BANN1,Bannerton Solar Park,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+BAPS,Banimboola:1-2,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+BARCALDN,Barcaldine Power Station:1,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BARCSF1,Barcaldine Remote Community Solar Farm:1,Solar PV,QLD1,Non-scheduled,AEMO Gen Info
+BARKIPS1,Barker Inlet Power Station:1-12,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+BARRON-1,Barron Gorge:1,Hydro,QLD1,Scheduled,AEMO Gen Info
+BARRON-2,Barron Gorge:2,Hydro,QLD1,Scheduled,AEMO Gen Info
+BASTYAN,Bastyan:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+BBATTERY1,BLDRCMB1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+BBTHREE1,Bell Bay Three:1,Gas Turbine,TAS1,Scheduled,AEMO Gen Info
+BBTHREE2,Bell Bay Three:2,Gas Turbine,TAS1,Scheduled,AEMO Gen Info
+BBTHREE3,Bell Bay Three:3,Gas Turbine,TAS1,Scheduled,AEMO Gen Info
+BDL01,Bairnsdale:1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+BDL02,Bairnsdale:2,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+BDONGHYD,Burrendong:1-2,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+BERYLSF1,BERYLSF,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+BHB1,BKBESS1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+BLOWERNG,Blowering:1,Hydro,NSW1,Scheduled,AEMO Gen Info
+BLUEGSF1,Bluegrass Solar Farm,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+BLUFF1,Hallett 5 The Bluff WF:1-25,Wind,SA1,Semi-scheduled,AEMO Gen Info
+BLYTHB1,BLYTHWBT,Battery Storage,SA1,Scheduled,AEMO Gen Info
+BNGSF1,BSF1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+BNGSF2,BSF2,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+BOCOROC2,BRWF St2,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+BOCORWF1,Boco Rock Wind Farm:1-58,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+BODWF1,Bodangora Wind Farm:Units 1-33,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+BOLIVPS1,BOLINF1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+BOMENSF1,Bomen Solar Farm: Units 1-44,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+BOWWBA1,BOWWBA1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+BOWWPV1,BOWWPV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+BPLANDF1,Browns Plains:1,Other,QLD1,Non-scheduled,AEMO Gen Info
+BRAEMAR1,Braemar:BRAEMAR1,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BRAEMAR2,Braemar:BRAEMAR2,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BRAEMAR3,Braemar:BRAEMAR3,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BRAEMAR5,Braemar 2 Power Station:Braemar5,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BRAEMAR6,Braemar 2 Power Station:Braemar6,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BRAEMAR7,Braemar 2 Power Station:Braemar7,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+BRDDSF01,Broad SF,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+BRNDBES1,BDBS_GU1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+BROKENH1,Broken Hill Solar Plant:Units 1-40,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+BROOKLYN,BLPS_GU1,Other,VIC1,Non-scheduled,AEMO Gen Info
+BROWNMT,Brown Mo,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+BRYB1WF1,Berrybank Wind Farm - Stage 1: Units 1-43,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+BRYB2WF2,U 1-26,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+BULBES1,Bulgana Green Power Hub - BESS:1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+BULGANA1,BULGANA1,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+BUNGAMB1,Bungama1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+BURRIN,Burrinjuck:3,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+BUSF1,Bulli Creek Solar Farm,Solar PV,QLD1,Semi-scheduled,manual_fallback
+BUTLERSG,Butlers Gorge:Butlers Gorge,Hydro,TAS1,Non-scheduled,AEMO Gen Info
+BW01,Bayswater:1,Coal,NSW1,Scheduled,AEMO Gen Info
+BW02,Bayswater:2,Coal,NSW1,Scheduled,AEMO Gen Info
+BW03,Bayswater:3,Coal,NSW1,Scheduled,AEMO Gen Info
+BW04,Bayswater:4,Coal,NSW1,Scheduled,AEMO Gen Info
+BWTR1,BWR,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+CALL_B_1,Callide B:1,Coal,QLD1,Scheduled,AEMO Gen Info
+CALL_B_2,Callide B:2,Coal,QLD1,Scheduled,AEMO Gen Info
+CAPBES1,CBESS,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+CAPTL_WF,Capital Wind Farm:Turbines 1-67,Wind,NSW1,Significant Non-scheduled,AEMO Gen Info
+CATHROCK,Cathedral Rocks:1-33,Wind,SA1,Significant Non-scheduled,AEMO Gen Info
+CBWF1,Coonooer Bridge Wind Farm:1-6,Wind,VIC1,Non-scheduled,AEMO Gen Info
+CBWWBA1,CBWWBA1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+CBWWPV1,CBWWPV1,Solar PV,SA1,Non-scheduled,AEMO Gen Info
+CESF1,Capital East Solar Farm P1:Inverter 1,Solar PV,NSW1,Non-scheduled,AEMO Gen Info
+CETHANA,Cethana:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+CG1,Colongra:1,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+CG2,Colongra:2,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+CG3,Colongra:3,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+CG4,Colongra:4,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+CGBESS01,CGBESS,Battery Storage,SA1,Scheduled,AEMO Gen Info
+CHALLHWF,Challicum Hills:1-35,Wind,VIC1,Significant Non-scheduled,AEMO Gen Info
+CHBESS1,Chinch1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+CHILDSF1,CSF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+CHPSTWF1,Chepstowe Wind Farm:1-3,Wind,VIC1,Non-scheduled,AEMO Gen Info
+CHYTWF1,Cherry Tree Wind Farm:Units 1-16,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+CLARESF1,Clare Solar Farm:Units 1-69,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+CLEMGPWF,Clements Gap Wind Farm:1-27,Wind,SA1,Semi-scheduled,AEMO Gen Info
+CLERMSF1,Clermont Solar Farm,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+CLOVER,Clover 1,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+CLRKCWF1,CLRKCWF1,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+CLRKCWF2,CLRKCWF2,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+CLUNY,Cluny:1,Hydro,TAS1,Non-scheduled,AEMO Gen Info
+CNUNDAWF,Canunda:1-23,Wind,SA1,Significant Non-scheduled,AEMO Gen Info
+CODRNGTON,Codrington:1-14,Wind,VIC1,Non-scheduled,AEMO Gen Info
+COHUNSF1,CSF,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+COLEASF1,Coleambally Solar Farm:1-90,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+COLUMSF1,Columboola:PV Panels,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+COLWF01,Collector:Station,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+CONDONG1,CDG,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+COOPGWF1,Coopers Gap Wind Farm:1-91,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+COPBEL,Coppabella Wind Farm:1,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+COPTNHYD,Copeton:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+CPP_3,Callide C:3,Coal,QLD1,Scheduled,AEMO Gen Info
+CPP_4,Callide C:4,Coal,QLD1,Scheduled,AEMO Gen Info
+CPSA,1OCGT,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+CROOKWF2,Crookwell 2 Wind Farm:Units 1-28,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+CROOKWF3,CR3WF,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+CROWLWF1,Crowlands Wind Farm:Units 1-39,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+CRURWF1,Crudine Ridge Wind Farm:1-37,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+CRWARP1,Crown Point Solar,Solar PV,QLD1,Semi-scheduled,manual_fallback
+CRWASF1,CorowaSF,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+CSPVPS1,Collinsville PV:All Units,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+CTHLWF1,CTHLWF1,Wind,TAS1,Semi-scheduled,AEMO Gen Info
+CULLRGWF,Cullerin Range Wind Farm:1-15,Wind,NSW1,Significant Non-scheduled,AEMO Gen Info
+CUSF1,CSF_GU1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+DALNTH1,BESS1-12,Battery Storage,SA1,Scheduled,AEMO Gen Info
+DARLSF1,Darlington Point Solar Farm:1-108,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+DARTM1,Dartmouth:1,Hydro,VIC1,Scheduled,AEMO Gen Info
+DAYDSF1,DSF:1-61,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+DDPS1,Darling Downs:1,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+DDSF1,Darling Downs Solar Farm:DDSF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+DEVILS_G,Devils Gate:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+DG_NSW1,Distrib. Gen NSW,Other,NSW1,Non-scheduled,manual_fallback
+DG_QLD1,Distrib. Gen QLD,Other,QLD1,Non-scheduled,manual_fallback
+DG_SA1,Distrib. Gen SA,Other,SA1,Non-scheduled,manual_fallback
+DG_TAS1,Distrib. Gen TAS,Other,TAS1,Non-scheduled,manual_fallback
+DG_VIC1,Distrib. Gen VIC,Other,VIC1,Non-scheduled,manual_fallback
+DIAPURWF1,DiapurWF,Wind,VIC1,Non-scheduled,AEMO Gen Info
+DPNTB1,Darlington Pnt ESS1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+DRYCGT1,Dry Creek GT:1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+DRYCGT2,Dry Creek GT:2,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+DRYCGT3,Dry Creek GT:3,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+DULAWF1,Dulacca,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+DUNDWF1,DUNDWF1,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+DUNDWF2,DUNDWF2,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+DUNDWF3,DUNDWF3,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+EASTCRK,Eastern Creek:1-4,Other,NSW1,Non-scheduled,AEMO Gen Info
+EDENVSF1,S1PV1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+EILDON1,Eildon:1,Hydro,VIC1,Scheduled,AEMO Gen Info
+EILDON2,Eildon:2,Hydro,VIC1,Scheduled,AEMO Gen Info
+EILDON3,EILDON3,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+ELAINWF1,Lal Lal Wind Energy Facility - Elaine end:39-60,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+EMERASF1,EMERASF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+ER01,Eraring:1,Coal,NSW1,Scheduled,AEMO Gen Info
+ER02,Eraring:2,Coal,NSW1,Scheduled,AEMO Gen Info
+ER03,Eraring:3,Coal,NSW1,Scheduled,AEMO Gen Info
+ER04,Eraring:4,Coal,NSW1,Scheduled,AEMO Gen Info
+ERB01,ERARNGB1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+ERGT01,Eraring GT:1,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+FINLYSF1,FINLEYSF,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+FISHER,Fisher:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+FLYCRKWF,FCWF1-38,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+FNWF1,FergusWF,Wind,VIC1,Non-scheduled,AEMO Gen Info
+GANGARR1,GANGARR1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+GANNB1,Gannawarra Energy Storage System:1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+GANNSF1,Gannawarra Solar Farm:1-22,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+GB01,Broken Hill GT:1-2,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+GERMCRK,German Creek:1-16,Gas Turbine,QLD1,Non-scheduled,AEMO Gen Info
+GESF1,GESF_G1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+GIRGSF,Girgarre,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+GLBWNHYD,Glenbawn:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+GLENMAG1,GLENMAG1,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+GLENSF1,Glenrowan Solar Farm:140,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+GLRWNSF1,Glenrowan Sun Farm:Solar Panels,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+GNNDHSF1,Gunnedah Solar Farm,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+GOESF1,GOESF1,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+GOONSF1,Goonumbla Solar Farm:1-31,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+GORDON,Gordon:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+GPWFEST1,GPWFEST1,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+GPWFEST2,GPWFEST2,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+GPWFEST3,GPWFEST3,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+GPWFWST1,Golden Plains Wind W1,Wind,VIC1,Semi-scheduled,manual_fallback
+GPWFWST2,Golden Plains Wind W2,Wind,VIC1,Semi-scheduled,manual_fallback
+GRANGEAV,Grange Avenue:1,Other,NSW1,Non-scheduled,AEMO Gen Info
+GRANWF1,Granville Harbour Wind Farm: 1-31,Wind,TAS1,Semi-scheduled,AEMO Gen Info
+GREENB1,GREENB1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+GRIFSF1,Griffith Solar Farm:Solar PV Panels,Solar PV,NSW1,Non-scheduled,AEMO Gen Info
+GSTONE1,Gladstone:1,Coal,QLD1,Scheduled,AEMO Gen Info
+GSTONE2,Gladstone:2,Coal,QLD1,Scheduled,AEMO Gen Info
+GSTONE3,Gladstone:3,Coal,QLD1,Scheduled,AEMO Gen Info
+GSTONE4,Gladstone:4,Coal,QLD1,Scheduled,AEMO Gen Info
+GSTONE5,Gladstone:5,Coal,QLD1,Scheduled,AEMO Gen Info
+GSTONE6,Gladstone:6,Coal,QLD1,Scheduled,AEMO Gen Info
+GSWF1A,GSWF1A,Wind,SA1,Semi-scheduled,AEMO Gen Info
+GSWF1B1,GSWF1B,Wind,SA1,Semi-scheduled,AEMO Gen Info
+GULLRSF1,Gullen Range Solar Farm:GRWFSO 1-4,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+GULLRWF1,Gullen Range Wind Farm:17,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+GULLRWF2,Biala Wind Farm:1 - 31,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+GUNNING1,Gunning Wind Farm,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+GUSF1,Gunsynd Solar Farm,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+GUTHEGA,Guthega:1,Hydro,NSW1,Scheduled,AEMO Gen Info
+HALAMRD1,GM1-8,Gas Turbine,VIC1,Non-scheduled,AEMO Gen Info
+HALLWF1,Hallett Stage 1 Brown Hill,Wind,SA1,Semi-scheduled,AEMO Gen Info
+HALLWF2,Hallett Stage 2 Hallett Hill:1-34,Wind,SA1,Semi-scheduled,AEMO Gen Info
+HAMISF1,Hamilton Solar Farm:1-23,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+HAUGHT11,HAUGHT11,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+HAYMSF1,Hay:1-21,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+HBESS1,HBESS1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+HD1WF1,Hawkesdale Wind Farm,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+HDWF1,Hornsdale Wind Farm Stage 1:Units 1-32,Wind,SA1,Semi-scheduled,AEMO Gen Info
+HDWF2,Hornsdale Wind Farm Stage 2:Units 33-64,Wind,SA1,Semi-scheduled,AEMO Gen Info
+HDWF3,Hornsdale Wind Farm Stage 3:65-99,Wind,SA1,Semi-scheduled,AEMO Gen Info
+HEPWIND1,Leonards Hill:WT1 Gale,Wind,VIC1,Non-scheduled,AEMO Gen Info
+HEZ1,Hunter EconomicZone:1-16,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+HILLSTN1,Hillston Sun Farm:Solar Panels,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+HLMSEW01,HYMIVC06 Belgrave-Hallam Rd Micro Hydro:1,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+HPR1,HPRG EXP,Battery Storage,SA1,Scheduled,AEMO Gen Info
+HUGSF1,Hughenden Sun Farm:Units 1-18,Solar PV,QLD1,Significant Non-scheduled,AEMO Gen Info
+HUMENSW,HUMENSW,Hydro,NSW1,Scheduled,AEMO Gen Info
+HUMEV,HUMEV,Hydro,VIC1,Scheduled,AEMO Gen Info
+HUNTER1,HUNTER1,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+HUNTER2,HUNTER2,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+HVWWBA1,HVWWBA1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+HVWWPV1,HVWAPV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+ICSM,ISIS Central Sugar Mill Co-generation Plant:1,Gas Turbine,QLD1,Non-scheduled,AEMO Gen Info
+JBUTTERS,John Butters:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+JEMALNG1,Jemalong Solar:1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+JGULLY,Jacks Gully:1-2,Other,NSW1,Non-scheduled,AEMO Gen Info
+JLA01,Jeeralang A Unit 1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JLA02,Jeeralang A Unit 2,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JLA03,Jeeralang A Unit 3,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JLA04,Jeeralang A Unit 4,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JLB01,Jeeralang B Unit 1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JLB02,Jeeralang B Unit 2,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JLB03,Jeeralang B Unit 3,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+JNDABNE1,Jindabyne:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+JOUNAMA1,Jounama:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+JUNEESF1,Junee SF,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+KABANWF1,KABANWF1,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+KAREEYA1,Kareeya:1,Hydro,QLD1,Scheduled,AEMO Gen Info
+KAREEYA2,Kareeya:2,Hydro,QLD1,Scheduled,AEMO Gen Info
+KAREEYA3,Kareeya:3,Hydro,QLD1,Scheduled,AEMO Gen Info
+KAREEYA4,Kareeya:4,Hydro,QLD1,Scheduled,AEMO Gen Info
+KAREEYA5,Kareeya 5:1,Hydro,QLD1,Non-scheduled,AEMO Gen Info
+KARSF1,KARSF1,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+KEEPIT,Keepit:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+KEPBG1,KEPBG1,Battery Storage,QLD1,Non-scheduled,AEMO Gen Info
+KEPSF1,KEPSF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+KEPWF1,Kennedy Energy Park - Phase 1 - Wind:12,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+KERNGSP1,KSSF_GU1,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+KESSB1,Koorangi,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+KIAMBE,KIAMBESS,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+KIAMSF1,KIAMSF1,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+KIATAWF1,Kiata Wind Farm,Wind,VIC1,Semi-scheduled,manual_fallback
+KIDSPHG1,Kidston PH Gen1,Hydro,QLD1,Scheduled,AEMO Gen Info
+KIDSPHG2,Kidston PH Gen2,Hydro,QLD1,Scheduled,AEMO Gen Info
+KIDSPHL1,Kidston Pump Hydro 1,Hydro,QLD1,Scheduled,manual_fallback
+KIDSPHL2,Kidston Pump Hydro 2,Hydro,QLD1,Scheduled,manual_fallback
+KINGASF1,Kingaroy Solar Farm:Units 1-9,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+KPP_1,Kogan Creek:1,Coal,QLD1,Scheduled,AEMO Gen Info
+KSP1,Kidston Solar Project Phase One 50MW:1 UNIT,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+KiataWF1,Kiata Wind Farm:1-9,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+LADBROK1,Ladbroke Grove:1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+LADBROK2,Ladbroke Grove:2,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+LANCSF1,Lancaster Solar Farm,Solar PV,VIC1,Semi-scheduled,manual_fallback
+LBB1,LBB1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+LDBESS1,LDBESS1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+LEM_WIL,Lemonthyme / Wilmot:Lemonthyme,Hydro,TAS1,Scheduled,AEMO Gen Info
+LGAPBS1,LGAPBS1,Battery Storage,SA1,Scheduled,AEMO Gen Info
+LGAPWF1,Lincoln Gap Wind Farm - stage 1:LGWT01-35,Wind,SA1,Semi-scheduled,AEMO Gen Info
+LGAPWF2,LGAPWF2,Wind,SA1,Semi-scheduled,AEMO Gen Info
+LILYSF1,Lilyvale Solar Farm:1-69,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+LIMBESS1,LIMBESS1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+LIMOSF11,LIMOSF11,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+LIMOSF21,LIMOSF21,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+LI_WY_CA,Catagunya / Liapootah / Wayatinah:Catagunya 1,Hydro,TAS1,Scheduled,AEMO Gen Info
+LKBONNY1,Lake Bonney 1 Wind Farm:Turbines 1-46,Wind,SA1,Significant Non-scheduled,AEMO Gen Info
+LKBONNY2,Lake Bonney 2 Wind Farm:Turbines 1-53,Wind,SA1,Semi-scheduled,AEMO Gen Info
+LKBONNY3,Lake Bonney 3 Wind Farm:Turbines 1-13,Wind,SA1,Semi-scheduled,AEMO Gen Info
+LK_ECHO,Lake Echo:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+LNGS1,Laverton North:1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+LNGS2,Laverton North:2,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+LONSDALE,Lonsdale:1-18,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+LOYYB1,Loy Yang B:1,Coal,VIC1,Scheduled,AEMO Gen Info
+LOYYB2,Loy Yang B:2,Coal,VIC1,Scheduled,AEMO Gen Info
+LRSF1,Longreach Solar Farm:1-7,Solar PV,QLD1,Significant Non-scheduled,AEMO Gen Info
+LUCAS2S2,Lucas Heights 2:12-15,Other,NSW1,Non-scheduled,AEMO Gen Info
+LUCASHGT,Lucas Heights 2:1-11,Other,NSW1,Non-scheduled,AEMO Gen Info
+LVES1,LaTroBES,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+LYA1,Loy Yang A:1,Coal,VIC1,Scheduled,AEMO Gen Info
+LYA2,Loy Yang A:2,Coal,VIC1,Scheduled,AEMO Gen Info
+LYA3,Loy Yang A:3,Coal,VIC1,Scheduled,AEMO Gen Info
+LYA4,Loy Yang A:4,Coal,VIC1,Scheduled,AEMO Gen Info
+MACARTH1,Macarthur Wind Farm:1-140,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+MACKNTSH,Mackintosh:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+MANNSF2,MSF2,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MANNUMB1,MANNUMBT,Battery Storage,SA1,Scheduled,AEMO Gen Info
+MANSLR1,MANSLR1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+MAPS2PV1,MAPS2PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MAPS3PV1,MAPS3PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MAROOWF1,Maroona Wind Farm:2,Wind,VIC1,Non-scheduled,AEMO Gen Info
+MARYRSF1,Brigalow Solar Farm:1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+MBAHNTH,Moranbah North:1-21,Other,QLD1,Non-scheduled,AEMO Gen Info
+MBPS2PV1,MBPS2PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MCINTYR1,MIWF,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+MCKAY1,Bogong1,Hydro,VIC1,Scheduled,AEMO Gen Info
+MEADOWBK,Meadowbank:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+MERCER01,MtMercer,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+METZSF1,Metz Solar Farm,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+MEWF1,Mount Emerald:Units 1-53,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+MIDDLSF1,MIDDLESF,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+MINTARO,Mintaro GT:1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+MLSP1,Mt Lyell Smelter,Other,TAS1,Non-scheduled,manual_fallback
+MLWF1,Mortons Lane Wind Farm:Units 1- 13,Wind,VIC1,Significant Non-scheduled,AEMO Gen Info
+MOKOSF1,MOKOANSF,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+MOLNGSF1,1896,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+MOORAWF1,MOORAWF,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+MOREESF1,Moree Solar Farm:1-56,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+MORTLK11,Mortlake:1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+MORTLK12,Mortlake:2,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+MOUSF1,MOUSF,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+MP1,Unit 1,Coal,NSW1,Scheduled,AEMO Gen Info
+MP2,Unit 2,Coal,NSW1,Scheduled,AEMO Gen Info
+MPP_1,Millmerran:1,Coal,QLD1,Scheduled,AEMO Gen Info
+MPP_2,Millmerran:2,Coal,QLD1,Scheduled,AEMO Gen Info
+MREHA1,MREHA1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+MREHA2,MREHA2,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+MREHA3,MREHA3,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+MRTLSWF1,Mortlake South:1-35,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+MSTUART1,Mt Stuart:1,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+MSTUART2,Mt Stuart:2,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+MSTUART3,Mt Stuart:3,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+MTGELWF1,MGW11,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+MTMILLAR,Mt Millar:1-35,Wind,SA1,Significant Non-scheduled,AEMO Gen Info
+MUCRKSF1,MunnaCK,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+MURRAY,Murray 1:1,Hydro,VIC1,Scheduled,AEMO Gen Info
+MUSSELR1,Musselroe Wind Farm:1-56,Wind,TAS1,Semi-scheduled,AEMO Gen Info
+MUWAWF1,MWWF1,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+MUWAWF2,Murra Warra Wind Farm - stage 2:1-55,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+MWPS1PV1,MWPS1PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MWPS2PV1,MWPS2PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MWPS3PV1,MWPS3PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+MWPS4PV1,MWPS4PV1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+NASF1,Narromine Solar Farm:Solar Panels,Solar PV,NSW1,Non-scheduled,AEMO Gen Info
+NBHWF1,Hallett 4 North Brown Hill:1-63,Wind,SA1,Semi-scheduled,AEMO Gen Info
+NESBESS1,Neoen BESS 1,Battery Storage,SA1,Scheduled,manual_fallback
+NESBESS2,Neoen BESS 2,Battery Storage,SA1,Scheduled,manual_fallback
+NEVERSF1,NEVERSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+NEWENSF1,NEWENSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+NEWENSF2,NEWENSF2,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+NPS,Newport:1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+NUMURSF1,NUMURSF1,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+NYNGAN1,Nyngan Solar Plant:1-77,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+OAKEY1,Oakey Power Station:1,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+OAKEY1SF,Oakey Solar Farm:1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+OAKEY2,Oakey Power Station:2,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+OAKEY2SF,Oakey 2 Solar Farm,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+OAKLAND1,Oaklands Hill Wind Farm:32,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+OAKY2,Oaky Creek 2,Other,QLD1,Non-scheduled,AEMO Gen Info
+ORABESS1,ORANAB01,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+OSB-AG,Osborne:OSB01,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+PALOONA,Paloona:1,Hydro,TAS1,Non-scheduled,AEMO Gen Info
+PAREPS1,Port Augusta Renewable Energy Park - Solar:Central,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+PAREPW1,Port Augusta Renewable Energy Park - Wind:Turbine,Wind,SA1,Semi-scheduled,AEMO Gen Info
+PARSF1,Parkes Solar Farm:Solar Panels,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+PIBESS1,PIBS_GU1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+PINDARI,Pindari:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+PIONEER,Pioneer Sugar Mill,Other,QLD1,Non-scheduled,manual_fallback
+POAT110,Poatina:2,Hydro,TAS1,Scheduled,AEMO Gen Info
+POAT220,Poatina:3,Hydro,TAS1,Scheduled,AEMO Gen Info
+POR01,PL1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+POR03,PL3,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+PORTWF,Portland Wind Farm:PWEP II 1-29,Wind,VIC1,Significant Non-scheduled,AEMO Gen Info
+PPCCGT,PPCCGT1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+PTSTAN1,Port Stanvac 1:Units 1-18,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+PUMP1,Pumped Hydro Load 1,Hydro,NSW1,Scheduled,manual_fallback
+PUMP2,Pumped Hydro Load 2,Hydro,NSW1,Scheduled,manual_fallback
+QBYNB1,QBESS,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+QPS1,Quarantine:1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+QPS2,Quarantine:2,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+QPS3,Quarantine:3,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+QPS4,Quarantine:4,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+QPS5,Quarantine:5,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+QPSFB1,Quorn Park SH PV,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+QPSFB2,Quorn Park SH BESS,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+RACOMIL1,Racecourse Mill:7.0 MW Shin Nippon 3.3kV,Gas Turbine,QLD1,Non-scheduled,AEMO Gen Info
+RANGEB1,Rangebnk,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+REECE1,Reece:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+REECE2,Reece:2,Hydro,TAS1,Scheduled,AEMO Gen Info
+REPULSE,Repulse:1,Hydro,TAS1,Non-scheduled,AEMO Gen Info
+RESS1,RiverESS,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+RIVNB2,Riverina ESS 2,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+ROMA_7,Roma:7,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+ROMA_8,Roma:8,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+ROWALLAN,Rowallan:1,Hydro,TAS1,Non-scheduled,AEMO Gen Info
+ROYALLA1,Royalla Solar Farm:1-20,Solar PV,NSW1,Non-scheduled,AEMO Gen Info
+RPCG,RPCG:1,Other,QLD1,Non-scheduled,AEMO Gen Info
+RRSF1,Ross River Solar Farm:Solar PV Inverters,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+RT_NSW1,RT Solar NSW 1,Solar PV,NSW1,Non-scheduled,manual_fallback
+RT_NSW2,RT Solar NSW 2,Solar PV,NSW1,Non-scheduled,manual_fallback
+RT_NSW3,RT Solar NSW 3,Solar PV,NSW1,Non-scheduled,manual_fallback
+RT_NSW4,RT Solar NSW 4,Solar PV,NSW1,Non-scheduled,manual_fallback
+RT_NSW5,RT Solar NSW 5,Solar PV,NSW1,Non-scheduled,manual_fallback
+RT_NSW6,RT Solar NSW 6,Solar PV,NSW1,Non-scheduled,manual_fallback
+RT_QLD1,RT Solar QLD,Solar PV,QLD1,Non-scheduled,manual_fallback
+RT_SA1,RT Solar SA 1,Solar PV,SA1,Non-scheduled,manual_fallback
+RT_SA2,RT Solar SA 2,Solar PV,SA1,Non-scheduled,manual_fallback
+RT_SA3,RT Solar SA 3,Solar PV,SA1,Non-scheduled,manual_fallback
+RT_SA4,RT Solar SA 4,Solar PV,SA1,Non-scheduled,manual_fallback
+RT_SA5,RT Solar SA 5,Solar PV,SA1,Non-scheduled,manual_fallback
+RT_SA6,RT Solar SA 6,Solar PV,SA1,Non-scheduled,manual_fallback
+RT_TAS1,RT Solar TAS,Solar PV,TAS1,Non-scheduled,manual_fallback
+RT_VIC1,RT Solar VIC 1,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC10,RT Solar VIC 10,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC11,RT Solar VIC 11,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC12,RT Solar VIC 12,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC2,RT Solar VIC 2,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC3,RT Solar VIC 3,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC4,RT Solar VIC 4,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC5,RT Solar VIC 5,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC6,RT Solar VIC 6,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC7,RT Solar VIC 7,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC8,RT Solar VIC 8,Solar PV,VIC1,Non-scheduled,manual_fallback
+RT_VIC9,RT Solar VIC 9,Solar PV,VIC1,Non-scheduled,manual_fallback
+RUBICON,Rubicon Mountain Streams:1-5,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+RUGBYR1,Rugby Run Solar Farm:1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+RYANCWF1,Ryan Corner Wind Farm,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+RYEPARK1,RPWF_GU1,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+SALTCRK1,Salt Creek Wind Farm:1 - 15,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+SAPHWF1,Sapphire Wind Farm:75,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+SEBSF1,Sebastopol Solar Farm,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+SHEP1,Shepparton Wastewater Treatment Facility:1,Gas Turbine,VIC1,Non-scheduled,AEMO Gen Info
+SHGEN,Shoalhaven:1,Hydro,NSW1,Scheduled,AEMO Gen Info
+SHOAL1,Shoalhaven,Hydro,NSW1,Scheduled,manual_fallback
+SHPUMP,Shoalhaven Pump,Hydro,NSW1,Scheduled,manual_fallback
+SITHE01,Smithfield Energy Facility:1,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+SKSF1,South Keswick Solar Farm:Solar Panels,Solar PV,NSW1,Non-scheduled,AEMO Gen Info
+SMCSF1,SMCSF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+SMTHBES1,SmithBes,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+SNAPPER1,Snap 1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+SNB01,SNB01,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+SNB02,SNB02,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+SNB05,SNB05,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+SNOWNTH1,Snowtown S2 Wind Farm:1-48,Wind,SA1,Semi-scheduled,AEMO Gen Info
+SNOWSTH1,Snowtown S2 Wind Farm:1-42,Wind,SA1,Semi-scheduled,AEMO Gen Info
+SNOWTWN1,Snowtown Wind Farm:1-47,Wind,SA1,Semi-scheduled,AEMO Gen Info
+SNOWYP,Snowy Pump Load,Hydro,NSW1,Scheduled,manual_fallback
+SNUG1,Snugger1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+SNUGNL1,SnugNMNS,Gas Turbine,SA1,Non-scheduled,AEMO Gen Info
+SRSF1,SRSF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+STAN-1,Stanwell:1,Coal,QLD1,Scheduled,AEMO Gen Info
+STAN-2,Stanwell:2,Coal,QLD1,Scheduled,AEMO Gen Info
+STAN-3,Stanwell:3,Coal,QLD1,Scheduled,AEMO Gen Info
+STAN-4,Stanwell:4,Coal,QLD1,Scheduled,AEMO Gen Info
+STARHLWF,Starfish Hill:1-22,Wind,SA1,Significant Non-scheduled,AEMO Gen Info
+STOCKYD1,STOCKYD3.0,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+STUBSF1,Stubbo,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+STUBSF2,Stubbo_2,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+STWF1,Silverton Wind Farm:1-58,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+SUNRSF1,SUNRSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+SUNTPSF1,Suntop Solar Farm,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+SWANBBF1,SBS_GU1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+SWAN_E,Swanbank E GT:1,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+TAHMOOR,Tahmoor:1-7,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+TALWA1,Tallawarra A Unit 1,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+TALWB1,Tallawarra B Unit 1,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+TARALGA1,Taralga Wind Farm:1 - 21,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+TARBESS1,TARBESS1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+TARONG#1,Tarong:1,Coal,QLD1,Scheduled,AEMO Gen Info
+TARONG#2,Tarong:2,Coal,QLD1,Scheduled,AEMO Gen Info
+TARONG#3,Tarong:3,Coal,QLD1,Scheduled,AEMO Gen Info
+TARONG#4,Tarong:4,Coal,QLD1,Scheduled,AEMO Gen Info
+TARRALEA,Tarraleah:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+TATIARA1,Tatiara Meats:1,Gas Turbine,SA1,Non-scheduled,AEMO Gen Info
+TATURA01,Tatura Biomass Generator,Gas Turbine,VIC1,Non-scheduled,AEMO Gen Info
+TB2B1,TBBP,Battery Storage,SA1,Scheduled,AEMO Gen Info
+TB2SF1,Tailem Bend Stage 2 Solar Project:Units 1 to x,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+TBSF1,Tailem Bend - Solar:1,Solar PV,SA1,Semi-scheduled,AEMO Gen Info
+TEMPB1,Templers,Battery Storage,SA1,Scheduled,AEMO Gen Info
+TGNSS1,TNPS_GU1,Gas Turbine,VIC1,Non-scheduled,AEMO Gen Info
+THEDROP1,The Drop:station,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+TIB1,TIPSBESS,Battery Storage,SA1,Scheduled,AEMO Gen Info
+TIMWEST,Timboon West Wind Farm:2,Wind,VIC1,Non-scheduled,AEMO Gen Info
+TITREE,Ti Tree Bioenergy:1-3,Gas Turbine,QLD1,Non-scheduled,AEMO Gen Info
+TNPS1,Tarong North:1,Coal,QLD1,Scheduled,AEMO Gen Info
+TOORAWF,Toora:1-12,Wind,VIC1,Non-scheduled,AEMO Gen Info
+TORRB1,Torrens Island B:1,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+TORRB2,Torrens Island B:2,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+TORRB3,Torrens Island B:3,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+TORRB4,Torrens Island B:4,Gas Turbine,SA1,Scheduled,AEMO Gen Info
+TOWER,Tower:1-40,Other,NSW1,Non-scheduled,AEMO Gen Info
+TREVALLN,Trevallyn:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+TRGBESS,TBS_GU1,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+TRGBESS1,Torrens Island BESS,Battery Storage,SA1,Scheduled,manual_fallback
+TRIBUTE,Tribute:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+TULLYSM1,TSMPS_GU,Gas Turbine,QLD1,Non-scheduled,AEMO Gen Info
+TUMUT3,Tumut 3:1,Hydro,NSW1,Scheduled,AEMO Gen Info
+TUNGATIN,Tungatinah:1,Hydro,TAS1,Scheduled,AEMO Gen Info
+TVCC201,Tamar Valley Combined Cycle:1,Gas Turbine,TAS1,Scheduled,AEMO Gen Info
+TVPP104,Tamar Valley Peaking:1,Gas Turbine,TAS1,Scheduled,AEMO Gen Info
+TieriBESS1,TieriBES,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+ULPBESS1,ULINDAB1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+UPPTUMUT,Upper Tumut:1,Hydro,NSW1,Scheduled,AEMO Gen Info
+URANQ11,Uranquinty:1,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+URANQ12,Uranquinty:2,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+URANQ13,Uranquinty:3,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+URANQ14,Uranquinty:4,Gas Turbine,NSW1,Scheduled,AEMO Gen Info
+VALDORA1,VSF_GU1,Solar PV,QLD1,Non-scheduled,AEMO Gen Info
+VBB1,BESS,Battery Storage,VIC1,Scheduled,AEMO Gen Info
+VP5,Vales Point B:5,Coal,NSW1,Scheduled,AEMO Gen Info
+VP6,Vales Point B:6,Coal,NSW1,Scheduled,AEMO Gen Info
+VPGS1,VPGS1,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+VPGS2,VPGS2,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+VPGS3,VPGS3,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+VPGS4,VPGS4,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+VPGS5,VPGS5,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+VPGS6,VPGS6,Gas Turbine,VIC1,Scheduled,AEMO Gen Info
+W/HOE#1,Wivenhoe:1,Hydro,QLD1,Scheduled,AEMO Gen Info
+W/HOE#2,Wivenhoe:2,Hydro,QLD1,Scheduled,AEMO Gen Info
+WAGGNSF1,WNS23-34,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WALGRV1,WLGBESS1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+WAMBOWF1,WFWGU1,Wind,QLD1,Semi-scheduled,AEMO Gen Info
+WANDB1,WSBESS1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+WANDSF1,WSSP,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+WARWSF1,WARWSF1,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+WARWSF2,WARWSF2,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+WATERLWF,Waterloo Wind Farm:1-37,Wind,SA1,Semi-scheduled,AEMO Gen Info
+WAUBRAWF,Waubra:1-15,Wind,VIC1,Significant Non-scheduled,AEMO Gen Info
+WDBESS1,WDBESS1,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+WDBESS2,WDBESS2,Battery Storage,QLD1,Scheduled,AEMO Gen Info
+WDGPH1,WDGPH,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+WDLNGN01,Woodlawn Bioreactor Energy Generation:1-7,Other,NSW1,Non-scheduled,AEMO Gen Info
+WELLSF1,WELLSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WELNSF1,WELNTH,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WEMENSF1,Wemen Solar Farm:Wemen Solar Farm 1 - 39,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+WESTILL1,WILC1,Gas Turbine,NSW1,Non-scheduled,AEMO Gen Info
+WGWF1,WGW26-32,Wind,SA1,Semi-scheduled,AEMO Gen Info
+WHILL1,Windy Hill:1-20,Wind,QLD1,Non-scheduled,AEMO Gen Info
+WHIT1,GM1,Gas Turbine,QLD1,Non-scheduled,AEMO Gen Info
+WHITSF1,WSF:1-23,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+WILLHOV1,WILLHOV1,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+WINTSF1,Winton Solar Farm:1,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+WKIEWA1,WKIEWA1a,Hydro,VIC1,Scheduled,AEMO Gen Info
+WKIEWA2,WKIEWA2a,Hydro,VIC1,Scheduled,AEMO Gen Info
+WLWLSF1,WLWLSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WLWLSF2,WLWLSF2,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WNSF1,Walla Walla North Solar,Solar PV,NSW1,Semi-scheduled,manual_fallback
+WOLARSF1,Wollar,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WONWP,Wonthaggi Wind Farm:1-6,Wind,VIC1,Non-scheduled,AEMO Gen Info
+WOODLWN1,Woodlawn Wind Farm:Turbines 1-23,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+WOOLGSF1,Woolooga Solar Farm,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+WOOLNTH1,Woolnorth Studland Bay / Bluff Point:Bluff Point 1,Wind,TAS1,Significant Non-scheduled,AEMO Gen Info
+WPWF,Wattle Point:1-55,Wind,SA1,Significant Non-scheduled,AEMO Gen Info
+WRSF1,WRWSF1,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WRWF1,White Rock Wind Farm - Stage 1:Stage 1 committed 1,Wind,NSW1,Semi-scheduled,AEMO Gen Info
+WSTWYSF1,WWSFPV,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+WTAHB1,WSB_G1,Battery Storage,NSW1,Scheduled,AEMO Gen Info
+WUNUSF1,WUNUSF,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+WYANGALA,Wyangala A:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+WYANGALB,Wyangala B:1,Hydro,NSW1,Non-scheduled,AEMO Gen Info
+WYASF1,WYASF,Solar PV,NSW1,Semi-scheduled,AEMO Gen Info
+YABULU,Yabulu,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+YABULU2,Yabulu2,Gas Turbine,QLD1,Scheduled,AEMO Gen Info
+YAMBUKWF,Yambuk:1-20,Wind,VIC1,Significant Non-scheduled,AEMO Gen Info
+YARANSF1,YARANSF,Solar PV,QLD1,Semi-scheduled,AEMO Gen Info
+YARWUN_1,Yarwun 1:1,Gas Turbine,QLD1,Significant Non-scheduled,AEMO Gen Info
+YATSF1,YAT 2750EV,Solar PV,VIC1,Semi-scheduled,AEMO Gen Info
+YAWWF1,Yawong Wind Farm:2,Wind,VIC1,Non-scheduled,AEMO Gen Info
+YENDWF1,Lal Lal Wind Energy Facility - Yendon end:1-38,Wind,VIC1,Semi-scheduled,AEMO Gen Info
+YSWF1,Yaloak South Wind Farm:Units 1-14,Wind,VIC1,Significant Non-scheduled,AEMO Gen Info
+YWNGAHYD,Yarrawonga:1-2,Hydro,VIC1,Non-scheduled,AEMO Gen Info
+YWPS1,Yallourn W Unit 1,Coal,VIC1,Scheduled,AEMO Gen Info
+YWPS2,Yallourn W Unit 2,Coal,VIC1,Scheduled,AEMO Gen Info
+YWPS3,Yallourn W Unit 3,Coal,VIC1,Scheduled,AEMO Gen Info
+YWPS4,Yallourn W Unit 4,Coal,VIC1,Scheduled,AEMO Gen Info
