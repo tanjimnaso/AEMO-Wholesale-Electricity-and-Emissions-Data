@@ -55,6 +55,111 @@ st.markdown("""
         text-transform: uppercase !important;
     }
     footer { visibility: hidden; }
+
+    /* ── Intro section styles ── */
+    .intro-hero {
+        background: linear-gradient(135deg, #0d1117 0%, #111827 60%, #0f1e2e 100%);
+        border: 1px solid #1e3a5f;
+        border-left: 4px solid #7dd3f0;
+        border-radius: 8px;
+        padding: 1.8rem 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .intro-hero h2 {
+        font-family: 'IBM Plex Mono', monospace !important;
+        font-size: 1.55rem !important;
+        color: #e8f4f8 !important;
+        margin-bottom: 0.9rem !important;
+        letter-spacing: 0.01em;
+        line-height: 1.35 !important;
+    }
+    .intro-hero p {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 1.05rem;
+        color: #a8c8d8;
+        line-height: 1.75;
+        margin: 0;
+    }
+    .intro-hero strong { color: #7dd3f0; }
+    .intro-hero em { color: #f59e0b; font-style: normal; font-weight: 600; }
+
+    .asrs-card {
+        background: linear-gradient(135deg, #111827 0%, #1a2332 100%);
+        border: 1px solid #1e3a5f;
+        border-radius: 8px;
+        padding: 1.2rem 1.4rem;
+        height: 100%;
+    }
+    .asrs-card .asrs-tag {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #4a9eba;
+        margin-bottom: 0.4rem;
+    }
+    .asrs-card .asrs-group {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #7dd3f0;
+        margin-bottom: 0.5rem;
+    }
+    .asrs-card .asrs-date {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.88rem;
+        color: #f59e0b;
+        margin-bottom: 0.6rem;
+    }
+    .asrs-card .asrs-threshold {
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.95rem;
+        color: #a8c8d8;
+        line-height: 1.7;
+    }
+
+    .usecase-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+    .usecase-item {
+        background: #0d1117;
+        border: 1px solid #1e3a5f;
+        border-radius: 6px;
+        padding: 0.9rem 1rem;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.95rem;
+        color: #a8c8d8;
+        line-height: 1.6;
+    }
+    .usecase-item .usecase-sector {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.75rem;
+        color: #4a9eba;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.35rem;
+    }
+
+    .methodology-note {
+        margin-top: 2rem;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 1.05rem;
+        color: #a8c8d8;
+        line-height: 1.75;
+    }
+    .methodology-note h2 {
+        font-family: 'IBM Plex Mono', monospace !important;
+        font-size: 1.55rem !important;
+        color: #e8f4f8 !important;
+        margin-bottom: 0.9rem !important;
+        letter-spacing: 0.01em;
+        line-height: 1.35 !important;
+    }
+    .methodology-note strong { color: #7dd3f0; }
+    .methodology-note a { color: #4a9eba; text-decoration: none; border-bottom: 1px solid #1e3a5f; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -165,6 +270,134 @@ st.markdown(
     "</p>",
     unsafe_allow_html=True
 )
+st.markdown("---")
+
+# ── Intro: Story section ───────────────────────────────────────────
+
+# Hero statement
+st.markdown("""
+<div class="intro-hero">
+    <h2>Australian businesses might be paying a hidden Scope 2 premium — because they don't know <em>when</em> to use electricity.</h2>
+    <p>
+        Australia's grid varies by up to <strong>4× in emissions intensity</strong> across a single day.
+        If your business draws power flexibly, the hour you choose matters as much as how much you use.<br><br>
+        If your organisation is preparing for <strong>ASRS Scope 2 disclosure</strong>, the accuracy of your
+        calculation depends on when you drew power from the grid — not just how much.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+# ASRS tiers
+st.markdown(
+    "<p style='font-family: IBM Plex Mono; font-size: 0.72rem; color: #4a9eba; "
+    "letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem;'>"
+    "ASRS Reporting Thresholds — Who Must Disclose</p>",
+    unsafe_allow_html=True
+)
+
+col_g1, col_g2, col_g3 = st.columns(3)
+
+with col_g1:
+    st.markdown("""
+    <div class="asrs-card">
+        <div class="asrs-tag">In effect</div>
+        <div class="asrs-group">Group 1</div>
+        <div class="asrs-date">From January 2025</div>
+        <div class="asrs-threshold">
+            Revenue &gt; $1B<br>
+            OR assets &gt; $500M<br>
+            OR &gt; 500 employees
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_g2:
+    st.markdown("""
+    <div class="asrs-card">
+        <div class="asrs-tag">Coming soon</div>
+        <div class="asrs-group">Group 2</div>
+        <div class="asrs-date">From January 2026</div>
+        <div class="asrs-threshold">
+            Revenue &gt; $200M<br>
+            OR assets &gt; $500M<br>
+            OR &gt; 250 employees
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_g3:
+    st.markdown("""
+    <div class="asrs-card">
+        <div class="asrs-tag">On the horizon</div>
+        <div class="asrs-group">Group 3</div>
+        <div class="asrs-date">From January 2027</div>
+        <div class="asrs-threshold">
+            Smaller entities<br>
+            Thresholds TBC<br>
+            &nbsp;
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown(
+    "<p style='font-family: IBM Plex Sans; font-size: 0.8rem; color: #4a9eba; "
+    "margin-top: 0.6rem; margin-bottom: 1.2rem;'>"
+    "A regional food manufacturer with 300 staff is already in scope under Group 2. "
+    "The Safeguard Mechanism threshold of 100,000 tCO₂-e is separate — and much higher. "
+    "Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
+    unsafe_allow_html=True
+)
+
+# Flexible load use cases
+st.markdown(
+    "<p style='font-family: IBM Plex Mono; font-size: 0.72rem; color: #4a9eba; "
+    "letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem;'>"
+    "The expectation isn't 'turn things off' &#8212; it's 'time what you can, when the grid is cleanest'</p>",
+    unsafe_allow_html=True
+)
+
+st.markdown("""
+<div class="usecase-grid">
+    <div class="usecase-item">
+        <div class="usecase-sector">Cold Chain</div>
+        Schedule defrost cycles and pre-cooling loads to clean renewable windows
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Food Manufacturing</div>
+        Time batch cooking, pasteurisation, and CIP cleaning runs to midday solar peaks
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Construction</div>
+        Schedule EV fleet charging, concrete batching, and crane ops to low-intensity periods
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Retail</div>
+        Pre-cool HVAC systems before peak dirty hours rather than reacting to heat
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Data Centres</div>
+        Shift batch compute jobs and server cooling to renewable-heavy windows
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Any Flexible Load</div>
+        Fixed loads are a sunk cost. Flexible loads are the opportunity. Every operation has some of both.
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Methodology note
+st.markdown("""
+<div class="methodology-note">
+    <h2>Why this calculation matters for your disclosure</h2>
+    Under ASRS, organisations must disclose Scope 2 using location-based or market-based methodology.
+    Location-based uses the annual average grid factor — blunt and typically unfavourable.
+    The more accurate approach rewards businesses that time consumption to cleaner windows.
+    This tool derives grid intensity from AEMO's live 5-minute dispatch data, mapped to
+    <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW —
+    the same factors used in official Australian carbon accounting.
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("---")
 
 with st.spinner("Loading data..."):
