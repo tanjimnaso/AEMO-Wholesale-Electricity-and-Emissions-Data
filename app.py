@@ -18,7 +18,7 @@ from pathlib import Path
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Australia East Emissions Intensity Dashboard",
-    page_icon="⚡",
+
     layout="wide",
 )
 
@@ -564,6 +564,7 @@ st.markdown('<div id="introduction"></div>', unsafe_allow_html=True)
 st.markdown("""
 <div class="header-band">
   <div class="page-header">Australia East Emission Interactive Dashboard</div>
+  <div class='page-deck'>This is not professional advice.</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1046,7 +1047,7 @@ st.markdown("""
 <div class="page-footer">
   <div class="footer-inner">
     <div>
-      This is a personal project by Tanjim Islam, for demonstrational purposes only, and does not constitute financial, legal, or consulting advice.
+      This is a personal project by Tanjim Islam, for demonstrational purposes only, and does not constitute professional advice.
     </div>
     <a class="linkedin-link" href="https://www.linkedin.com/in/tanjimislam/" target="_blank" rel="noopener noreferrer">
       <svg class="linkedin-icon" viewBox="0 0 24 24" aria-hidden="true">
