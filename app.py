@@ -980,18 +980,11 @@ with bottom_text_col:
     <div class="section-text">
     <h3 class="section-heading">Data</h3>
     <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job that fetches AEMO zip files via <code>urllib</code>, appends to a historical dataset, and writes curated CSV outputs.<br><br>
-    <b>Transform &amp; model</b>: Python/pandas join three tables into a basic schema to compute emissions metrics, dropping unused columns and normalizing fields.<br><br>
+    <b>Transform &amp; model</b>: Python code join dispatch_scada.csv, duid_lookup.csv, and emissions_factors.csv, joins SCADA and DUID, and Emissions on Technology Type. It converts dispatch MW into interval MWh with: mwh = SCADAVALUE * (5 / 60)<br><br>
     <b>Data Validation and Quality</b>: Power BI was used for manual validation.
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-    | Stage | Example columns | Notes |
-    |---|---|---|
-    | Raw AEMO | `interval`, `region`, `mw`, `emissions_factor` | Direct from zip |
-    | Cleaned | `interval`, `region`, `mw`, `emissions_tonne_co2e` | Derived columns, dropped unused |
-    | Metrics | `date`, `region`, `total_mw`, `avg_intensity` | Used in Streamlit charts |
-    """)
 
 # ─────────────────────────────────────────────────────────────
 # References
