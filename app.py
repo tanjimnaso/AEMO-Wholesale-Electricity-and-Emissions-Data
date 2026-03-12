@@ -86,14 +86,7 @@ st.markdown("""
     color: #1a3a5c !important;
   }
   .sidebar-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
-  .controls-title {
-    font-family: 'Lora', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin-bottom: 0.6rem;
-  }
-  .controls-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
+  .controls-note { font-size: 0.86rem; color: #6B7280; line-height: 1.7; margin-top: 0.65rem; }
 
   /* ── Metric cards ── */
   .metric-card {
@@ -700,12 +693,12 @@ fig.update_layout(
         bgcolor="#F9FAFB",
         bordercolor="#E5E7EB",
         orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="left",
-        x=0,
+        yanchor="top",
+        y=-0.14,
+        xanchor="center",
+        x=0.5,
     ),
-    margin=dict(l=10, r=10, t=80, b=10),
+    margin=dict(l=10, r=10, t=92, b=86),
     hovermode="x unified",
     height=520,
 )
@@ -723,42 +716,43 @@ fig.update_yaxes(
     secondary_y=True,
 )
 
-controls_col, chart_col = st.columns([1.05, 4.2], gap="large")
-
-with controls_col:
-    st.markdown("<div class='controls-title'>Controls</div>", unsafe_allow_html=True)
-    st.date_input("Date", min_value=date_min, max_value=date_max, key="selected_date")
-    st.selectbox("Interval", list(RESOLUTIONS.keys()), key="resolution_label")
-    st.radio(
-        "Emissions scope",
-        ["Scope 1 only", "Scope 1 + 3 (combined)"],
-        key="scope_choice",
-        help="Scope 1 = direct combustion. Scope 3 = upstream fuel extraction (coal only in NGA 2025).",
-    )
-    st.multiselect("Regions", regions, key="sel_regions")
-    st.markdown("""
-    <div class="controls-note">
-    <b>Data sources</b><br>
-    Generation: <a href="https://nemweb.com.au" style="color:#1a3a5c">AEMO NEMWEB</a>, Dispatch SCADA<br>
-    Unit metadata: AEMO Generation Information (Jan 2026)<br>
-    Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">NGA Factors 2025</a>, Tables 4 &amp; 5<br><br>
-    <b>Coverage</b><br>
-    NEM regions only: QLD, NSW, VIC, SA, TAS.<br>
-    Excludes WEM, NT grids, rooftop solar.
-    </div>
-    """, unsafe_allow_html=True)
-
+_, chart_col, _ = st.columns([0.2, 9.6, 0.2])
 with chart_col:
+    c1, c2, c3, c4 = st.columns([1.15, 1.1, 1.35, 2.4], gap="medium")
+    with c1:
+        st.date_input("Date", min_value=date_min, max_value=date_max, key="selected_date")
+    with c2:
+        st.selectbox("Interval", list(RESOLUTIONS.keys()), key="resolution_label")
+    with c3:
+        st.radio(
+            "Emissions scope",
+            ["Scope 1 only", "Scope 1 + 3 (combined)"],
+            key="scope_choice",
+            help="Scope 1 = direct combustion. Scope 3 = upstream fuel extraction (coal only in NGA 2025).",
+            horizontal=True,
+        )
+    with c4:
+        st.multiselect("Regions", regions, key="sel_regions")
+
     st.plotly_chart(fig, use_container_width=True)
     st.markdown(
         f"<div class='chart-insight'>"
         f"Businesses with flexible load operating during today's cleanest 4-hour window could avoid an estimated "
         f"<strong>~30% of the Scope 2 emissions</strong> they would have incurred running the same load overnight "
-        f",  rising above 50% on high-renewable days. "
+        f", rising above 50% on high-renewable days. "
         f"Average derived from NEM dispatch data; low estimate ~20% (winter, low solar), high estimate ~50–55% (peak summer renewable days)."
         f"</div>",
         unsafe_allow_html=True
     )
+    st.markdown("""
+    <div class="controls-note">
+    <b>Data sources</b>:
+    Generation: <a href="https://nemweb.com.au" style="color:#1a3a5c">AEMO NEMWEB</a>, Dispatch SCADA.
+    Unit metadata: AEMO Generation Information (Jan 2026).
+    Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">NGA Factors 2025</a>, Tables 4 &amp; 5.<br>
+    <b>Coverage</b>: NEM regions only (QLD, NSW, VIC, SA, TAS), excludes WEM, NT grids, rooftop solar.
+    </div>
+    """, unsafe_allow_html=True)
 
 if scope_choice == "Scope 1 + 3 (combined)":
     s1 = dff["tco2e_scope1"].sum()
