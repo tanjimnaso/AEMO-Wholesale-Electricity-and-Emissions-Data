@@ -647,15 +647,14 @@ with reading_col:
         <div class="methodology-note">
         A regional food manufacturer with 300 staff is already in scope under Group 2.
         The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.
-        Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
-    )
+        Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>
  """, unsafe_allow_html=True)
 
     # ── Flexible load use cases ───────────────────────────────────
     st.markdown("""
-    <div class="methodology-note">;
+    <div class="methodology-note">
         The expectation isn't ‘turn things off’, it's ‘time what you can, when the grid is cleanest.’</p>
-    )
+    
  """, unsafe_allow_html=True)
 
     st.markdown("""
