@@ -107,8 +107,8 @@ st.markdown("""
     line-height: 1.85;
     font-size: 1rem;
     color: #374151;
-    margin-bottom: 24px;
-    max-width: 1000px;
+    margin: 0 auto 24px auto;
+    max-width: 860px;
     font-family: 'Inter', sans-serif;
   }
 
@@ -121,6 +121,8 @@ st.markdown("""
     padding: 2rem 2.2rem;
     margin-bottom: 1.5rem;
     max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .intro-hero h2 {
@@ -186,6 +188,8 @@ st.markdown("""
     gap: 0.75rem;
     margin-top: 0.5rem;
     max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .usecase-item {
     background: #FFFFFF;
@@ -210,6 +214,8 @@ st.markdown("""
   .methodology-note {
     margin-top: 2rem;
     max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
     font-family: 'Inter', sans-serif;
     font-size: 1.05rem;
     color: #374151;
@@ -237,7 +243,9 @@ st.markdown("""
     font-size: 0.95rem;
     color: #374151;
     line-height: 1.7;
-    max-width: 1000px;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
   }
   .chart-insight strong { color: #1a3a5c; }
 
@@ -248,7 +256,7 @@ st.markdown("""
     color: #374151;
     line-height: 1.6;
     max-width: 700px;
-    margin-bottom: 0.5rem;
+    margin: 0 auto 0.5rem auto;
     font-style: italic;
   }
 
@@ -421,7 +429,7 @@ emission_col = "tco2e_scope1" if scope_choice == "Scope 1 only" else "tco2e_tota
 # ─────────────────────────────────────────────────────────────
 # Header
 # ─────────────────────────────────────────────────────────────
-reading_col, _ = st.columns([5, 1])
+_, reading_col, _ = st.columns([1, 5, 1])
 with reading_col:
     st.title("NEM Scope 2 Timing Tool")
     st.markdown(
@@ -495,7 +503,7 @@ with reading_col:
 
     st.markdown(
         "<p style='font-family: Inter, sans-serif; font-size: 0.95rem; color: #6B7280; "
-        "margin-top: 0.7rem; margin-bottom: 1.4rem; max-width: 1000px;'>"
+        "margin: 0.7rem auto 1.4rem auto; max-width: 1000px;'>"
         "A regional food manufacturer with 300 staff is already in scope under Group 2. "
         "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate — and much higher. "
         "Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
@@ -505,7 +513,7 @@ with reading_col:
     # ── Flexible load use cases ───────────────────────────────────
     st.markdown(
         "<p style='font-family: Lora, serif; font-size: 1.05rem; font-style: italic; "
-        "color: #374151; margin-bottom: 0.75rem; max-width: 1000px;'>"
+        "color: #374151; margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
         "The expectation isn't &#8216;turn things off&#8217; &#8212; it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
         unsafe_allow_html=True
     )
@@ -803,7 +811,7 @@ st.markdown("---")
 # ─────────────────────────────────────────────────────────────
 # Limitations and Scope
 # ─────────────────────────────────────────────────────────────
-bottom_text_col, _ = st.columns([5, 1])
+_, bottom_text_col, _ = st.columns([1.4, 4.2, 1.4])
 with bottom_text_col:
     st.markdown("""
     <div class="section-text">
