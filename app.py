@@ -27,33 +27,53 @@ st.set_page_config(
 # ─────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
   :root {
-    --fs-hero: 1.75rem;      /* L1 */
-    --fs-page-title: 1.45rem; /* L2 */
-    --fs-section: 1.2rem;    /* L3 */
-    --fs-subtitle: 1.0rem;
-    --fs-body: 0.98rem;
-    --fs-small: 0.88rem;
-    --fs-eyebrow: 0.68rem;   /* L4 */
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --text-sm: 0.8125rem;
+    --text-base: 0.9375rem;
+    --text-lg: 1.5rem;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --leading-base: 1.5;
+    --background: #fafaf8;
+    --foreground: #171717;
+    --card: #ffffff;
+    --muted: #ececf0;
+    --muted-foreground: #717182;
+    --accent: #e9ebef;
+    --border: rgba(0, 0, 0, 0.1);
+    --input-background: #f3f3f5;
+    --primary: #111827;
+    --radius: 0.625rem;
   }
 
   /* ── Base ── */
-  .stApp { background-color: #FAFAF8 !important; }
+  html { font-size: 16px; }
+  .stApp { background-color: var(--background) !important; }
   html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-    background-color: #FAFAF8;
-    color: #1a1a2e;
+    font-family: var(--font-family-sans);
+    background-color: var(--background);
+    color: var(--foreground);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--leading-base);
   }
   h1 {
-    font-family: 'Lora', serif !important;
-    color: #1a1a2e !important;
-    font-size: var(--fs-page-title) !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.02em !important;
-    line-height: 1.25 !important;
+    font-family: var(--font-family-sans) !important;
+    color: var(--foreground) !important;
+    font-size: var(--text-lg) !important;
+    font-weight: var(--font-weight-semibold) !important;
+    letter-spacing: 0 !important;
+    line-height: var(--leading-base) !important;
   }
-  h2, h3 { font-family: 'Lora', serif !important; color: #1a1a2e !important; }
+  h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-sans) !important;
+    color: var(--foreground) !important;
+    font-size: var(--text-lg) !important;
+    font-weight: var(--font-weight-semibold) !important;
+    line-height: var(--leading-base) !important;
+  }
 
   /* ── Container width ── */
   .block-container {
@@ -85,110 +105,111 @@ st.markdown("""
     background-color: #E0E7EF !important;
     color: #1a3a5c !important;
   }
-  .sidebar-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
-  .controls-note { font-size: 0.84rem; color: #6B7280; line-height: 1.65; margin-top: 0.65rem; }
+  .sidebar-note,
+  .controls-note {
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    line-height: var(--leading-base);
+    margin-top: 0.65rem;
+  }
 
   /* ── Metric cards ── */
   .metric-card {
-    background: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 16px 20px;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
   .metric-label {
-    font-size: 0.68rem;
-    color: #6B7280;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    font-weight: var(--font-weight-normal);
   }
   .metric-value {
-    font-size: 1.65rem;
-    font-weight: 700;
-    font-family: 'IBM Plex Mono', monospace;
-    color: #1a3a5c;
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-family-sans);
+    color: var(--foreground);
   }
-  .metric-sub { font-size: 0.72rem; color: #9CA3AF; font-family: 'IBM Plex Mono', monospace; }
+  .metric-sub {
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    font-family: var(--font-family-sans);
+  }
 
   /* ── Section text (bottom sections) ── */
   .section-text {
-    line-height: 1.75;
-    font-size: var(--fs-body);
-    color: #374151;
+    line-height: var(--leading-base);
+    font-size: var(--text-base);
+    color: var(--foreground);
     margin: 0 auto 24px auto;
     max-width: 860px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family-sans);
   }
 
   /* ── Intro hero ── */
   .intro-hero {
-    background: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-left: 4px solid #1a3a5c;
-    border-radius: 4px;
-    padding: 2rem 2.2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.6rem;
     margin-bottom: 1.5rem;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .intro-hero h2 {
-    font-family: 'Lora', serif !important;
-    font-size: var(--fs-hero) !important;
-    color: #1a1a2e !important;
-    margin-bottom: 1rem !important;
-    line-height: 1.23 !important;
-    font-weight: 700 !important;
+    font-family: var(--font-family-sans) !important;
+    font-size: var(--text-lg) !important;
+    color: var(--foreground) !important;
+    margin-bottom: 0.9rem !important;
+    line-height: var(--leading-base) !important;
+    font-weight: var(--font-weight-semibold) !important;
   }
   .intro-hero p {
-    font-family: 'Inter', sans-serif;
-    font-size: var(--fs-body);
-    color: #374151;
-    line-height: 1.75;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-base);
+    color: var(--foreground);
+    line-height: var(--leading-base);
     margin: 0;
   }
-  .intro-hero strong { color: #1a3a5c; }
-  .intro-hero em { color: #1a3a5c; font-style: normal; font-weight: 600; }
+  .intro-hero strong,
+  .intro-hero em { color: var(--foreground); font-style: normal; font-weight: var(--font-weight-semibold); }
 
   /* ── ASRS cards ── */
   .asrs-card {
-    background: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 1.3rem 1.5rem;
     height: 100%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
   .asrs-card .asrs-tag {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: var(--fs-eyebrow);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #9CA3AF;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
     margin-bottom: 0.4rem;
   }
   .asrs-card .asrs-group {
-    font-family: 'Lora', serif;
-    font-size: 1.12rem;
-    font-weight: 700;
-    color: #1a3a5c;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground);
     margin-bottom: 0.4rem;
   }
   .asrs-card .asrs-date {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.84rem;
-    color: #4B5563;
-    font-weight: 600;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    font-weight: var(--font-weight-normal);
     margin-bottom: 0.7rem;
   }
   .asrs-card .asrs-threshold {
-    font-family: 'Inter', sans-serif;
-    font-size: var(--fs-small);
-    color: #374151;
-    line-height: 1.7;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-base);
+    color: var(--foreground);
+    line-height: var(--leading-base);
   }
 
   /* ── Use case grid ── */
@@ -202,21 +223,19 @@ st.markdown("""
     margin-right: auto;
   }
   .usecase-item {
-    background: #FFFFFF;
-    border: 1px solid #E5E7EB;
-    border-radius: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 1rem 1.1rem;
-    font-family: 'Inter', sans-serif;
-    font-size: var(--fs-small);
-    color: #374151;
-    line-height: 1.6;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-base);
+    color: var(--foreground);
+    line-height: var(--leading-base);
   }
   .usecase-item .usecase-sector {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: var(--fs-eyebrow);
-    color: #9CA3AF;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
     margin-bottom: 0.35rem;
   }
 
@@ -226,76 +245,73 @@ st.markdown("""
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
-    font-family: 'Inter', sans-serif;
-    font-size: var(--fs-body);
-    color: #374151;
-    line-height: 1.75;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-base);
+    color: var(--foreground);
+    line-height: var(--leading-base);
   }
   .methodology-note h2 {
-    font-family: 'Lora', serif !important;
-    font-size: var(--fs-section) !important;
-    color: #1a1a2e !important;
+    font-family: var(--font-family-sans) !important;
+    font-size: var(--text-lg) !important;
+    color: var(--foreground) !important;
     margin-bottom: 0.9rem !important;
-    line-height: 1.3 !important;
-    font-weight: 700 !important;
+    line-height: var(--leading-base) !important;
+    font-weight: var(--font-weight-semibold) !important;
   }
-  .methodology-note strong { color: #1a3a5c; }
-  .methodology-note a { color: #1a3a5c; text-decoration: none; border-bottom: 1px solid #CBD5E1; }
+  .methodology-note strong { color: var(--foreground); }
+  .methodology-note a { color: var(--foreground); text-decoration: none; border-bottom: 1px solid var(--border); }
 
   /* ── Chart insight callout ── */
   .chart-insight {
-    background: #F0F4F8;
-    border-left: 3px solid #1a3a5c;
+    background: var(--accent);
+    border-left: 3px solid var(--foreground);
     padding: 1rem 1.3rem;
     margin-top: 0.5rem;
     margin-bottom: 1.5rem;
-    font-family: 'Inter', sans-serif;
-    font-size: var(--fs-body);
-    color: #374151;
-    line-height: 1.7;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-base);
+    color: var(--foreground);
+    line-height: var(--leading-base);
     width: 100%;
     max-width: none;
     box-sizing: border-box;
   }
-  .chart-insight strong { color: #1a3a5c; }
+  .chart-insight strong { color: var(--foreground); }
 
   /* ── Page title deck ── */
   .page-deck {
-    font-family: 'Lora', serif;
-    font-size: var(--fs-subtitle);
-    color: #374151;
-    line-height: 1.5;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-base);
+    color: var(--muted-foreground);
+    line-height: var(--leading-base);
     max-width: none;
     margin: 0 0 0.5rem 0;
-    font-style: italic;
   }
   .meta-line {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
-    color: #6B7280;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
     margin-bottom: 1rem;
   }
   .section-heading {
-    font-family: 'Lora', serif;
-    font-size: var(--fs-section);
-    color: #1a1a2e;
-    font-weight: 700;
-    line-height: 1.3;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-lg);
+    color: var(--foreground);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-base);
     margin: 0 0 0.9rem 0;
   }
   .eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: var(--fs-eyebrow);
-    color: #9CA3AF;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
     margin: 0 0 0.75rem 0;
   }
   .page-header {
-    font-family: 'Lora', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #1a1a2e;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground);
     margin: 0;
     text-align: center;
   }
@@ -316,30 +332,28 @@ st.markdown("""
     transform: translateY(-50%);
     z-index: 1000;
     background: rgba(255, 255, 255, 0.96);
-    border: 1px solid #E5E7EB;
+    border: 1px solid var(--border);
     border-radius: 10px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     padding: 0.5rem 0.65rem;
     min-width: 145px;
   }
   .floating-nav .nav-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #9CA3AF;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
     margin: 0.25rem 0.4rem 0.45rem 0.4rem;
   }
   .floating-nav a {
     display: block;
-    color: #1f2937;
+    color: var(--foreground);
     text-decoration: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.86rem;
+    font-family: var(--font-family-sans);
+    font-size: var(--text-sm);
     padding: 0.35rem 0.4rem;
     border-radius: 6px;
   }
-  .floating-nav a:hover { background: #F3F4F6; color: #111827; }
+  .floating-nav a:hover { background: var(--accent); color: var(--foreground); }
   .page-footer {
     margin: 2.2rem 0 0 0;
     width: 100vw;
@@ -348,8 +362,8 @@ st.markdown("""
     border-top: 1px solid #d5cec2;
     background: #ece8df;
     padding: 0.9rem 2rem;
-    color: #6B7280;
-    font-size: 0.84rem;
+    color: var(--muted-foreground);
+    font-size: var(--text-sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -360,9 +374,9 @@ st.markdown("""
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: #374151;
+    color: var(--foreground);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: var(--font-weight-semibold);
   }
   .footer-inner {
     max-width: 1100px;
@@ -544,7 +558,7 @@ emission_col = "tco2e_scope1" if scope_choice == "Scope 1 only" else "tco2e_tota
 st.markdown('<div id="introduction"></div>', unsafe_allow_html=True)
 st.markdown("""
 <div class="header-band">
-  <div class="page-header">Australia East Emmission Interactive Dashboard</div>
+  <div class="page-header">Australia East Emission Interactive Dashboard</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -620,7 +634,7 @@ with reading_col:
         """, unsafe_allow_html=True)
 
     st.markdown(
-        "<p style='font-family: Inter, sans-serif; font-size: var(--fs-small); color: #6B7280; "
+        "<p style='font-family: var(--font-family-sans); font-size: var(--text-sm); color: var(--muted-foreground); "
         "margin: 0.7rem auto 1.4rem auto; max-width: 1000px;'>"
         "A regional food manufacturer with 300 staff is already in scope under Group 2. "
         "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher. "
@@ -630,8 +644,8 @@ with reading_col:
 
     # ── Flexible load use cases ───────────────────────────────────
     st.markdown(
-        "<p style='font-family: Lora, serif; font-size: var(--fs-subtitle); font-style: italic; "
-        "color: #374151; margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
+        "<p style='font-family: var(--font-family-sans); font-size: var(--text-base); "
+        "color: var(--muted-foreground); margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
         "The expectation isn't &#8216;turn things off&#8217;, it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
         unsafe_allow_html=True
     )
@@ -785,7 +799,7 @@ fig.update_layout(
     barmode="stack",
     title=dict(
         text=chart_title,
-        font=dict(family="Lora, Georgia, serif", color="#1a1a2e", size=14),
+        font=dict(family="Inter, sans-serif", color="#171717", size=15),
         x=0,
         xanchor="left",
     ),
