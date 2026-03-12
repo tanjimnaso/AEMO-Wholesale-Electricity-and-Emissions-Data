@@ -976,80 +976,26 @@ with bottom_text_col:
 st.markdown('<div id="data"></div>', unsafe_allow_html=True)
 with bottom_text_col:
     st.markdown("""
-    <div class="section-text">
-    <h3 class="section-heading">Data</h3>
-    <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job that fetches AEMO zip files via <code>urllib</code>, appends to a historical dataset, and writes curated CSV outputs.<br><br>
-    <b>Transform &amp; model</b>: Python/pandas join three tables into a basic schema to compute emissions metrics, dropping unused columns and normalizing fields.<br><br>
-    <b>Data Validation and Quality</b>: Power BI was used for manual validation.
-    </div>
-    """, unsafe_allow_html=True)
+     <div class="section-text"> <h3 class="section-heading">Data</h3> 
+ <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job.
 
-    st.markdown("""
-    | Stage | Example columns | Notes |
-    |---|---|---|
-    | Raw AEMO | `interval`, `region`, `mw`, `emissions_factor` | Direct from zip |
-    | Cleaned | `interval`, `region`, `mw`, `emissions_tonne_co2e` | Derived columns, dropped unused |
-    | Metrics | `date`, `region`, `total_mw`, `avg_intensity` | Used in Streamlit charts |
-    """)
+ A python script importdata.py downloads the data from nemweb.com.au, AEMO makes their dispatch data available as `.csv's` inside a `.zip` file, containing 5 minute slices of data.  
 
-    st.markdown("""
-    <div class="section-text">  
-<h3 class="section-heading">CI/CD on Dashboard</h3>  
+    BASE_URL   = "https://nemweb.com.au"    SCADA_URL  = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"    
+    OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "data", "dispatch_scada.csv")    
+    KEEP_COLUMNS = ["SETTLEMENTDATE", "DUID", "SCADAVALUE"] 
 
-The project has a Github actions orchestration as a minimal CI process.
-A python script importdata.py downloads the data from nemweb.com.au, AEMO makes their dispatch data available as `.csv's` inside a `.zip` file, containing 5 minute slices of data.
+Download each ZIP, extract CSV append to dataframe  
+The dataframe is written as a .csv  
 
-    BASE_URL   = "https://nemweb.com.au"  
-    SCADA_URL  = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"  
-    OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "data", "dispatch_scada.csv")  
-      
-    KEEP_COLUMNS = ["SETTLEMENTDATE", "DUID", "SCADAVALUE"]
 
-Scrape the NEMWEB directory for all .zip file links.
+ <b>Transform &amp; model</b>: Electrical generation data is from AEMO/Nemweb, AEMO supplies DUID data about which genuit uses which fuel type/technology, Emissions factor workbook supplies data about fuel type and C02 emissions per MWh.
 
-    def get_zip_links():  
-      response = requests.get(SCADA_URL)  
-      response.raise_for_status()  
-      soup = BeautifulSoup(response.content, "html.parser")  
-      links = [a["href"] for a in soup.find_all("a") if a["href"].endswith(".zip")]  
-      print(f"Found {len(links)} ZIP files on NEMWEB")  
-      return links
-
-  Download each ZIP, extract CSV, return combined DataFrame
-
-    def download_and_extract(links):  
-    
-      all_frames = []  
-      
-      for i, link in enumerate(links):  
-      url = f"{BASE_URL}{link}"  
-      try:  
-      r = requests.get(url)  
-      r.raise_for_status()  
-      z = zipfile.ZipFile(io.BytesIO(r.content))  
-      for csv_name in z.namelist():  
-      df = pd.read_csv(z.open(csv_name), skiprows=1)  
-      df = df[df.iloc[:, 0] != "C"]  
-      df = df[KEEP_COLUMNS]  
-      all_frames.append(df)  
-      except Exception as e:  
-      print(f"  Error processing {link}: {e}")  
-      continue  
-      
-     if (i + 1) % 50 == 0:  
-      print(f"  Downloaded {i + 1}/{len(links)}")  
-      
-      if not all_frames:  
-      print("No new data extracted.")  
-      return pd.DataFrame(columns=KEEP_COLUMNS)  
-      
-      new_data = pd.concat(all_frames, ignore_index=True)  
-      print(f"Extracted {len(new_data)} rows from {len(all_frames)} files")  
-      return new_data
-
-So the data from the .csv is appended to the end of a Panda's dataframe. The dataframe is written as a .csv
-
-This is run daily by Github actions.
+Python/pandas join three tables into a basic schema to compute emissions metrics, dropping unused columns and normalizing fields.<br>
+  <b>Data Validation and Quality</b>: Power BI was used for manual validation. </div>
+  
+  
+ | Stage | Example columns | Notes | |---|---|---| | Raw AEMO | `interval`, `region`, `mw`, `emissions_factor` | Direct from zip | | Cleaned | `interval`, `region`, `mw`, `emissions_tonne_co2e` | Derived columns, dropped unused | | Metrics | `date`, `region`, `total_mw`, `avg_intensity` | Used in Streamlit charts | """)
     """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
