@@ -643,22 +643,24 @@ with reading_col:
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown(
-        "<p style='font-family: var(--font-family-sans); font-size: var(--text-sm); color: var(--muted-foreground); "
+    st.markdown("""
+        <div class="methodology-note">
         "margin: 0.7rem auto 1.4rem auto; max-width: 1000px;'>"
         "A regional food manufacturer with 300 staff is already in scope under Group 2. "
         "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher. "
         "Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
         unsafe_allow_html=True
     )
+ """, unsafe_allow_html=True)
 
     # ── Flexible load use cases ───────────────────────────────────
-    st.markdown(
-        "<p style='font-family: var(--font-family-sans); font-size: var(--text-base); "
-        "color: var(--muted-foreground); margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
+    st.markdown("""
+    <div class="methodology-note">;
+    margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
         "The expectation isn't &#8216;turn things off&#8217;, it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
         unsafe_allow_html=True
     )
+ """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="usecase-grid">
@@ -697,7 +699,7 @@ with reading_col:
         Location-based uses the annual average grid factor, blunt and typically unfavourable.
         The more accurate approach rewards businesses that time consumption to cleaner windows.
         This tool derives grid intensity from AEMO's live 5-minute dispatch data, mapped to
-        <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW,         the same factors used in official Australian carbon accounting.
+        <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW, the same factors used in official Australian carbon accounting.
     </div>
     """, unsafe_allow_html=True)
 
