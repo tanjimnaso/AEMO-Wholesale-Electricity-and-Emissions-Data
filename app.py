@@ -296,12 +296,22 @@ st.markdown("""
     font-size: 2.05rem;
     font-weight: 700;
     color: #1a1a2e;
-    margin: 0.25rem 0 1rem 0;
+    margin: 0;
     text-align: center;
+  }
+  .header-band {
+    background: #f6efe5;
+    border-top: 1px solid #e7ddcf;
+    border-bottom: 1px solid #e7ddcf;
+    padding: 1.55rem 0 1.45rem 0;
+    margin: 0 0 1.2rem 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
   }
   .floating-nav {
     position: fixed;
-    right: 22px;
+    left: 22px;
     top: 38%;
     transform: translateY(-50%);
     z-index: 1000;
@@ -331,10 +341,13 @@ st.markdown("""
   }
   .floating-nav a:hover { background: #F3F4F6; color: #111827; }
   .page-footer {
-    margin: 2.2rem auto 1rem auto;
-    max-width: 1100px;
-    border-top: 1px solid #E5E7EB;
-    padding-top: 0.9rem;
+    margin: 2.2rem 0 0 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    border-top: 1px solid #d5cec2;
+    background: #ece8df;
+    padding: 0.9rem 2rem;
     color: #6B7280;
     font-size: 0.9rem;
     display: flex;
@@ -350,6 +363,16 @@ st.markdown("""
     color: #374151;
     text-decoration: none;
     font-weight: 500;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
   }
   .linkedin-link:hover { color: #111827; }
   .linkedin-icon {
@@ -518,7 +541,11 @@ emission_col = "tco2e_scope1" if scope_choice == "Scope 1 only" else "tco2e_tota
 # Header
 # ─────────────────────────────────────────────────────────────
 st.markdown('<div id="introduction"></div>', unsafe_allow_html=True)
-st.markdown("<div class='page-header'>Australia East Emmission Interactive Dashboard</div>", unsafe_allow_html=True)
+st.markdown("""
+<div class="header-band">
+  <div class="page-header">Australia East Emmission Interactive Dashboard</div>
+</div>
+""", unsafe_allow_html=True)
 
 _, reading_col, _ = st.columns([1, 5, 1])
 with reading_col:
@@ -976,14 +1003,16 @@ with bottom_text_col:
 
 st.markdown("""
 <div class="page-footer">
-  <div>
-    This is a personal project by Tanjim Islam, for general informational purposes only, and does not constitute financial, legal, or consulting advice.
+  <div class="footer-inner">
+    <div>
+      This is a personal project by Tanjim Islam, for general informational purposes only, and does not constitute financial, legal, or consulting advice.
+    </div>
+    <a class="linkedin-link" href="https://www.linkedin.com/in/tanjimislam/" target="_blank" rel="noopener noreferrer">
+      <svg class="linkedin-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19ZM8.34 18V9.66H5.66V18H8.34ZM7 8.54C7.86 8.54 8.54 7.85 8.54 7S7.86 5.46 7 5.46 5.46 6.14 5.46 7 6.14 8.54 7 8.54ZM18.54 18V13.43C18.54 10.98 17.23 9.43 14.9 9.43 13.78 9.43 12.96 10.05 12.66 10.63V9.66H10V18H12.68V13.88C12.68 12.79 12.88 11.73 14.22 11.73 15.54 11.73 15.56 12.98 15.56 13.95V18H18.54Z"/>
+      </svg>
+      Contact on LinkedIn
+    </a>
   </div>
-  <a class="linkedin-link" href="https://www.linkedin.com/in/tanjimislam/" target="_blank" rel="noopener noreferrer">
-    <svg class="linkedin-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19ZM8.34 18V9.66H5.66V18H8.34ZM7 8.54C7.86 8.54 8.54 7.85 8.54 7S7.86 5.46 7 5.46 5.46 6.14 5.46 7 6.14 8.54 7 8.54ZM18.54 18V13.43C18.54 10.98 17.23 9.43 14.9 9.43 13.78 9.43 12.96 10.05 12.66 10.63V9.66H10V18H12.68V13.88C12.68 12.79 12.88 11.73 14.22 11.73 15.54 11.73 15.56 12.98 15.56 13.95V18H18.54Z"/>
-    </svg>
-    Contact on LinkedIn
-  </a>
 </div>
 """, unsafe_allow_html=True)
