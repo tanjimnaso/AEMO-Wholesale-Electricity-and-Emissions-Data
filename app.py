@@ -520,9 +520,14 @@ RESOLUTIONS = {
 date_min = df["SETTLEMENTDATE"].dt.date.min()
 date_max = df["SETTLEMENTDATE"].dt.date.max()
 regions = sorted(df["Region"].dropna().unique().tolist())
+default_selected_date = pd.Timestamp("2026-02-23").date()
+if default_selected_date < date_min:
+    default_selected_date = date_min
+elif default_selected_date > date_max:
+    default_selected_date = date_max
 
 if "selected_date" not in st.session_state:
-    st.session_state.selected_date = date_max
+    st.session_state.selected_date = default_selected_date
 if "resolution_label" not in st.session_state:
     st.session_state.resolution_label = "15 minutes"
 if "scope_choice" not in st.session_state:
@@ -844,7 +849,13 @@ _, chart_col, _ = st.columns([0.2, 9.6, 0.2])
 with chart_col:
     c1, c2, c3, c4 = st.columns([1.15, 1.1, 1.35, 2.4], gap="medium")
     with c1:
-        st.date_input("Date", min_value=date_min, max_value=date_max, key="selected_date")
+        st.date_input(
+            "Date",
+            min_value=date_min,
+            max_value=date_max,
+            key="selected_date",
+            format="DD/MM/YYYY",
+        )
     with c2:
         st.selectbox("Interval", list(RESOLUTIONS.keys()), key="resolution_label")
     with c3:
@@ -1027,10 +1038,7 @@ with bottom_text_col:
     NEMED is a Python library that gives researchers a package to pull emissions data programmatically;
     it's designed for a different audience and purpose. It was not used for this project as data requirements
     and processing are different.<br><br>
-    This project is framed around ESG reporting obligations and demonstrates an end-to-end data engineering pipeline:<br>
-    &bull; Ingestion<br>
-    &bull; Warehouse schema<br>
-    &bull; Python stored procedures to GitHub Actions as orchestration, writing out daily data file for reporting
+    This project is framed around ESG reporting obligations and demonstrates an end-to-end data engineering pipeline.
     </div>
     """, unsafe_allow_html=True)
 
