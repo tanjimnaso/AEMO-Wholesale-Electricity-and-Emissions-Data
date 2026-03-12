@@ -645,20 +645,16 @@ with reading_col:
 
     st.markdown("""
         <div class="methodology-note">
-        "margin: 0.7rem auto 1.4rem auto; max-width: 1000px;'>"
-        "A regional food manufacturer with 300 staff is already in scope under Group 2. "
-        "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher. "
-        "Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
-        unsafe_allow_html=True
+        A regional food manufacturer with 300 staff is already in scope under Group 2.
+        The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.
+        Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
     )
  """, unsafe_allow_html=True)
 
     # ── Flexible load use cases ───────────────────────────────────
     st.markdown("""
     <div class="methodology-note">;
-    margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
-        "The expectation isn't &#8216;turn things off&#8217;, it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
-        unsafe_allow_html=True
+        The expectation isn't ‘turn things off’, it's ‘time what you can, when the grid is cleanest.’</p>
     )
  """, unsafe_allow_html=True)
 
