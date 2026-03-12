@@ -1,5 +1,5 @@
 """
-app.py — Australia East Emissions Intensity Dashboard
+app.py, Australia East Emissions Intensity Dashboard
 ======================================================
 Data flow:
   data/dispatch_scada.csv    → 5-min SCADA generation (MW) per DUID, ingested nightly
@@ -28,6 +28,15 @@ st.set_page_config(
 st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+  :root {
+    --fs-hero: 2.3rem;      /* L1 */
+    --fs-page-title: 1.95rem; /* L2 */
+    --fs-section: 1.48rem;  /* L3 */
+    --fs-subtitle: 1.24rem;
+    --fs-body: 1.05rem;
+    --fs-small: 0.95rem;
+    --fs-eyebrow: 0.72rem;  /* L4 */
+  }
 
   /* ── Base ── */
   .stApp { background-color: #FAFAF8 !important; }
@@ -39,7 +48,7 @@ st.markdown("""
   h1 {
     font-family: 'Lora', serif !important;
     color: #1a1a2e !important;
-    font-size: 1.95rem !important;
+    font-size: var(--fs-page-title) !important;
     font-weight: 700 !important;
     letter-spacing: -0.02em !important;
     line-height: 1.25 !important;
@@ -56,13 +65,13 @@ st.markdown("""
 
   /* ── Sidebar ── */
   section[data-testid="stSidebar"] {
-    background-color: #F3F4F6 !important;
-    border-right: 1px solid #E5E7EB !important;
+    display: none !important;
   }
+  div[data-testid="collapsedControl"] { display: none !important; }
   section[data-testid="stSidebar"] * { color: #374151 !important; }
   section[data-testid="stSidebar"] a { color: #1a3a5c !important; }
   section[data-testid="stSidebar"] label { color: #374151 !important; }
-  /* Sidebar widget inputs — force light background */
+  /* Sidebar widget inputs, force light background */
   section[data-testid="stSidebar"] .stSelectbox > div > div,
   section[data-testid="stSidebar"] .stDateInput > div > div,
   section[data-testid="stSidebar"] .stMultiSelect > div > div,
@@ -77,6 +86,14 @@ st.markdown("""
     color: #1a3a5c !important;
   }
   .sidebar-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
+  .controls-title {
+    font-family: 'Lora', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 0.6rem;
+  }
+  .controls-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
 
   /* ── Metric cards ── */
   .metric-card {
@@ -104,8 +121,8 @@ st.markdown("""
 
   /* ── Section text (bottom sections) ── */
   .section-text {
-    line-height: 1.85;
-    font-size: 1rem;
+    line-height: 1.75;
+    font-size: var(--fs-body);
     color: #374151;
     margin: 0 auto 24px auto;
     max-width: 860px;
@@ -127,7 +144,7 @@ st.markdown("""
   }
   .intro-hero h2 {
     font-family: 'Lora', serif !important;
-    font-size: 2.3rem !important;
+    font-size: var(--fs-hero) !important;
     color: #1a1a2e !important;
     margin-bottom: 1rem !important;
     line-height: 1.23 !important;
@@ -135,9 +152,9 @@ st.markdown("""
   }
   .intro-hero p {
     font-family: 'Inter', sans-serif;
-    font-size: 1.05rem;
+    font-size: var(--fs-body);
     color: #374151;
-    line-height: 1.8;
+    line-height: 1.75;
     margin: 0;
   }
   .intro-hero strong { color: #1a3a5c; }
@@ -176,9 +193,9 @@ st.markdown("""
   }
   .asrs-card .asrs-threshold {
     font-family: 'Inter', sans-serif;
-    font-size: 0.97rem;
+    font-size: var(--fs-small);
     color: #374151;
-    line-height: 1.75;
+    line-height: 1.7;
   }
 
   /* ── Use case grid ── */
@@ -197,9 +214,9 @@ st.markdown("""
     border-radius: 6px;
     padding: 1rem 1.1rem;
     font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
     color: #374151;
-    line-height: 1.65;
+    line-height: 1.6;
   }
   .usecase-item .usecase-sector {
     font-family: 'IBM Plex Mono', monospace;
@@ -217,13 +234,13 @@ st.markdown("""
     margin-left: auto;
     margin-right: auto;
     font-family: 'Inter', sans-serif;
-    font-size: 1.05rem;
+    font-size: var(--fs-body);
     color: #374151;
-    line-height: 1.8;
+    line-height: 1.75;
   }
   .methodology-note h2 {
     font-family: 'Lora', serif !important;
-    font-size: 1.48rem !important;
+    font-size: var(--fs-section) !important;
     color: #1a1a2e !important;
     margin-bottom: 0.9rem !important;
     line-height: 1.3 !important;
@@ -240,7 +257,7 @@ st.markdown("""
     margin-top: 0.5rem;
     margin-bottom: 1.5rem;
     font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
+    font-size: var(--fs-body);
     color: #374151;
     line-height: 1.7;
     width: 100%;
@@ -252,16 +269,22 @@ st.markdown("""
   /* ── Page title deck ── */
   .page-deck {
     font-family: 'Lora', serif;
-    font-size: 1.02rem;
+    font-size: var(--fs-subtitle);
     color: #374151;
-    line-height: 1.55;
+    line-height: 1.5;
     max-width: none;
     margin: 0 0 0.5rem 0;
     font-style: italic;
   }
+  .meta-line {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.86rem;
+    color: #6B7280;
+    margin-bottom: 1rem;
+  }
   .section-heading {
     font-family: 'Lora', serif;
-    font-size: 1.48rem;
+    font-size: var(--fs-section);
     color: #1a1a2e;
     font-weight: 700;
     line-height: 1.3;
@@ -269,7 +292,7 @@ st.markdown("""
   }
   .eyebrow {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
+    font-size: var(--fs-eyebrow);
     color: #9CA3AF;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -385,46 +408,24 @@ RESOLUTIONS = {
 }
 
 
-# ─────────────────────────────────────────────────────────────
-# Sidebar
-# ─────────────────────────────────────────────────────────────
-st.sidebar.title("Controls")
-
 date_min = df["SETTLEMENTDATE"].dt.date.min()
 date_max = df["SETTLEMENTDATE"].dt.date.max()
-
-selected_date = st.sidebar.date_input(
-    "Date", value=date_max, min_value=date_min, max_value=date_max
-)
-
-resolution_label = st.sidebar.selectbox(
-    "Interval",
-    list(RESOLUTIONS.keys()),
-    index=1,
-)
-resolution = RESOLUTIONS[resolution_label]
-
-scope_choice = st.sidebar.radio(
-    "Emissions scope",
-    ["Scope 1 only", "Scope 1 + 3 (combined)"],
-    help="Scope 1 = direct combustion. Scope 3 = upstream fuel extraction (coal only in NGA 2025)."
-)
-
 regions = sorted(df["Region"].dropna().unique().tolist())
-sel_regions = st.sidebar.multiselect("Regions", regions, default=regions)
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("""
-<div class="sidebar-note">
-<b>Data sources</b><br>
-Generation: <a href="https://nemweb.com.au" style="color:#1a3a5c">AEMO NEMWEB</a> — Dispatch SCADA<br>
-Unit metadata: AEMO Generation Information (Jan 2026)<br>
-Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">NGA Factors 2025</a>, Tables 4 &amp; 5<br><br>
-<b>Coverage</b><br>
-NEM regions only: QLD, NSW, VIC, SA, TAS.<br>
-Excludes WEM, NT grids, rooftop solar.
-</div>
-""", unsafe_allow_html=True)
+if "selected_date" not in st.session_state:
+    st.session_state.selected_date = date_max
+if "resolution_label" not in st.session_state:
+    st.session_state.resolution_label = "15 minutes"
+if "scope_choice" not in st.session_state:
+    st.session_state.scope_choice = "Scope 1 only"
+if "sel_regions" not in st.session_state:
+    st.session_state.sel_regions = regions.copy()
+
+selected_date = st.session_state.selected_date
+resolution_label = st.session_state.resolution_label
+resolution = RESOLUTIONS[resolution_label]
+scope_choice = st.session_state.scope_choice
+sel_regions = st.session_state.sel_regions
 
 
 # ─────────────────────────────────────────────────────────────
@@ -452,28 +453,29 @@ with reading_col:
         "<div class='page-deck'>The hour you draw power is as important as how much you use.</div>",
         unsafe_allow_html=True
     )
-    st.caption(
-        f"AEMO NEM  ·  {selected_date.strftime('%d %B %Y')}  ·  "
+    st.markdown(
+        f"<div class='meta-line'>AEMO NEM  ·  {selected_date.strftime('%d %B %Y')}  ·  "
         f"{', '.join(sel_regions) if sel_regions else 'No region selected'}  ·  "
-        f"{scope_choice}  ·  {resolution_label} intervals"
+        f"{scope_choice}  ·  {resolution_label} intervals</div>",
+        unsafe_allow_html=True
     )
 
     # ── Hero statement ────────────────────────────────────────────
     st.markdown("""
     <div class="intro-hero">
-        <h2>Australian businesses might be paying a hidden Scope 2 premium — because they don't know <em>when</em> to use electricity.</h2>
+        <h2>Australian businesses might be paying a hidden Scope 2 premium, because they don't know <em>when</em> to use electricity.</h2>
         <p>
             Australia's grid varies by up to <strong>4&times; in emissions intensity</strong> across a single day.
             If your business draws power flexibly, the hour you choose matters as much as how much you use.<br><br>
             If your organisation is preparing for <strong>ASRS Scope 2 disclosure</strong>, the accuracy of your
-            calculation depends on when you drew power from the grid — not just how much.
+            calculation depends on when you drew power from the grid, not just how much.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
     # ── ASRS tiers ───────────────────────────────────────────────
     st.markdown(
-        "<p class='eyebrow'>ASRS Reporting Thresholds — Who Must Disclose</p>",
+        "<p class='eyebrow'>ASRS Reporting Thresholds, Who Must Disclose</p>",
         unsafe_allow_html=True
     )
 
@@ -519,7 +521,7 @@ with reading_col:
         "<p style='font-family: Inter, sans-serif; font-size: 0.95rem; color: #6B7280; "
         "margin: 0.7rem auto 1.4rem auto; max-width: 1000px;'>"
         "A regional food manufacturer with 300 staff is already in scope under Group 2. "
-        "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate — and much higher. "
+        "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher. "
         "Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>",
         unsafe_allow_html=True
     )
@@ -528,7 +530,7 @@ with reading_col:
     st.markdown(
         "<p style='font-family: Lora, serif; font-size: 1.05rem; font-style: italic; "
         "color: #374151; margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
-        "The expectation isn't &#8216;turn things off&#8217; &#8212; it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
+        "The expectation isn't &#8216;turn things off&#8217;, it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
         unsafe_allow_html=True
     )
 
@@ -566,11 +568,10 @@ with reading_col:
     <div class="methodology-note">
         <h2>Why this calculation matters for your disclosure</h2>
         Under ASRS, organisations must disclose Scope 2 using location-based or market-based methodology.
-        Location-based uses the annual average grid factor — blunt and typically unfavourable.
+        Location-based uses the annual average grid factor, blunt and typically unfavourable.
         The more accurate approach rewards businesses that time consumption to cleaner windows.
         This tool derives grid intensity from AEMO's live 5-minute dispatch data, mapped to
-        <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW —
-        the same factors used in official Australian carbon accounting.
+        <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW,         the same factors used in official Australian carbon accounting.
     </div>
     """, unsafe_allow_html=True)
 
@@ -642,14 +643,14 @@ if not interval_agg.empty and period_low > 0:
     worst_hr = worst_t.strftime("%H:%M")
     chart_title = (
         f"Grid ran {ratio:.1f}× cleaner at {best_hr} than at {worst_hr} today"
-        f" — coal still sets the overnight floor"
+        f", coal still sets the overnight floor"
     )
 else:
     chart_title = "Generation Mix & Absolute Emissions"
 
 
 # ─────────────────────────────────────────────────────────────
-# Combo chart — stacked bars (MWh) + absolute emissions line
+# Combo chart, stacked bars (MWh) + absolute emissions line
 # ─────────────────────────────────────────────────────────────
 fig = make_subplots(specs=[[{"secondary_y": True}]])
 
@@ -722,17 +723,42 @@ fig.update_yaxes(
     secondary_y=True,
 )
 
-st.plotly_chart(fig, use_container_width=True)
+controls_col, chart_col = st.columns([1.05, 4.2], gap="large")
 
-st.markdown(
-    f"<div class='chart-insight'>"
-    f"Businesses with flexible load operating during today's cleanest 4-hour window could avoid an estimated "
-    f"<strong>~30% of the Scope 2 emissions</strong> they would have incurred running the same load overnight "
-    f"— rising above 50% on high-renewable days. "
-    f"Average derived from NEM dispatch data; low estimate ~20% (winter, low solar), high estimate ~50–55% (peak summer renewable days)."
-    f"</div>",
-    unsafe_allow_html=True
-)
+with controls_col:
+    st.markdown("<div class='controls-title'>Controls</div>", unsafe_allow_html=True)
+    st.date_input("Date", min_value=date_min, max_value=date_max, key="selected_date")
+    st.selectbox("Interval", list(RESOLUTIONS.keys()), key="resolution_label")
+    st.radio(
+        "Emissions scope",
+        ["Scope 1 only", "Scope 1 + 3 (combined)"],
+        key="scope_choice",
+        help="Scope 1 = direct combustion. Scope 3 = upstream fuel extraction (coal only in NGA 2025).",
+    )
+    st.multiselect("Regions", regions, key="sel_regions")
+    st.markdown("""
+    <div class="controls-note">
+    <b>Data sources</b><br>
+    Generation: <a href="https://nemweb.com.au" style="color:#1a3a5c">AEMO NEMWEB</a>, Dispatch SCADA<br>
+    Unit metadata: AEMO Generation Information (Jan 2026)<br>
+    Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">NGA Factors 2025</a>, Tables 4 &amp; 5<br><br>
+    <b>Coverage</b><br>
+    NEM regions only: QLD, NSW, VIC, SA, TAS.<br>
+    Excludes WEM, NT grids, rooftop solar.
+    </div>
+    """, unsafe_allow_html=True)
+
+with chart_col:
+    st.plotly_chart(fig, use_container_width=True)
+    st.markdown(
+        f"<div class='chart-insight'>"
+        f"Businesses with flexible load operating during today's cleanest 4-hour window could avoid an estimated "
+        f"<strong>~30% of the Scope 2 emissions</strong> they would have incurred running the same load overnight "
+        f",  rising above 50% on high-renewable days. "
+        f"Average derived from NEM dispatch data; low estimate ~20% (winter, low solar), high estimate ~50–55% (peak summer renewable days)."
+        f"</div>",
+        unsafe_allow_html=True
+    )
 
 if scope_choice == "Scope 1 + 3 (combined)":
     s1 = dff["tco2e_scope1"].sum()
@@ -848,18 +874,18 @@ with bottom_text_col:
     <div class="section-text">
     <h3 class="section-heading">References</h3>
     <b>Data Sources</b><br>
-    &bull; AEMO Dispatch SCADA — 5-minute generator output:
+    &bull; AEMO Dispatch SCADA, 5-minute generator output:
       <a href="https://nemweb.com.au/Reports/Current/Dispatch_SCADA/" style="color:#1a3a5c">nemweb.com.au</a><br>
-    &bull; AEMO Generation Information (Jan 2026) — DUID fuel type metadata:
+    &bull; AEMO Generation Information (Jan 2026), DUID fuel type metadata:
       <a href="https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-planning-data/generation-information" style="color:#1a3a5c">aemo.com.au</a><br>
-    &bull; National Greenhouse Accounts Factors 2025 — emission factors by fuel type:
+    &bull; National Greenhouse Accounts Factors 2025, emission factors by fuel type:
       <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">dcceew.gov.au</a><br><br>
     <b>Regulatory Context</b><br>
-    &bull; Australian Sustainability Reporting Standards (ASRS) — mandatory climate disclosure framework:
+    &bull; Australian Sustainability Reporting Standards (ASRS), mandatory climate disclosure framework:
       <a href="https://www.aasb.gov.au/australian-sustainability-reporting-standards/" style="color:#1a3a5c">aasb.gov.au</a><br>
-    &bull; AEMO Carbon Dioxide Equivalent Intensity Index (CDEII) — AEMO's own daily regional emissions intensity procedure:
+    &bull; AEMO Carbon Dioxide Equivalent Intensity Index (CDEII), AEMO's own daily regional emissions intensity procedure:
       <a href="https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/market-operations/settlements-and-payments/settlements/carbon-dioxide-equivalent-intensity-index" style="color:#1a3a5c">aemo.com.au</a><br>
-    &bull; National Greenhouse and Energy Reporting (NGER) Act 2007 — legislative basis for Australian emissions reporting<br><br>
+    &bull; National Greenhouse and Energy Reporting (NGER) Act 2007, legislative basis for Australian emissions reporting<br><br>
     While reviewing this project, the UNSW NEMED tool may have come to mind.<br>
     NEMED is a Python library that gives researchers a package to pull emissions data programmatically;
     it's designed for a different audience and purpose. It was not used for this project as data requirements
