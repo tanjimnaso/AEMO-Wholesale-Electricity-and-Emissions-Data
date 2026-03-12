@@ -325,6 +325,10 @@ st.markdown("""
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
   }
+  .header-band .page-deck {
+    text-align: center;
+    margin: 0.35rem auto 0 auto;
+  }
   .floating-nav {
     position: fixed;
     left: 22px;
