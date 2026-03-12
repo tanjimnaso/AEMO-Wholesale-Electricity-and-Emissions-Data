@@ -824,7 +824,7 @@ fig.update_yaxes(
     secondary_y=True,
 )
 
-st.markdown('<div id="data"></div>', unsafe_allow_html=True)
+st.markdown('<div id="dashboard"></div>', unsafe_allow_html=True)
 _, chart_col, _ = st.columns([0.2, 9.6, 0.2])
 with chart_col:
     c1, c2, c3, c4 = st.columns([1.15, 1.1, 1.35, 2.4], gap="medium")
@@ -967,6 +967,41 @@ with bottom_text_col:
     Interim Northern Territory Electricity Market (I-NTEM). Gas is primary fuel type.<br><br>
     A 'national emissions data pipeline' incorporating WEM and NT data sources is outside the current scope
     of this project and represents a natural extension for future development.
+    </div>
+    """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────────────────────
+# Data
+# ─────────────────────────────────────────────────────────────
+st.markdown('<div id="data"></div>', unsafe_allow_html=True)
+with bottom_text_col:
+    st.markdown("""
+    <div class="section-text">
+    <h3 class="section-heading">Data</h3>
+    <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job that fetches AEMO zip files via <code>urllib</code>, appends to a historical dataset, and writes curated CSV outputs.<br><br>
+    <b>Transform &amp; model</b>: Python/pandas join three tables into a basic schema to compute emissions metrics, dropping unused columns and normalizing fields.<br><br>
+    <b>Data Validation and Quality</b>: Power BI was used for manual validation.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    | Stage | Example columns | Notes |
+    |---|---|---|
+    | Raw AEMO | `interval`, `region`, `mw`, `emissions_factor` | Direct from zip |
+    | Cleaned | `interval`, `region`, `mw`, `emissions_tonne_co2e` | Derived columns, dropped unused |
+    | Metrics | `date`, `region`, `total_mw`, `avg_intensity` | Used in Streamlit charts |
+    """)
+
+    st.markdown("""
+    <div class="section-text">
+    <h3 class="section-heading">CI/CD on Current Project</h3>
+    Your current stack (<code>urllib</code> + pandas + GitHub Actions + Streamlit) is well suited to demonstrate CI/CD.<br><br>
+    <b>In CI (GitHub Actions)</b><br>
+    • Run unit tests on transform functions (for example, emissions formula checks and schema checks).<br>
+    • Optionally run 2-3 Great Expectations checks on a small sample file to demonstrate data quality gates.<br><br>
+    <b>In CD</b><br>
+    • On merge to <code>main</code>, have Actions package and push updated pipeline code (if deploying to a VM later), or<br>
+    • Redeploy the Streamlit app / refresh the artifacts the app reads (for example, latest CSV in a bucket or GitHub release).
     </div>
     """, unsafe_allow_html=True)
 
