@@ -993,16 +993,63 @@ with bottom_text_col:
     """)
 
     st.markdown("""
-    <div class="section-text">
-    <h3 class="section-heading">CI/CD on Current Project</h3>
-    Your current stack (<code>urllib</code> + pandas + GitHub Actions + Streamlit) is well suited to demonstrate CI/CD.<br><br>
-    <b>In CI (GitHub Actions)</b><br>
-    • Run unit tests on transform functions (for example, emissions formula checks and schema checks).<br>
-    • Optionally run 2-3 Great Expectations checks on a small sample file to demonstrate data quality gates.<br><br>
-    <b>In CD</b><br>
-    • On merge to <code>main</code>, have Actions package and push updated pipeline code (if deploying to a VM later), or<br>
-    • Redeploy the Streamlit app / refresh the artifacts the app reads (for example, latest CSV in a bucket or GitHub release).
-    </div>
+    <div class="section-text">  
+<h3 class="section-heading">CI/CD on Dashboard</h3>  
+
+The project has a Github actions orchestration as a minimal CI process.
+A python script importdata.py downloads the data from nemweb.com.au, AEMO makes their dispatch data available as `.csv's` inside a `.zip` file, containing 5 minute slices of data.
+
+    BASE_URL   = "https://nemweb.com.au"  
+    SCADA_URL  = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"  
+    OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "data", "dispatch_scada.csv")  
+      
+    KEEP_COLUMNS = ["SETTLEMENTDATE", "DUID", "SCADAVALUE"]
+
+Scrape the NEMWEB directory for all .zip file links.
+
+    def get_zip_links():  
+      response = requests.get(SCADA_URL)  
+      response.raise_for_status()  
+      soup = BeautifulSoup(response.content, "html.parser")  
+      links = [a["href"] for a in soup.find_all("a") if a["href"].endswith(".zip")]  
+      print(f"Found {len(links)} ZIP files on NEMWEB")  
+      return links
+
+  Download each ZIP, extract CSV, return combined DataFrame
+
+    def download_and_extract(links):  
+    
+      all_frames = []  
+      
+      for i, link in enumerate(links):  
+      url = f"{BASE_URL}{link}"  
+      try:  
+      r = requests.get(url)  
+      r.raise_for_status()  
+      z = zipfile.ZipFile(io.BytesIO(r.content))  
+      for csv_name in z.namelist():  
+      df = pd.read_csv(z.open(csv_name), skiprows=1)  
+      df = df[df.iloc[:, 0] != "C"]  
+      df = df[KEEP_COLUMNS]  
+      all_frames.append(df)  
+      except Exception as e:  
+      print(f"  Error processing {link}: {e}")  
+      continue  
+      
+     if (i + 1) % 50 == 0:  
+      print(f"  Downloaded {i + 1}/{len(links)}")  
+      
+      if not all_frames:  
+      print("No new data extracted.")  
+      return pd.DataFrame(columns=KEEP_COLUMNS)  
+      
+      new_data = pd.concat(all_frames, ignore_index=True)  
+      print(f"Extracted {len(new_data)} rows from {len(all_frames)} files")  
+      return new_data
+
+So the data from the .csv is appended to the end of a Panda's dataframe. The dataframe is written as a .csv
+
+This is run daily by Github actions.
     """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
@@ -1040,7 +1087,7 @@ st.markdown("""
 <div class="page-footer">
   <div class="footer-inner">
     <div>
-      This is a personal project by Tanjim Islam, for general informational purposes only, and does not constitute financial, legal, or consulting advice.
+      This is a personal project by Tanjim Islam, for demonstrational purposes only, and does not constitute financial, legal, or consulting advice.
     </div>
     <a class="linkedin-link" href="https://www.linkedin.com/in/tanjimislam/" target="_blank" rel="noopener noreferrer">
       <svg class="linkedin-icon" viewBox="0 0 24 24" aria-hidden="true">
