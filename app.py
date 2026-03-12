@@ -845,6 +845,17 @@ with chart_col:
         st.multiselect("Regions", regions, key="sel_regions")
 
     st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown("""
+       <div class="controls-note">
+       <b>Data sources</b>:
+       Generation: <a href="https://nemweb.com.au" style="color:#1a3a5c">AEMO NEMWEB</a>, Dispatch SCADA.
+       Unit metadata: AEMO Generation Information (Jan 2026).
+       Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">NGA Factors 2025</a>, Tables 4 &amp; 5.<br>
+       <b>Coverage</b>: NEM regions only (QLD, NSW, VIC, SA, TAS), excludes WEM, NT grids, rooftop solar.
+       </div>
+       """, unsafe_allow_html=True)
+
     st.markdown(
         f"<div class='chart-insight'>"
         f"Businesses with flexible load operating during today's cleanest 4-hour window could avoid an estimated "
@@ -854,15 +865,7 @@ with chart_col:
         f"</div>",
         unsafe_allow_html=True
     )
-    st.markdown("""
-    <div class="controls-note">
-    <b>Data sources</b>:
-    Generation: <a href="https://nemweb.com.au" style="color:#1a3a5c">AEMO NEMWEB</a>, Dispatch SCADA.
-    Unit metadata: AEMO Generation Information (Jan 2026).
-    Emission factors: <a href="https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors" style="color:#1a3a5c">NGA Factors 2025</a>, Tables 4 &amp; 5.<br>
-    <b>Coverage</b>: NEM regions only (QLD, NSW, VIC, SA, TAS), excludes WEM, NT grids, rooftop solar.
-    </div>
-    """, unsafe_allow_html=True)
+
 
 if scope_choice == "Scope 1 + 3 (combined)":
     s1 = dff["tco2e_scope1"].sum()
