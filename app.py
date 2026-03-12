@@ -39,7 +39,7 @@ st.markdown("""
   h1 {
     font-family: 'Lora', serif !important;
     color: #1a1a2e !important;
-    font-size: 2.2rem !important;
+    font-size: 1.95rem !important;
     font-weight: 700 !important;
     letter-spacing: -0.02em !important;
     line-height: 1.25 !important;
@@ -127,10 +127,10 @@ st.markdown("""
   }
   .intro-hero h2 {
     font-family: 'Lora', serif !important;
-    font-size: 1.6rem !important;
+    font-size: 2.3rem !important;
     color: #1a1a2e !important;
-    margin-bottom: 0.9rem !important;
-    line-height: 1.4 !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.23 !important;
     font-weight: 700 !important;
   }
   .intro-hero p {
@@ -223,10 +223,10 @@ st.markdown("""
   }
   .methodology-note h2 {
     font-family: 'Lora', serif !important;
-    font-size: 1.6rem !important;
+    font-size: 1.48rem !important;
     color: #1a1a2e !important;
     margin-bottom: 0.9rem !important;
-    line-height: 1.4 !important;
+    line-height: 1.3 !important;
     font-weight: 700 !important;
   }
   .methodology-note strong { color: #1a3a5c; }
@@ -252,12 +252,28 @@ st.markdown("""
   /* ── Page title deck ── */
   .page-deck {
     font-family: 'Lora', serif;
-    font-size: 1.25rem;
+    font-size: 1.02rem;
     color: #374151;
-    line-height: 1.6;
-    max-width: 700px;
-    margin: 0 auto 0.5rem auto;
+    line-height: 1.55;
+    max-width: none;
+    margin: 0 0 0.5rem 0;
     font-style: italic;
+  }
+  .section-heading {
+    font-family: 'Lora', serif;
+    font-size: 1.48rem;
+    color: #1a1a2e;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 0.9rem 0;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: #9CA3AF;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem 0;
   }
 
   footer { visibility: hidden; }
@@ -457,9 +473,7 @@ with reading_col:
 
     # ── ASRS tiers ───────────────────────────────────────────────
     st.markdown(
-        "<p style='font-family: IBM Plex Mono; font-size: 0.72rem; color: #9CA3AF; "
-        "letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem;'>"
-        "ASRS Reporting Thresholds — Who Must Disclose</p>",
+        "<p class='eyebrow'>ASRS Reporting Thresholds — Who Must Disclose</p>",
         unsafe_allow_html=True
     )
 
@@ -734,7 +748,7 @@ if scope_choice == "Scope 1 + 3 (combined)":
 # ─────────────────────────────────────────────────────────────
 # All-data summary table + donut
 # ─────────────────────────────────────────────────────────────
-st.markdown("### All-Data Summary by Technology")
+st.markdown("<h3 class='section-heading'>All-Data Summary by Technology</h3>", unsafe_allow_html=True)
 
 tech_summary = (
     dff_all.groupby("Technology Type")
@@ -815,7 +829,7 @@ _, bottom_text_col, _ = st.columns([1.4, 4.2, 1.4])
 with bottom_text_col:
     st.markdown("""
     <div class="section-text">
-    <b style="color:#1a3a5c; font-family:'Lora',serif;">Limitations and Scope</b><br><br>
+    <h3 class="section-heading">Limitations and Scope</h3>
     The project covers 5 NEM regions in the AEMO dispatch framework (QLD, NSW, SA, VIC and TAS).<br><br>
     WA has a separate grid, Wholesale Electricity Market (WEM) which supplies separate data.
     Gas and coal are the primary fuel types.<br><br>
@@ -832,7 +846,7 @@ with bottom_text_col:
 with bottom_text_col:
     st.markdown("""
     <div class="section-text">
-    <b style="color:#1a3a5c; font-family:'Lora',serif;">References</b><br><br>
+    <h3 class="section-heading">References</h3>
     <b>Data Sources</b><br>
     &bull; AEMO Dispatch SCADA — 5-minute generator output:
       <a href="https://nemweb.com.au/Reports/Current/Dispatch_SCADA/" style="color:#1a3a5c">nemweb.com.au</a><br>
