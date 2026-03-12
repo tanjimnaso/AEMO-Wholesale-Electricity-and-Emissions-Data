@@ -388,11 +388,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 st.markdown("""
 <div class="floating-nav">
   <div class="nav-title">Sections</div>
-  <a href="#introduction">Introduction</a>
-  <a href="#data">Data</a>
+  <a href="#top">Introduction</a>
+  <a href="#dashboard">Data</a>
   <a href="#limitations">Limitations</a>
 </div>
 """, unsafe_allow_html=True)
@@ -976,27 +977,21 @@ with bottom_text_col:
 st.markdown('<div id="data"></div>', unsafe_allow_html=True)
 with bottom_text_col:
     st.markdown("""
-     <div class="section-text"> <h3 class="section-heading">Data</h3> 
- <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job.
-
- A python script importdata.py downloads the data from nemweb.com.au, AEMO makes their dispatch data available as `.csv's` inside a `.zip` file, containing 5 minute slices of data.  
-
-    BASE_URL   = "https://nemweb.com.au"    SCADA_URL  = f"{BASE_URL}/Reports/Current/Dispatch_SCADA/"    
-    OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "data", "dispatch_scada.csv")    
-    KEEP_COLUMNS = ["SETTLEMENTDATE", "DUID", "SCADAVALUE"] 
-
-Download each ZIP, extract CSV append to dataframe  
-The dataframe is written as a .csv  
-
-
- <b>Transform &amp; model</b>: Electrical generation data is from AEMO/Nemweb, AEMO supplies DUID data about which genuit uses which fuel type/technology, Emissions factor workbook supplies data about fuel type and C02 emissions per MWh.
-
-Python/pandas join three tables into a basic schema to compute emissions metrics, dropping unused columns and normalizing fields.<br>
-  <b>Data Validation and Quality</b>: Power BI was used for manual validation. </div>
-  
-  
- | Stage | Example columns | Notes | |---|---|---| | Raw AEMO | `interval`, `region`, `mw`, `emissions_factor` | Direct from zip | | Cleaned | `interval`, `region`, `mw`, `emissions_tonne_co2e` | Derived columns, dropped unused | | Metrics | `date`, `region`, `total_mw`, `avg_intensity` | Used in Streamlit charts | """)
+    <div class="section-text">
+    <h3 class="section-heading">Data</h3>
+    <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job that fetches AEMO zip files via <code>urllib</code>, appends to a historical dataset, and writes curated CSV outputs.<br><br>
+    <b>Transform &amp; model</b>: Python/pandas join three tables into a basic schema to compute emissions metrics, dropping unused columns and normalizing fields.<br><br>
+    <b>Data Validation and Quality</b>: Power BI was used for manual validation.
+    </div>
     """, unsafe_allow_html=True)
+
+    st.markdown("""
+    | Stage | Example columns | Notes |
+    |---|---|---|
+    | Raw AEMO | `interval`, `region`, `mw`, `emissions_factor` | Direct from zip |
+    | Cleaned | `interval`, `region`, `mw`, `emissions_tonne_co2e` | Derived columns, dropped unused |
+    | Metrics | `date`, `region`, `total_mw`, `avg_intensity` | Used in Streamlit charts |
+    """)
 
 # ─────────────────────────────────────────────────────────────
 # References
