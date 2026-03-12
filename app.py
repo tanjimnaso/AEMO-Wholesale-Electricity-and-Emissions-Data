@@ -645,8 +645,8 @@ with reading_col:
 
     st.markdown("""
         <div class="methodology-note">
-        A regional food manufacturer with 300 staff is already in scope under Group 2.
-        The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.
+        A regional food manufacturer with 300 staff is already in scope under Group 2.<br>
+        The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.<br>
         Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>
  """, unsafe_allow_html=True)
 
