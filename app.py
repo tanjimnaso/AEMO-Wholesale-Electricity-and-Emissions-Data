@@ -29,13 +29,13 @@ st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap');
   :root {
-    --fs-hero: 2.3rem;      /* L1 */
-    --fs-page-title: 1.95rem; /* L2 */
-    --fs-section: 1.48rem;  /* L3 */
-    --fs-subtitle: 1.24rem;
-    --fs-body: 1.05rem;
-    --fs-small: 0.95rem;
-    --fs-eyebrow: 0.72rem;  /* L4 */
+    --fs-hero: 1.75rem;      /* L1 */
+    --fs-page-title: 1.45rem; /* L2 */
+    --fs-section: 1.2rem;    /* L3 */
+    --fs-subtitle: 1.0rem;
+    --fs-body: 0.98rem;
+    --fs-small: 0.88rem;
+    --fs-eyebrow: 0.68rem;   /* L4 */
   }
 
   /* ── Base ── */
@@ -86,7 +86,7 @@ st.markdown("""
     color: #1a3a5c !important;
   }
   .sidebar-note { font-size: 0.82rem; color: #6B7280; line-height: 1.7; }
-  .controls-note { font-size: 0.86rem; color: #6B7280; line-height: 1.7; margin-top: 0.65rem; }
+  .controls-note { font-size: 0.84rem; color: #6B7280; line-height: 1.65; margin-top: 0.65rem; }
 
   /* ── Metric cards ── */
   .metric-card {
@@ -98,19 +98,19 @@ st.markdown("""
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
   .metric-label {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: #6B7280;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-family: 'IBM Plex Mono', monospace;
   }
   .metric-value {
-    font-size: 2rem;
+    font-size: 1.65rem;
     font-weight: 700;
     font-family: 'IBM Plex Mono', monospace;
     color: #1a3a5c;
   }
-  .metric-sub { font-size: 0.75rem; color: #9CA3AF; font-family: 'IBM Plex Mono', monospace; }
+  .metric-sub { font-size: 0.72rem; color: #9CA3AF; font-family: 'IBM Plex Mono', monospace; }
 
   /* ── Section text (bottom sections) ── */
   .section-text {
@@ -151,7 +151,7 @@ st.markdown("""
     margin: 0;
   }
   .intro-hero strong { color: #1a3a5c; }
-  .intro-hero em { color: #92400e; font-style: normal; font-weight: 600; }
+  .intro-hero em { color: #1a3a5c; font-style: normal; font-weight: 600; }
 
   /* ── ASRS cards ── */
   .asrs-card {
@@ -164,7 +164,7 @@ st.markdown("""
   }
   .asrs-card .asrs-tag {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
+    font-size: var(--fs-eyebrow);
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #9CA3AF;
@@ -172,15 +172,15 @@ st.markdown("""
   }
   .asrs-card .asrs-group {
     font-family: 'Lora', serif;
-    font-size: 1.3rem;
+    font-size: 1.12rem;
     font-weight: 700;
     color: #1a3a5c;
     margin-bottom: 0.4rem;
   }
   .asrs-card .asrs-date {
     font-family: 'Inter', sans-serif;
-    font-size: 0.88rem;
-    color: #92400e;
+    font-size: 0.84rem;
+    color: #4B5563;
     font-weight: 600;
     margin-bottom: 0.7rem;
   }
@@ -213,7 +213,7 @@ st.markdown("""
   }
   .usecase-item .usecase-sector {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
+    font-size: var(--fs-eyebrow);
     color: #9CA3AF;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -271,7 +271,7 @@ st.markdown("""
   }
   .meta-line {
     font-family: 'Inter', sans-serif;
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     color: #6B7280;
     margin-bottom: 1rem;
   }
@@ -293,7 +293,7 @@ st.markdown("""
   }
   .page-header {
     font-family: 'Lora', serif;
-    font-size: 2.05rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: #1a1a2e;
     margin: 0;
@@ -335,7 +335,7 @@ st.markdown("""
     color: #1f2937;
     text-decoration: none;
     font-family: 'Inter', sans-serif;
-    font-size: 0.92rem;
+    font-size: 0.86rem;
     padding: 0.35rem 0.4rem;
     border-radius: 6px;
   }
@@ -349,7 +349,7 @@ st.markdown("""
     background: #ece8df;
     padding: 0.9rem 2rem;
     color: #6B7280;
-    font-size: 0.9rem;
+    font-size: 0.84rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -619,7 +619,7 @@ with reading_col:
         """, unsafe_allow_html=True)
 
     st.markdown(
-        "<p style='font-family: Inter, sans-serif; font-size: 0.95rem; color: #6B7280; "
+        "<p style='font-family: Inter, sans-serif; font-size: var(--fs-small); color: #6B7280; "
         "margin: 0.7rem auto 1.4rem auto; max-width: 1000px;'>"
         "A regional food manufacturer with 300 staff is already in scope under Group 2. "
         "The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher. "
@@ -629,7 +629,7 @@ with reading_col:
 
     # ── Flexible load use cases ───────────────────────────────────
     st.markdown(
-        "<p style='font-family: Lora, serif; font-size: 1.05rem; font-style: italic; "
+        "<p style='font-family: Lora, serif; font-size: var(--fs-subtitle); font-style: italic; "
         "color: #374151; margin: 0 auto 0.75rem auto; max-width: 1000px;'>"
         "The expectation isn't &#8216;turn things off&#8217;, it's &#8216;time what you can, when the grid is cleanest.&#8217;</p>",
         unsafe_allow_html=True
