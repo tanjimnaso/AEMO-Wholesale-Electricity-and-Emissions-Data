@@ -675,6 +675,17 @@ clean_window_end_hour = (
 
 business_windows = [
     {
+        "window": "Night shift",
+        "display_label": "Night shift",
+        "start": 0,
+        "end": 6,
+        "color": "#1e40af",
+        "opacity": 0.76,
+        "text_color": "#FFFFFF",
+        "label_y_ratio": 0.54,
+        "mask": time_window_mask(0, 6),
+    },
+    {
         "window": "Standard hours",
         "display_label": "Standard hours",
         "start": 9,
@@ -682,6 +693,7 @@ business_windows = [
         "color": "#1d4ed8",
         "opacity": 0.58,
         "text_color": "#FFFFFF",
+        "label_y_ratio": 0.52,
         "mask": time_window_mask(9, 17),
     },
     {
@@ -692,6 +704,7 @@ business_windows = [
         "color": "#2563eb",
         "opacity": 0.72,
         "text_color": "#FFFFFF",
+        "label_y_ratio": 0.88,
         "mask": time_window_mask(6, 15),
     },
     {
@@ -702,6 +715,7 @@ business_windows = [
         "color": "#60a5fa",
         "opacity": 0.84,
         "text_color": "#FFFFFF",
+        "label_y_ratio": 0.70,
         "mask": time_window_mask(8, 16),
     },
     {
@@ -709,13 +723,25 @@ business_windows = [
         "display_label": "Cheapest 4 hours",
         "start": clean_window_start_hour,
         "end": clean_window_end_hour,
-        "color": "#dbeafe",
-        "opacity": 0.96,
+        "color": "#94a3b8",
+        "opacity": 1.0,
         "text_color": "#0f172a",
+        "label_y_ratio": 0.45,
         "mask": (
             (dff["SETTLEMENTDATE"] >= clean_window_start) &
             (dff["SETTLEMENTDATE"] <= clean_window_end)
         ) if clean_window_start is not None and clean_window_end is not None else pd.Series(False, index=dff.index),
+    },
+    {
+        "window": "Late hours",
+        "display_label": "Late hours",
+        "start": 17,
+        "end": 22,
+        "color": "#3b82f6",
+        "opacity": 0.76,
+        "text_color": "#FFFFFF",
+        "label_y_ratio": 0.54,
+        "mask": time_window_mask(17, 22),
     },
 ]
 
@@ -873,7 +899,14 @@ with reading_col:
     """, unsafe_allow_html=True)
 
     business_windows_fig = go.Figure()
+    business_annotations = []
+    cleanest_window = None
+
     for _, window in business_window_df.iterrows():
+        if window["window"] == "Cheapest 4 hours":
+            cleanest_window = window
+            continue
+
         business_windows_fig.add_trace(
             go.Bar(
                 x=[window["start"] + (window["duration"] / 2)],
@@ -884,11 +917,6 @@ with reading_col:
                     line=dict(color="#FFFFFF", width=0.8),
                 ),
                 opacity=window["opacity"],
-                text=[window["display_label"]],
-                textposition="inside",
-                textfont=dict(color=window["text_color"], size=11, family="Inter, sans-serif"),
-                insidetextanchor="middle",
-                cliponaxis=False,
                 customdata=[[
                     window["display_label"],
                     window["start_label"],
@@ -903,6 +931,72 @@ with reading_col:
                 showlegend=False,
             )
         )
+
+        business_annotations.append(
+            dict(
+                x=window["start"] + (window["duration"] / 2),
+                y=max(window["emissions"] * window["label_y_ratio"], 0),
+                text=window["display_label"],
+                showarrow=False,
+                font=dict(
+                    color=window["text_color"],
+                    size=11,
+                    family="Inter, sans-serif",
+                ),
+                xanchor="center",
+                yanchor="middle",
+                align="center",
+            )
+        )
+
+    if cleanest_window is not None:
+        business_windows_fig.add_trace(
+            go.Scatter(
+                x=[
+                    cleanest_window["start"],
+                    cleanest_window["end"],
+                    cleanest_window["end"],
+                    cleanest_window["start"],
+                    cleanest_window["start"],
+                ],
+                y=[
+                    0,
+                    0,
+                    cleanest_window["emissions"],
+                    cleanest_window["emissions"],
+                    0,
+                ],
+                mode="lines",
+                fill="toself",
+                fillcolor="rgba(163, 230, 53, 0.06)",
+                line=dict(color="#84cc16", width=2, dash="dash"),
+                customdata=[[
+                    cleanest_window["display_label"],
+                    cleanest_window["start_label"],
+                    cleanest_window["end_label"],
+                    cleanest_window["emissions"],
+                ]] * 5,
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b><br>"
+                    "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+                    "Emissions: %{customdata[3]:,.0f} t CO₂-e<extra></extra>"
+                ),
+                showlegend=False,
+            )
+        )
+        business_annotations.append(
+            dict(
+                x=cleanest_window["start"] + (cleanest_window["duration"] / 2),
+                y=max(cleanest_window["emissions"] * cleanest_window["label_y_ratio"], 0),
+                text="Cheapest 4 hours",
+                showarrow=False,
+                font=dict(color="#1f2937", size=11, family="Inter, sans-serif"),
+                xanchor="center",
+                yanchor="middle",
+                align="center",
+            )
+        )
+
     business_windows_fig.update_layout(
         title=dict(
             text="Business-Oriented Comparison",
@@ -917,6 +1011,7 @@ with reading_col:
         height=320,
         showlegend=False,
         barmode="overlay",
+        annotations=business_annotations,
         xaxis=dict(
             range=[0, 24],
             tickvals=[0, 6, 12, 18, 24],
