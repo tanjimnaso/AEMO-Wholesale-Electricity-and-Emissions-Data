@@ -1028,12 +1028,14 @@ with reading_col:
     )
     st.plotly_chart(intensity_fig, use_container_width=True)
 
-    st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
     selected_operation = st.selectbox(
         "Select an operating profile",
         list(operation_profiles.keys()),
         key="operation_profile",
     )
+    st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+    st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
     scenario = operation_profiles[selected_operation]
     current_metrics = window_metrics[scenario["current_window"]]
     alternative_metrics = window_metrics[scenario["alternative_window"]]
