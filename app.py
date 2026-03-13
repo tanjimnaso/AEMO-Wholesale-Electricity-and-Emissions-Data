@@ -654,59 +654,78 @@ def to_decimal_hour(ts):
     return ts.hour + ts.minute / 60
 
 
-night_shift_avg_intensity = masked_avg_intensity(dff["SETTLEMENTDATE"].dt.hour < 6)
-early_shift_avg_intensity = masked_avg_intensity(
-    (dff["SETTLEMENTDATE"].dt.hour >= 6) & (dff["SETTLEMENTDATE"].dt.hour < 9)
-)
-late_shift_avg_intensity = masked_avg_intensity(
-    (dff["SETTLEMENTDATE"].dt.hour >= 17) & (dff["SETTLEMENTDATE"].dt.hour < 22)
+def decimal_hour_to_label(hour_value):
+    total_minutes = int(round(hour_value * 60))
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
+    return f"{hours:02d}:{minutes:02d}"
+
+
+def time_window_mask(start_hour, end_hour):
+    start_minutes = int(round(start_hour * 60))
+    end_minutes = int(round(end_hour * 60))
+    minutes_of_day = dff["SETTLEMENTDATE"].dt.hour * 60 + dff["SETTLEMENTDATE"].dt.minute
+    return (minutes_of_day >= start_minutes) & (minutes_of_day < end_minutes)
+
+
+clean_window_start_hour = to_decimal_hour(clean_window_start) if clean_window_start is not None else 12
+clean_window_end_hour = (
+    to_decimal_hour(clean_window_end) + (5 / 60) if clean_window_end is not None else 16
 )
 
-business_window_df = pd.DataFrame(
+business_windows = [
     {
-        "window": [
-            "Night shift",
-            "Early",
-            "Standard hours",
-            "Cheapest 4 hours",
-            "Late hours",
-        ],
-        "start": [
-            0,
-            6,
-            9,
-            to_decimal_hour(clean_window_start) if clean_window_start is not None else 12,
-            17,
-        ],
-        "end": [
-            6,
-            9,
-            17,
-            to_decimal_hour(clean_window_end) + (5 / 60) if clean_window_end is not None else 16,
-            22,
-        ],
-    }
-)
-business_window_df["duration"] = business_window_df["end"] - business_window_df["start"]
-business_window_df["start_label"] = business_window_df["start"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
-business_window_df["end_label"] = business_window_df["end"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
-business_window_df["display_label"] = business_window_df["window"]
-
-window_masks = [
-    dff["SETTLEMENTDATE"].dt.hour < 6,
-    (dff["SETTLEMENTDATE"].dt.hour >= 6) & (dff["SETTLEMENTDATE"].dt.hour < 9),
-    (dff["SETTLEMENTDATE"].dt.hour >= 9) & (dff["SETTLEMENTDATE"].dt.hour < 17),
-    (
-        (dff["SETTLEMENTDATE"] >= clean_window_start) &
-        (dff["SETTLEMENTDATE"] <= clean_window_end)
-    ) if clean_window_start is not None and clean_window_end is not None else pd.Series(False, index=dff.index),
-    (dff["SETTLEMENTDATE"].dt.hour >= 17) & (dff["SETTLEMENTDATE"].dt.hour < 22),
+        "window": "Standard hours",
+        "display_label": "Standard hours",
+        "start": 9,
+        "end": 17,
+        "color": "#1d4ed8",
+        "opacity": 0.58,
+        "text_color": "#FFFFFF",
+        "mask": time_window_mask(9, 17),
+    },
+    {
+        "window": "Food operations",
+        "display_label": "Food operations",
+        "start": 6,
+        "end": 15,
+        "color": "#2563eb",
+        "opacity": 0.72,
+        "text_color": "#FFFFFF",
+        "mask": time_window_mask(6, 15),
+    },
+    {
+        "window": "Small site operations",
+        "display_label": "Small site operations",
+        "start": 8,
+        "end": 16,
+        "color": "#60a5fa",
+        "opacity": 0.84,
+        "text_color": "#FFFFFF",
+        "mask": time_window_mask(8, 16),
+    },
+    {
+        "window": "Cheapest 4 hours",
+        "display_label": "Cheapest 4 hours",
+        "start": clean_window_start_hour,
+        "end": clean_window_end_hour,
+        "color": "#dbeafe",
+        "opacity": 0.96,
+        "text_color": "#0f172a",
+        "mask": (
+            (dff["SETTLEMENTDATE"] >= clean_window_start) &
+            (dff["SETTLEMENTDATE"] <= clean_window_end)
+        ) if clean_window_start is not None and clean_window_end is not None else pd.Series(False, index=dff.index),
+    },
 ]
-business_window_df["emissions"] = [dff.loc[mask, emission_col].sum() for mask in window_masks]
 
-blue_scale = ["#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#1d4ed8"]
-ranked_windows = business_window_df["emissions"].rank(method="first", ascending=True).astype(int) - 1
-business_window_df["color"] = ranked_windows.map(lambda idx: blue_scale[idx])
+business_window_df = pd.DataFrame(business_windows)
+business_window_df["duration"] = business_window_df["end"] - business_window_df["start"]
+business_window_df["start_label"] = business_window_df["start"].map(decimal_hour_to_label)
+business_window_df["end_label"] = business_window_df["end"].map(decimal_hour_to_label)
+business_window_df["emissions"] = [
+    dff.loc[mask, emission_col].sum() for mask in business_window_df["mask"]
+]
 
 
 # ─────────────────────────────────────────────────────────────
@@ -853,27 +872,37 @@ with reading_col:
     </div>
     """, unsafe_allow_html=True)
 
-    business_windows_fig = go.Figure(
-        go.Bar(
-            x=business_window_df["start"] + (business_window_df["duration"] / 2),
-            y=business_window_df["emissions"],
-            marker=dict(
-                color=business_window_df["color"],
-                line=dict(color="#FAFAF8", width=0.8),
-            ),
-            width=business_window_df["duration"],
-            text=business_window_df["display_label"],
-            textposition="inside",
-            textfont=dict(color="#FFFFFF", size=11, family="Inter, sans-serif"),
-            insidetextanchor="middle",
-            customdata=business_window_df[["display_label", "start_label", "end_label", "emissions"]],
-            hovertemplate=(
-                "<b>%{customdata[0]}</b><br>"
-                "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
-                "Emissions: %{customdata[3]:,.0f} t CO₂-e<extra></extra>"
-            ),
+    business_windows_fig = go.Figure()
+    for _, window in business_window_df.iterrows():
+        business_windows_fig.add_trace(
+            go.Bar(
+                x=[window["start"] + (window["duration"] / 2)],
+                y=[window["emissions"]],
+                width=[window["duration"]],
+                marker=dict(
+                    color=window["color"],
+                    line=dict(color="#FFFFFF", width=0.8),
+                ),
+                opacity=window["opacity"],
+                text=[window["display_label"]],
+                textposition="inside",
+                textfont=dict(color=window["text_color"], size=11, family="Inter, sans-serif"),
+                insidetextanchor="middle",
+                cliponaxis=False,
+                customdata=[[
+                    window["display_label"],
+                    window["start_label"],
+                    window["end_label"],
+                    window["emissions"],
+                ]],
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b><br>"
+                    "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+                    "Emissions: %{customdata[3]:,.0f} t CO₂-e<extra></extra>"
+                ),
+                showlegend=False,
+            )
         )
-    )
     business_windows_fig.update_layout(
         title=dict(
             text="Business-Oriented Comparison",
@@ -887,6 +916,7 @@ with reading_col:
         margin=dict(l=10, r=10, t=46, b=10),
         height=320,
         showlegend=False,
+        barmode="overlay",
         xaxis=dict(
             range=[0, 24],
             tickvals=[0, 6, 12, 18, 24],
