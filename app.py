@@ -117,6 +117,13 @@ st.markdown("""
   .chart-axis-notes span:last-child {
     text-align: right;
   }
+  .asrs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 
   /* ── Metric cards ── */
   .metric-card {
@@ -195,6 +202,14 @@ st.markdown("""
     font-size: var(--text-base);
     color: var(--muted-foreground);
     line-height: var(--leading-base);
+  }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .kpi-grid .metric-card.full-span {
+    grid-column: auto;
   }
 
   /* ── Section text (bottom sections) ── */
@@ -282,19 +297,20 @@ st.markdown("""
     margin-right: auto;
   }
   .usecase-item {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: #35383f;
+    border: 1px solid #35383f;
     border-radius: var(--radius);
     padding: 1rem 1.1rem;
     font-family: var(--font-family-sans);
     font-size: var(--text-base);
-    color: var(--foreground);
+    color: #f8fafc;
     line-height: var(--leading-base);
   }
   .usecase-item .usecase-sector {
     font-family: var(--font-family-sans);
     font-size: var(--text-sm);
-    color: var(--muted-foreground);
+    color: #ffffff;
+    font-weight: var(--font-weight-semibold);
     margin-bottom: 0.35rem;
   }
 
@@ -387,6 +403,8 @@ st.markdown("""
   .header-band .page-deck {
     text-align: center;
     margin: 0.35rem auto 0 auto;
+    padding: 0 1rem;
+    max-width: 900px;
   }
   .hero-image-band {
     width: 100vw;
@@ -486,6 +504,11 @@ st.markdown("""
     .header-band {
       padding: 1.1rem 0 1rem 0;
     }
+    .header-band .page-header,
+    .header-band .page-deck {
+      padding-left: 0.9rem;
+      padding-right: 0.9rem;
+    }
     .hero-image-band img {
       height: 160px;
     }
@@ -500,9 +523,6 @@ st.markdown("""
     .usecase-item {
       padding: 1rem;
     }
-    .usecase-item {
-      min-height: 0 !important;
-    }
     .metric-card {
       min-height: 100px;
       padding: 14px 16px;
@@ -513,15 +533,29 @@ st.markdown("""
     .section-text {
       max-width: 100% !important;
     }
+    .asrs-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.45rem;
+    }
+    .asrs-card {
+      padding: 0.7rem 0.55rem !important;
+    }
+    .asrs-card .asrs-group {
+      font-size: 1rem !important;
+      margin-bottom: 0.2rem;
+    }
+    .asrs-card .asrs-tag,
+    .asrs-card .asrs-date,
+    .asrs-card .asrs-threshold {
+      font-size: 0.72rem !important;
+      line-height: 1.35 !important;
+    }
     .usecase-grid {
       max-width: 100% !important;
     }
     .usecase-item {
-      background: transparent !important;
-      border: 0 !important;
-      border-bottom: 1px solid var(--border) !important;
-      border-radius: 0 !important;
-      padding: 0 0 0.85rem 0 !important;
+      min-height: 0 !important;
+      padding: 0.85rem 0.9rem !important;
     }
     .chart-title {
       font-size: 1.15rem;
@@ -536,6 +570,13 @@ st.markdown("""
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       padding: 0.85rem 0;
+    }
+    .kpi-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+    .kpi-grid .metric-card.full-span {
+      grid-column: 1 / -1;
     }
     .js-plotly-plot .modebar,
     .js-plotly-plot .legend {
@@ -963,11 +1004,8 @@ with reading_col:
         "<p class='eyebrow'>ASRS Reporting Thresholds, Who Must Disclose</p>",
         unsafe_allow_html=True
     )
-
-    col_g1, col_g2, col_g3 = st.columns(3)
-
-    with col_g1:
-        st.markdown("""
+    st.markdown("""
+    <div class="asrs-grid">
         <div class="asrs-card">
             <div class="asrs-tag">In effect</div>
             <div class="asrs-group">Group 1</div>
@@ -976,10 +1014,6 @@ with reading_col:
                 Revenue &gt; $1B<br>OR assets &gt; $500M<br>OR &gt; 500 employees
             </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col_g2:
-        st.markdown("""
         <div class="asrs-card">
             <div class="asrs-tag">Coming soon</div>
             <div class="asrs-group">Group 2</div>
@@ -988,10 +1022,6 @@ with reading_col:
                 Revenue &gt; $200M<br>OR assets &gt; $500M<br>OR &gt; 250 employees
             </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col_g3:
-        st.markdown("""
         <div class="asrs-card">
             <div class="asrs-tag">On the horizon</div>
             <div class="asrs-group">Group 3</div>
@@ -1000,7 +1030,8 @@ with reading_col:
                 Smaller entities<br>Thresholds TBC<br>&nbsp;
             </div>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("""
         <div class="methodology-note">
@@ -1116,7 +1147,9 @@ with reading_col:
             rangemode="tozero",
         ),
     )
-    st.plotly_chart(intensity_fig, use_container_width=True)
+    intensity_fig.update_xaxes(fixedrange=True)
+    intensity_fig.update_yaxes(fixedrange=True)
+    st.plotly_chart(intensity_fig, use_container_width=True, config=plotly_config)
 
     st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
     selected_operation = st.session_state.operation_profile
@@ -1180,10 +1213,12 @@ with reading_col:
             rangemode="tozero",
         ),
     )
+    scenario_fig.update_xaxes(fixedrange=True)
+    scenario_fig.update_yaxes(fixedrange=True)
 
     scenario_left, scenario_right = st.columns([1.5, 1], gap="large")
     with scenario_left:
-        st.plotly_chart(scenario_fig, use_container_width=True)
+        st.plotly_chart(scenario_fig, use_container_width=True, config=plotly_config)
         st.markdown("<div style='height:0.45rem'></div>", unsafe_allow_html=True)
         st.selectbox(
             "Select an operating profile",
@@ -1221,11 +1256,8 @@ with reading_col:
     st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
     st.markdown(
         """
-        <div class="comparison-panel">
-            <div class="comparison-label">Operational caveat</div>
-            <div class="comparison-sub">
-                The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations. This app models emissions timing, not your contracted tariff, so a decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.
-            </div>
+        <div class="chart-insight">
+            <strong>Operational caveat.</strong> The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations. This app models emissions timing, not your contracted tariff, so a decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.
         </div>
         """,
         unsafe_allow_html=True,
@@ -1302,6 +1334,13 @@ chart_tickvals = pd.date_range(
     freq="2h",
 )
 chart_ticktext = [str(ts.hour) for ts in chart_tickvals]
+plotly_config = {
+    "displayModeBar": False,
+    "displaylogo": False,
+    "scrollZoom": False,
+    "doubleClick": False,
+    "responsive": True,
+}
 
 # ─────────────────────────────────────────────────────────────
 # Combo chart, stacked bars (MWh) + absolute emissions line
@@ -1370,11 +1409,11 @@ fig.update_layout(
         bordercolor="#E5E7EB",
         orientation="h",
         yanchor="top",
-        y=-0.14,
+        y=-0.08,
         xanchor="center",
         x=0.5,
     ),
-    margin=dict(l=0, r=0, t=8, b=72),
+    margin=dict(l=0, r=0, t=8, b=42),
     hovermode="x unified",
     height=520,
 )
@@ -1394,6 +1433,8 @@ fig.update_yaxes(
     automargin=True,
     secondary_y=True,
 )
+fig.update_xaxes(fixedrange=True)
+fig.update_yaxes(fixedrange=True)
 
 with dashboard_placeholder:
     st.markdown('<div id="dashboard"></div>', unsafe_allow_html=True)
@@ -1440,14 +1481,40 @@ with dashboard_placeholder:
         "<div class='chart-axis-notes'><span>Left, MWh</span><span>Right, t CO&#8322;-e</span></div>",
         unsafe_allow_html=True,
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config=plotly_config)
 
-    k1, k2, k3, k4, k5 = st.columns(5)
-    kpi(k1, "Avg Intensity",       f"{avg_intensity:.3f}",   "t CO&#8322;-e / MWh")
-    kpi(k2, "Daily Low",           f"{period_low:.3f}",      "t CO&#8322;-e / MWh")
-    kpi(k3, "Daily High",          f"{period_high:.3f}",     "t CO&#8322;-e / MWh")
-    kpi(k4, "Total Generation",    f"{total_mwh/1e3:.1f}k",  "MWh")
-    kpi(k5, "Zero-Emission Share", f"{re_share:.1f}%",       "of total generation", positive=True)
+    st.markdown(
+        f"""
+        <div class="kpi-grid">
+            <div class="metric-card">
+                <div class="metric-label">Avg Intensity</div>
+                <div class="metric-value">{avg_intensity:.3f}</div>
+                <div class="metric-sub">t CO&#8322;-e / MWh</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Daily Low</div>
+                <div class="metric-value">{period_low:.3f}</div>
+                <div class="metric-sub">t CO&#8322;-e / MWh</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Daily High</div>
+                <div class="metric-value">{period_high:.3f}</div>
+                <div class="metric-sub">t CO&#8322;-e / MWh</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Generation</div>
+                <div class="metric-value">{total_mwh/1e3:.1f}k</div>
+                <div class="metric-sub">MWh</div>
+            </div>
+            <div class="metric-card positive full-span">
+                <div class="metric-label">Zero-Emission Share</div>
+                <div class="metric-value">{re_share:.1f}%</div>
+                <div class="metric-sub">of total generation</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown("""
