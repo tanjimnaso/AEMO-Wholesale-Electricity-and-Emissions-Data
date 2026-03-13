@@ -165,6 +165,35 @@ st.markdown("""
     color: var(--muted-foreground);
     line-height: var(--leading-base);
   }
+  .comparison-panel {
+    background: #f2f3f5;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.15rem;
+    height: 100%;
+  }
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 1.2rem;
+    margin-top: 0.9rem;
+  }
+  .comparison-item-label {
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+  }
+  .comparison-item-value {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground);
+    margin-bottom: 0.2rem;
+  }
+  .comparison-item-copy {
+    font-size: var(--text-base);
+    color: var(--muted-foreground);
+    line-height: var(--leading-base);
+  }
 
   /* ── Section text (bottom sections) ── */
   .section-text {
@@ -950,10 +979,13 @@ with reading_col:
         .loc[intensity_order]
         .reset_index()
     )
+    intensity_df["xpos"] = [0, 1, 2, 3, 4, 6]
+    st.markdown("<div style='height:1.1rem'></div>", unsafe_allow_html=True)
     intensity_fig = go.Figure(
         go.Bar(
-            x=intensity_df["display_label"],
+            x=intensity_df["xpos"],
             y=intensity_df["avg_intensity"],
+            width=[0.78] * len(intensity_df),
             marker=dict(
                 color=intensity_df["intensity_color"],
                 line=dict(color="#FFFFFF", width=0.8),
@@ -979,7 +1011,13 @@ with reading_col:
         margin=dict(l=10, r=10, t=46, b=10),
         height=320,
         showlegend=False,
-        xaxis=dict(showgrid=False, color="#6B7280"),
+        xaxis=dict(
+            showgrid=False,
+            color="#6B7280",
+            tickvals=intensity_df["xpos"],
+            ticktext=intensity_df["display_label"],
+            range=[-0.5, 6.6],
+        ),
         yaxis=dict(
             color="#6B7280",
             title_text="t CO₂-e / MWh",
@@ -1036,7 +1074,7 @@ with reading_col:
     )
     scenario_fig.update_layout(
         title=dict(
-            text=f"{selected_operation}, current versus alternative timing",
+            text="Current versus alternative timing",
             font=dict(family="Inter, sans-serif", color="#171717", size=15),
             x=0,
             xanchor="left",
@@ -1063,71 +1101,43 @@ with reading_col:
     with scenario_right:
         st.markdown(
             f"""
-            <div class="comparison-card">
+            <div class="comparison-panel">
                 <div class="comparison-label">Illustrative operating case</div>
                 <div class="comparison-value">{selected_operation}</div>
                 <div class="comparison-sub">{scenario["description"]}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.markdown("<div style='height:0.75rem'></div>", unsafe_allow_html=True)
-        c_current, c_reduction = st.columns(2)
-        with c_current:
-            st.markdown(
-                f"""
-                <div class="comparison-card">
-                    <div class="comparison-label">Current window</div>
-                    <div class="comparison-value">{scenario["current_window"]}</div>
-                    <div class="comparison-sub">{current_metrics["start_label"]} to {current_metrics["end_label"]}<br>{current_metrics["avg_intensity"]:.3f} t CO&#8322;-e / MWh</div>
+                <div class="comparison-grid">
+                    <div>
+                        <div class="comparison-item-label">Current window</div>
+                        <div class="comparison-item-value">{scenario["current_window"]}</div>
+                        <div class="comparison-item-copy">{current_metrics["start_label"]} to {current_metrics["end_label"]}<br>{current_metrics["avg_intensity"]:.3f} t CO&#8322;-e / MWh</div>
+                    </div>
+                    <div>
+                        <div class="comparison-item-label">Potential reduction</div>
+                        <div class="comparison-item-value">{reduction_pct:.0f}%</div>
+                        <div class="comparison-item-copy">{emissions_delta:,.1f} t CO&#8322;-e avoided for a {flexible_load_mwh:.0f} MWh flexible load</div>
+                    </div>
+                    <div style="grid-column:1 / -1;">
+                        <div class="comparison-item-label">Illustrative carbon-cost equivalent</div>
+                        <div class="comparison-item-value">A${illustrative_cost_delta:,.0f}</div>
+                        <div class="comparison-item-copy">Uses A${ILLUSTRATIVE_CARBON_RATE}/t CO&#8322;-e as a simple reference point. This is not an electricity tariff estimate.</div>
+                    </div>
                 </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        with c_reduction:
-            st.markdown(
-                f"""
-                <div class="comparison-card">
-                    <div class="comparison-label">Potential reduction</div>
-                    <div class="comparison-value">{reduction_pct:.0f}%</div>
-                    <div class="comparison-sub">{emissions_delta:,.1f} t CO&#8322;-e avoided for a {flexible_load_mwh:.0f} MWh flexible load</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        st.markdown("<div style='height:0.75rem'></div>", unsafe_allow_html=True)
-        st.markdown(
-            f"""
-            <div class="comparison-card">
-                <div class="comparison-label">Illustrative carbon-cost equivalent</div>
-                <div class="comparison-value">A${illustrative_cost_delta:,.0f}</div>
-                <div class="comparison-sub">Uses A${ILLUSTRATIVE_CARBON_RATE}/t CO&#8322;-e as a simple reference point. This is not an electricity tariff estimate.</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
-
-    caveat_a, caveat_b = st.columns(2, gap="large")
-    with caveat_a:
-        st.markdown(
-            """
-            <div class="comparison-card">
-                <div class="comparison-label">Operational fit matters</div>
-                <div class="comparison-sub">The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations.</div>
+    st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="comparison-panel">
+            <div class="comparison-label">Operational caveat</div>
+            <div class="comparison-sub">
+                The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations. This app models emissions timing, not your contracted tariff, so a decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with caveat_b:
-        st.markdown(
-            """
-            <div class="comparison-card">
-                <div class="comparison-label">Cost outcome depends on tariff</div>
-                <div class="comparison-sub">This app models emissions timing, not your contracted tariff. A decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
