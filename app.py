@@ -329,6 +329,18 @@ st.markdown("""
     text-align: center;
     margin: 0.35rem auto 0 auto;
   }
+  .hero-image-band {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    margin-bottom: 1.5rem;
+  }
+  .hero-image-band img {
+    display: block;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+  }
   .floating-nav {
     position: fixed;
     left: 22px;
@@ -574,9 +586,9 @@ st.markdown("""
 
 header_image_path = Path(__file__).parent / "Photography" / "gettyimages-1340827964-2048x2048.jpg"
 if header_image_path.exists():
-    _, header_image_col, _ = st.columns([1, 5, 1])
-    with header_image_col:
-        st.image(str(header_image_path), use_container_width=True)
+    st.markdown("<div class='hero-image-band'>", unsafe_allow_html=True)
+    st.image(str(header_image_path), use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 _, reading_col, _ = st.columns([1, 5, 1])
 with reading_col:
