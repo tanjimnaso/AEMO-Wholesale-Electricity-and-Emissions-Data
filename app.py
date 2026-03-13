@@ -1,5 +1,5 @@
 """
-app.py, Australia East Emissions Intensity Dashboard
+app.py, ELT Project by Tanjim Islam
 ======================================================
 Data flow:
   data/dispatch_scada.csv    → 5-min SCADA generation (MW) per DUID, ingested nightly
@@ -17,7 +17,7 @@ from pathlib import Path
 # Page config
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Australia East Emissions Intensity Dashboard",
+    page_title="AEMO Electricity Generation & Emissions Data Pipeline",
 
     layout="wide",
 )
