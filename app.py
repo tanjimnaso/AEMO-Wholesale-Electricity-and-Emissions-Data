@@ -866,7 +866,9 @@ fig.update_yaxes(
 fig.update_yaxes(
     title_text="t CO\u2082-e per interval",
     showgrid=False,
-    zeroline=False, color="#9CA3AF",
+    zeroline=False,
+    range=[0, 1600],
+    color="#9CA3AF",
     secondary_y=True,
 )
 
