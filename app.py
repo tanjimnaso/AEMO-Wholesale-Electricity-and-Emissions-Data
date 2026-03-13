@@ -122,6 +122,10 @@ st.markdown("""
     padding: 16px 20px;
     text-align: center;
   }
+  .metric-card.positive {
+    background: #e8f3ff;
+    border-color: #bfdbfe;
+  }
   .metric-label {
     font-size: var(--text-sm);
     color: var(--muted-foreground);
@@ -646,6 +650,10 @@ def masked_avg_intensity(mask):
     return mask_tco2e / mask_mwh if mask_mwh > 0 else 0
 
 
+def to_decimal_hour(ts):
+    return ts.hour + ts.minute / 60
+
+
 night_shift_avg_intensity = masked_avg_intensity(dff["SETTLEMENTDATE"].dt.hour < 6)
 early_shift_avg_intensity = masked_avg_intensity(
     (dff["SETTLEMENTDATE"].dt.hour >= 6) & (dff["SETTLEMENTDATE"].dt.hour < 9)
@@ -670,9 +678,29 @@ business_window_df = pd.DataFrame(
             clean_window_intensity if clean_window_intensity is not None else 0,
             late_shift_avg_intensity,
         ],
-        "color": ["#9CA3AF", "#6B7280", "#171717", "#27AE60", "#4B5563"],
+        "start": [
+            0,
+            6,
+            9,
+            to_decimal_hour(clean_window_start) if clean_window_start is not None else 12,
+            17,
+        ],
+        "end": [
+            6,
+            9,
+            17,
+            to_decimal_hour(clean_window_end) + (5 / 60) if clean_window_end is not None else 16,
+            22,
+        ],
     }
 )
+business_window_df["duration"] = business_window_df["end"] - business_window_df["start"]
+business_window_df["start_label"] = business_window_df["start"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
+business_window_df["end_label"] = business_window_df["end"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
+
+blue_scale = ["#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#1d4ed8"]
+ranked_windows = business_window_df["intensity"].rank(method="first", ascending=True).astype(int) - 1
+business_window_df["color"] = ranked_windows.map(lambda idx: blue_scale[idx])
 
 
 # ─────────────────────────────────────────────────────────────
@@ -821,14 +849,21 @@ with reading_col:
 
     business_windows_fig = go.Figure(
         go.Bar(
-            x=business_window_df["window"],
-            y=business_window_df["intensity"],
+            x=business_window_df["duration"],
+            y=business_window_df["window"],
+            base=business_window_df["start"],
+            orientation="h",
             marker=dict(
                 color=business_window_df["color"],
                 line=dict(color="#FAFAF8", width=0.8),
             ),
-            width=0.72,
-            hovertemplate="%{x}<br><b>%{y:.3f}</b> t CO₂-e / MWh<extra></extra>",
+            width=0.68,
+            customdata=business_window_df[["start_label", "end_label", "intensity"]],
+            hovertemplate=(
+                "%{y}<br>"
+                "<b>%{customdata[0]} to %{customdata[1]}</b><br>"
+                "%{customdata[2]:.3f} t CO₂-e / MWh<extra></extra>"
+            ),
         )
     )
     business_windows_fig.update_layout(
@@ -844,14 +879,16 @@ with reading_col:
         margin=dict(l=10, r=10, t=46, b=10),
         height=320,
         showlegend=False,
-        xaxis=dict(showgrid=False, color="#6B7280"),
-        yaxis=dict(
-            title_text="t CO₂-e / MWh",
+        xaxis=dict(
+            range=[0, 24],
+            tickvals=[0, 6, 12, 18, 24],
+            ticktext=["00:00", "06:00", "12:00", "18:00", "24:00"],
             showgrid=True,
             gridcolor="#F3F4F6",
             color="#6B7280",
-            rangemode="tozero",
+            title_text="Time of day",
         ),
+        yaxis=dict(color="#6B7280", autorange="reversed"),
     )
     st.plotly_chart(business_windows_fig, use_container_width=True)
 
@@ -875,9 +912,10 @@ interval_agg = (
 period_low  = interval_agg["intensity"].min() if not interval_agg.empty else 0
 period_high = interval_agg["intensity"].max() if not interval_agg.empty else 0
 
-def kpi(col, label, value, sub=""):
+def kpi(col, label, value, sub="", positive=False):
+    card_class = "metric-card positive" if positive else "metric-card"
     col.markdown(
-        f'<div class="metric-card">'
+        f'<div class="{card_class}">'
         f'<div class="metric-label">{label}</div>'
         f'<div class="metric-value">{value}</div>'
         f'<div class="metric-sub">{sub}</div>'
@@ -1049,7 +1087,7 @@ with chart_col:
     kpi(k2, "Daily Low",           f"{period_low:.3f}",      "t CO&#8322;-e / MWh")
     kpi(k3, "Daily High",          f"{period_high:.3f}",     "t CO&#8322;-e / MWh")
     kpi(k4, "Total Generation",    f"{total_mwh/1e3:.1f}k",  "MWh")
-    kpi(k5, "Zero-Emission Share", f"{re_share:.1f}%",       "of total generation")
+    kpi(k5, "Zero-Emission Share", f"{re_share:.1f}%",       "of total generation", positive=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown("""
