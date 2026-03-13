@@ -749,9 +749,48 @@ business_window_df = pd.DataFrame(business_windows)
 business_window_df["duration"] = business_window_df["end"] - business_window_df["start"]
 business_window_df["start_label"] = business_window_df["start"].map(decimal_hour_to_label)
 business_window_df["end_label"] = business_window_df["end"].map(decimal_hour_to_label)
+business_window_df["mwh"] = [
+    dff.loc[mask, "mwh"].sum() for mask in business_window_df["mask"]
+]
 business_window_df["emissions"] = [
     dff.loc[mask, emission_col].sum() for mask in business_window_df["mask"]
 ]
+business_window_df["avg_intensity"] = (
+    business_window_df["emissions"] / business_window_df["mwh"]
+).where(business_window_df["mwh"] > 0, 0)
+
+intensity_scale = ["#dbeafe", "#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1e3a8a"]
+window_ranks = business_window_df["avg_intensity"].rank(method="first", ascending=True).astype(int) - 1
+business_window_df["intensity_color"] = window_ranks.map(lambda idx: intensity_scale[idx])
+window_metrics = business_window_df.set_index("window").to_dict("index")
+
+ILLUSTRATIVE_CARBON_RATE = 75
+operation_profiles = {
+    "Food manufacturing": {
+        "current_window": "Food operations",
+        "alternative_window": "Cheapest 4 hours",
+        "flexible_load_mwh": 20,
+        "description": "Illustrative batch cooking, pasteurisation or CIP cleaning load shifted away from its usual production window.",
+    },
+    "Small site operations": {
+        "current_window": "Small site operations",
+        "alternative_window": "Cheapest 4 hours",
+        "flexible_load_mwh": 8,
+        "description": "Illustrative EV charging, HVAC pre-cooling or pump load for a smaller commercial or light-industrial site.",
+    },
+    "Commercial HVAC": {
+        "current_window": "Standard hours",
+        "alternative_window": "Cheapest 4 hours",
+        "flexible_load_mwh": 5,
+        "description": "Illustrative pre-cooling or thermal storage strategy where part of the load can move earlier in the day.",
+    },
+    "Cold storage / warehouse": {
+        "current_window": "Late hours",
+        "alternative_window": "Cheapest 4 hours",
+        "flexible_load_mwh": 12,
+        "description": "Illustrative refrigeration defrost, charging or dispatch-prep load moved away from the evening shoulder.",
+    },
+}
 
 
 # ─────────────────────────────────────────────────────────────
@@ -898,108 +937,38 @@ with reading_col:
     </div>
     """, unsafe_allow_html=True)
 
-    business_windows_fig = go.Figure()
-    business_annotations = []
-    cleanest_window = None
-
-    for _, window in business_window_df.iterrows():
-        if window["window"] == "Cheapest 4 hours":
-            cleanest_window = window
-            continue
-
-        business_windows_fig.add_trace(
-            go.Bar(
-                x=[window["start"] + (window["duration"] / 2)],
-                y=[window["emissions"]],
-                width=[window["duration"]],
-                marker=dict(
-                    color=window["color"],
-                    line=dict(color="#FFFFFF", width=0.8),
-                ),
-                opacity=window["opacity"],
-                customdata=[[
-                    window["display_label"],
-                    window["start_label"],
-                    window["end_label"],
-                    window["emissions"],
-                ]],
-                hovertemplate=(
-                    "<b>%{customdata[0]}</b><br>"
-                    "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
-                    "Emissions: %{customdata[3]:,.0f} t CO₂-e<extra></extra>"
-                ),
-                showlegend=False,
-            )
+    intensity_order = [
+        "Night shift",
+        "Food operations",
+        "Small site operations",
+        "Standard hours",
+        "Late hours",
+        "Cheapest 4 hours",
+    ]
+    intensity_df = (
+        business_window_df.set_index("window")
+        .loc[intensity_order]
+        .reset_index()
+    )
+    intensity_fig = go.Figure(
+        go.Bar(
+            x=intensity_df["display_label"],
+            y=intensity_df["avg_intensity"],
+            marker=dict(
+                color=intensity_df["intensity_color"],
+                line=dict(color="#FFFFFF", width=0.8),
+            ),
+            customdata=intensity_df[["display_label", "start_label", "end_label", "avg_intensity"]],
+            hovertemplate=(
+                "<b>%{customdata[0]}</b><br>"
+                "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+                "Average emissions: %{customdata[3]:.3f} t CO₂-e / MWh<extra></extra>"
+            ),
         )
-
-        business_annotations.append(
-            dict(
-                x=window["start"] + (window["duration"] / 2),
-                y=max(window["emissions"] * window["label_y_ratio"], 0),
-                text=window["display_label"],
-                showarrow=False,
-                font=dict(
-                    color=window["text_color"],
-                    size=11,
-                    family="Inter, sans-serif",
-                ),
-                xanchor="center",
-                yanchor="middle",
-                align="center",
-            )
-        )
-
-    if cleanest_window is not None:
-        business_windows_fig.add_trace(
-            go.Scatter(
-                x=[
-                    cleanest_window["start"],
-                    cleanest_window["end"],
-                    cleanest_window["end"],
-                    cleanest_window["start"],
-                    cleanest_window["start"],
-                ],
-                y=[
-                    0,
-                    0,
-                    cleanest_window["emissions"],
-                    cleanest_window["emissions"],
-                    0,
-                ],
-                mode="lines",
-                fill="toself",
-                fillcolor="rgba(163, 230, 53, 0.06)",
-                line=dict(color="#84cc16", width=2, dash="dash"),
-                customdata=[[
-                    cleanest_window["display_label"],
-                    cleanest_window["start_label"],
-                    cleanest_window["end_label"],
-                    cleanest_window["emissions"],
-                ]] * 5,
-                hovertemplate=(
-                    "<b>%{customdata[0]}</b><br>"
-                    "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
-                    "Emissions: %{customdata[3]:,.0f} t CO₂-e<extra></extra>"
-                ),
-                showlegend=False,
-            )
-        )
-        business_annotations.append(
-            dict(
-                x=cleanest_window["start"] + (cleanest_window["duration"] / 2),
-                y=max(cleanest_window["emissions"] * cleanest_window["label_y_ratio"], 0),
-                text="Cheapest 4 hours",
-                showarrow=False,
-                font=dict(color="#1f2937", size=11, family="Inter, sans-serif"),
-                xanchor="center",
-                yanchor="middle",
-                align="center",
-            )
-        )
-
-    business_windows_fig.update_layout(
+    )
+    intensity_fig.update_layout(
         title=dict(
-            text="Business-Oriented Comparison",
+            text="Average Emissions Intensity by Operating Window",
             font=dict(family="Inter, sans-serif", color="#171717", size=15),
             x=0,
             xanchor="left",
@@ -1010,26 +979,155 @@ with reading_col:
         margin=dict(l=10, r=10, t=46, b=10),
         height=320,
         showlegend=False,
-        barmode="overlay",
-        annotations=business_annotations,
-        xaxis=dict(
-            range=[0, 24],
-            tickvals=[0, 6, 12, 18, 24],
-            ticktext=["00:00", "06:00", "12:00", "18:00", "24:00"],
-            showgrid=True,
-            gridcolor="#F3F4F6",
-            color="#6B7280",
-            title_text="Time of day",
-        ),
+        xaxis=dict(showgrid=False, color="#6B7280"),
         yaxis=dict(
             color="#6B7280",
-            title_text="t CO₂-e",
+            title_text="t CO₂-e / MWh",
             showgrid=True,
             gridcolor="#F3F4F6",
             rangemode="tozero",
         ),
     )
-    st.plotly_chart(business_windows_fig, use_container_width=True)
+    st.plotly_chart(intensity_fig, use_container_width=True)
+
+    st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
+    selected_operation = st.selectbox(
+        "Select an operating profile",
+        list(operation_profiles.keys()),
+        key="operation_profile",
+    )
+    scenario = operation_profiles[selected_operation]
+    current_metrics = window_metrics[scenario["current_window"]]
+    alternative_metrics = window_metrics[scenario["alternative_window"]]
+    flexible_load_mwh = scenario["flexible_load_mwh"]
+    current_emissions = flexible_load_mwh * current_metrics["avg_intensity"]
+    alternative_emissions = flexible_load_mwh * alternative_metrics["avg_intensity"]
+    emissions_delta = current_emissions - alternative_emissions
+    reduction_pct = (emissions_delta / current_emissions * 100) if current_emissions > 0 else 0
+    illustrative_cost_delta = emissions_delta * ILLUSTRATIVE_CARBON_RATE
+
+    scenario_fig = go.Figure()
+    scenario_fig.add_trace(
+        go.Bar(
+            x=["Current timing", "Potential alternative"],
+            y=[current_emissions, alternative_emissions],
+            marker=dict(color=["#1e3a8a", "#93c5fd"]),
+            customdata=[
+                [
+                    scenario["current_window"],
+                    current_metrics["start_label"],
+                    current_metrics["end_label"],
+                    current_metrics["avg_intensity"],
+                ],
+                [
+                    scenario["alternative_window"],
+                    alternative_metrics["start_label"],
+                    alternative_metrics["end_label"],
+                    alternative_metrics["avg_intensity"],
+                ],
+            ],
+            hovertemplate=(
+                "<b>%{customdata[0]}</b><br>"
+                "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+                "Average emissions: %{customdata[3]:.3f} t CO₂-e / MWh<br>"
+                "Scenario emissions: %{y:,.1f} t CO₂-e<extra></extra>"
+            ),
+        )
+    )
+    scenario_fig.update_layout(
+        title=dict(
+            text=f"{selected_operation}, current versus alternative timing",
+            font=dict(family="Inter, sans-serif", color="#171717", size=15),
+            x=0,
+            xanchor="left",
+        ),
+        plot_bgcolor="#FFFFFF",
+        paper_bgcolor="#FFFFFF",
+        font=dict(color="#374151", family="Inter, sans-serif"),
+        margin=dict(l=10, r=10, t=46, b=10),
+        height=300,
+        showlegend=False,
+        xaxis=dict(showgrid=False, color="#6B7280"),
+        yaxis=dict(
+            color="#6B7280",
+            title_text="t CO₂-e for illustrative load",
+            showgrid=True,
+            gridcolor="#F3F4F6",
+            rangemode="tozero",
+        ),
+    )
+
+    scenario_left, scenario_right = st.columns([1.5, 1], gap="large")
+    with scenario_left:
+        st.plotly_chart(scenario_fig, use_container_width=True)
+    with scenario_right:
+        st.markdown(
+            f"""
+            <div class="comparison-card">
+                <div class="comparison-label">Illustrative operating case</div>
+                <div class="comparison-value">{selected_operation}</div>
+                <div class="comparison-sub">{scenario["description"]}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.markdown("<div style='height:0.75rem'></div>", unsafe_allow_html=True)
+        c_current, c_reduction = st.columns(2)
+        with c_current:
+            st.markdown(
+                f"""
+                <div class="comparison-card">
+                    <div class="comparison-label">Current window</div>
+                    <div class="comparison-value">{scenario["current_window"]}</div>
+                    <div class="comparison-sub">{current_metrics["start_label"]} to {current_metrics["end_label"]}<br>{current_metrics["avg_intensity"]:.3f} t CO&#8322;-e / MWh</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with c_reduction:
+            st.markdown(
+                f"""
+                <div class="comparison-card">
+                    <div class="comparison-label">Potential reduction</div>
+                    <div class="comparison-value">{reduction_pct:.0f}%</div>
+                    <div class="comparison-sub">{emissions_delta:,.1f} t CO&#8322;-e avoided for a {flexible_load_mwh:.0f} MWh flexible load</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        st.markdown("<div style='height:0.75rem'></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="comparison-card">
+                <div class="comparison-label">Illustrative carbon-cost equivalent</div>
+                <div class="comparison-value">A${illustrative_cost_delta:,.0f}</div>
+                <div class="comparison-sub">Uses A${ILLUSTRATIVE_CARBON_RATE}/t CO&#8322;-e as a simple reference point. This is not an electricity tariff estimate.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    caveat_a, caveat_b = st.columns(2, gap="large")
+    with caveat_a:
+        st.markdown(
+            """
+            <div class="comparison-card">
+                <div class="comparison-label">Operational fit matters</div>
+                <div class="comparison-sub">The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with caveat_b:
+        st.markdown(
+            """
+            <div class="comparison-card">
+                <div class="comparison-label">Cost outcome depends on tariff</div>
+                <div class="comparison-sub">This app models emissions timing, not your contracted tariff. A decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
