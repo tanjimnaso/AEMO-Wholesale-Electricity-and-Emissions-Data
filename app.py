@@ -338,7 +338,7 @@ st.markdown("""
   .hero-image-band img {
     display: block;
     width: 100%;
-    height: 280px;
+    height: 112px;
     object-fit: cover;
   }
   .floating-nav {
