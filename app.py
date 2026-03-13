@@ -640,6 +640,41 @@ if len(five_min_benchmark) >= 48:
         clean_window_intensity = rolling_window.loc[clean_window_end, "intensity"]
 
 
+def masked_avg_intensity(mask):
+    mask_mwh = dff.loc[mask, "mwh"].sum()
+    mask_tco2e = dff.loc[mask, emission_col].sum()
+    return mask_tco2e / mask_mwh if mask_mwh > 0 else 0
+
+
+night_shift_avg_intensity = masked_avg_intensity(dff["SETTLEMENTDATE"].dt.hour < 6)
+early_shift_avg_intensity = masked_avg_intensity(
+    (dff["SETTLEMENTDATE"].dt.hour >= 6) & (dff["SETTLEMENTDATE"].dt.hour < 9)
+)
+late_shift_avg_intensity = masked_avg_intensity(
+    (dff["SETTLEMENTDATE"].dt.hour >= 17) & (dff["SETTLEMENTDATE"].dt.hour < 22)
+)
+
+business_window_df = pd.DataFrame(
+    {
+        "window": [
+            "Night shift",
+            "Early",
+            "Standard hours",
+            "Cheapest 4 hours",
+            "Late hours",
+        ],
+        "intensity": [
+            night_shift_avg_intensity,
+            early_shift_avg_intensity,
+            business_avg_intensity,
+            clean_window_intensity if clean_window_intensity is not None else 0,
+            late_shift_avg_intensity,
+        ],
+        "color": ["#9CA3AF", "#6B7280", "#171717", "#27AE60", "#4B5563"],
+    }
+)
+
+
 # ─────────────────────────────────────────────────────────────
 # Header
 # ─────────────────────────────────────────────────────────────
@@ -784,46 +819,41 @@ with reading_col:
     </div>
     """, unsafe_allow_html=True)
 
-    cmp1, cmp2, cmp3 = st.columns(3)
-    with cmp1:
-        st.markdown(
-            f"""
-            <div class="comparison-card">
-              <div class="comparison-label">Business Hours Avg</div>
-              <div class="comparison-value">{business_avg_intensity:.3f}</div>
-              <div class="comparison-sub">t CO&#8322;-e / MWh across 09:00 to 17:00.</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
+    business_windows_fig = go.Figure(
+        go.Bar(
+            x=business_window_df["window"],
+            y=business_window_df["intensity"],
+            marker=dict(
+                color=business_window_df["color"],
+                line=dict(color="#FAFAF8", width=0.8),
+            ),
+            width=0.72,
+            hovertemplate="%{x}<br><b>%{y:.3f}</b> t CO₂-e / MWh<extra></extra>",
         )
-    with cmp2:
-        st.markdown(
-            f"""
-            <div class="comparison-card">
-              <div class="comparison-label">After-Hours Avg</div>
-              <div class="comparison-value">{after_hours_avg_intensity:.3f}</div>
-              <div class="comparison-sub">t CO&#8322;-e / MWh outside the standard workday.</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    with cmp3:
-        clean_window_value = f"{clean_window_intensity:.3f}" if clean_window_intensity is not None else "-"
-        clean_window_sub = (
-            f"Best 4-hour window: {clean_window_start.strftime('%H:%M')} to {clean_window_end.strftime('%H:%M')}."
-            if clean_window_start is not None and clean_window_end is not None
-            else "Best 4-hour window unavailable for this day."
-        )
-        st.markdown(
-            f"""
-            <div class="comparison-card">
-              <div class="comparison-label">Cleanest 4-Hour Window</div>
-              <div class="comparison-value">{clean_window_value}</div>
-              <div class="comparison-sub">{clean_window_sub}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    )
+    business_windows_fig.update_layout(
+        title=dict(
+            text="Business-Oriented Comparison",
+            font=dict(family="Inter, sans-serif", color="#171717", size=15),
+            x=0,
+            xanchor="left",
+        ),
+        plot_bgcolor="#FFFFFF",
+        paper_bgcolor="#FFFFFF",
+        font=dict(color="#374151", family="Inter, sans-serif"),
+        margin=dict(l=10, r=10, t=46, b=10),
+        height=320,
+        showlegend=False,
+        xaxis=dict(showgrid=False, color="#6B7280"),
+        yaxis=dict(
+            title_text="t CO₂-e / MWh",
+            showgrid=True,
+            gridcolor="#F3F4F6",
+            color="#6B7280",
+            rangemode="tozero",
+        ),
+    )
+    st.plotly_chart(business_windows_fig, use_container_width=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -902,7 +932,10 @@ for tech in tech_order:
             x=subset["period"],
             y=subset["mwh"],
             name=tech,
-            marker_color=TECH_COLORS.get(tech, "#555"),
+            marker=dict(
+                color=TECH_COLORS.get(tech, "#555"),
+                line=dict(color="#FAFAF8", width=0.35),
+            ),
             hovertemplate=f"{tech}<br>%{{x|%H:%M}}<br><b>%{{y:,.0f}}</b> MWh<extra></extra>",
         ),
         secondary_y=False,
