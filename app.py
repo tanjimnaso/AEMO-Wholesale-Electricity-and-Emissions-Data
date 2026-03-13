@@ -820,6 +820,8 @@ operation_profiles = {
         "description": "Illustrative refrigeration defrost, charging or dispatch-prep load moved away from the evening shoulder.",
     },
 }
+if "operation_profile" not in st.session_state:
+    st.session_state.operation_profile = list(operation_profiles.keys())[0]
 
 
 # ─────────────────────────────────────────────────────────────
@@ -871,6 +873,7 @@ with reading_col:
         </p>
     </div>
     """, unsafe_allow_html=True)
+    dashboard_placeholder = st.container()
 
     # ── ASRS tiers ───────────────────────────────────────────────
     st.markdown(
@@ -1028,14 +1031,8 @@ with reading_col:
     )
     st.plotly_chart(intensity_fig, use_container_width=True)
 
-    st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
-    selected_operation = st.selectbox(
-        "Select an operating profile",
-        list(operation_profiles.keys()),
-        key="operation_profile",
-    )
-    st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
     st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
+    selected_operation = st.session_state.operation_profile
     scenario = operation_profiles[selected_operation]
     current_metrics = window_metrics[scenario["current_window"]]
     alternative_metrics = window_metrics[scenario["alternative_window"]]
@@ -1100,6 +1097,12 @@ with reading_col:
     scenario_left, scenario_right = st.columns([1.5, 1], gap="large")
     with scenario_left:
         st.plotly_chart(scenario_fig, use_container_width=True)
+        st.markdown("<div style='height:0.45rem'></div>", unsafe_allow_html=True)
+        st.selectbox(
+            "Select an operating profile",
+            list(operation_profiles.keys()),
+            key="operation_profile",
+        )
     with scenario_right:
         st.markdown(
             f"""
@@ -1240,6 +1243,19 @@ fig.add_trace(
     secondary_y=True,
 )
 
+if clean_window_start is not None and clean_window_end is not None:
+    fig.add_vrect(
+        x0=clean_window_start,
+        x1=clean_window_end + pd.Timedelta(minutes=5),
+        fillcolor="#bbf7d0",
+        opacity=0.22,
+        layer="below",
+        line_width=0,
+        annotation_text="Cleanest 4 hours",
+        annotation_position="top left",
+        annotation_font=dict(color="#166534", family="Inter, sans-serif", size=11),
+    )
+
 fig.update_layout(
     barmode="stack",
     bargap=0,
@@ -1288,9 +1304,8 @@ fig.update_yaxes(
     secondary_y=True,
 )
 
-st.markdown('<div id="dashboard"></div>', unsafe_allow_html=True)
-_, chart_col, _ = st.columns([0.2, 9.6, 0.2])
-with chart_col:
+with dashboard_placeholder:
+    st.markdown('<div id="dashboard"></div>', unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns([1.15, 1.1, 1.35, 2.4], gap="medium")
     with c1:
         st.date_input(
