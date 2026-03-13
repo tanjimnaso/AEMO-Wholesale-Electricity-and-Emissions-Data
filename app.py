@@ -820,7 +820,7 @@ fig.add_trace(
         y=agg["tco2e"],
         name="Emissions (t CO\u2082-e)",
         mode="lines",
-        line=dict(color="#9ca3af", width=3),
+        line=dict(color="#000000", width=3),
         hovertemplate="%{x|%H:%M}<br><b>%{y:,.0f}</b> t CO\u2082-e<extra></extra>",
     ),
     secondary_y=True,
@@ -828,6 +828,8 @@ fig.add_trace(
 
 fig.update_layout(
     barmode="stack",
+    bargap=0,
+    bargroupgap=0,
     title=dict(
         text=chart_title,
         font=dict(family="Inter, sans-serif", color="#171717", size=15),
