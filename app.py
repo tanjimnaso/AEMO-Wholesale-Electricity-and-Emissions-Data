@@ -89,24 +89,6 @@ st.markdown("""
     display: none !important;
   }
   div[data-testid="collapsedControl"] { display: none !important; }
-  section[data-testid="stSidebar"] * { color: #374151 !important; }
-  section[data-testid="stSidebar"] a { color: #1a3a5c !important; }
-  section[data-testid="stSidebar"] label { color: #374151 !important; }
-  /* Sidebar widget inputs, force light background */
-  section[data-testid="stSidebar"] .stSelectbox > div > div,
-  section[data-testid="stSidebar"] .stDateInput > div > div,
-  section[data-testid="stSidebar"] .stMultiSelect > div > div,
-  section[data-testid="stSidebar"] input[type="text"] {
-    background-color: #FFFFFF !important;
-    color: #1a1a2e !important;
-    border: 1px solid #D1D5DB !important;
-  }
-  /* Multiselect tag pills */
-  section[data-testid="stSidebar"] .stMultiSelect span[data-baseweb="tag"] {
-    background-color: #E0E7EF !important;
-    color: #1a3a5c !important;
-  }
-  .sidebar-note,
   .controls-note {
     font-size: var(--text-sm);
     color: var(--muted-foreground);
@@ -121,6 +103,10 @@ st.markdown("""
     border-radius: var(--radius);
     padding: 16px 20px;
     text-align: center;
+    min-height: 132px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .metric-card.positive {
     background: #e8f3ff;
@@ -141,13 +127,7 @@ st.markdown("""
     font-size: var(--text-sm);
     color: var(--muted-foreground);
     font-family: var(--font-family-sans);
-  }
-  .comparison-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem;
-    height: 100%;
+    min-height: 2.4em;
   }
   .comparison-label {
     font-size: var(--text-sm);
@@ -663,20 +643,12 @@ five_min_benchmark["intensity"] = (
 
 clean_window_start = None
 clean_window_end = None
-clean_window_intensity = None
 if len(five_min_benchmark) >= 48:
     rolling_window = five_min_benchmark[["mwh", "tco2e"]].rolling(window=48, min_periods=48).sum()
     rolling_window["intensity"] = rolling_window["tco2e"] / rolling_window["mwh"]
     if rolling_window["intensity"].notna().any():
         clean_window_end = rolling_window["intensity"].idxmin()
         clean_window_start = clean_window_end - pd.Timedelta(minutes=5 * 47)
-        clean_window_intensity = rolling_window.loc[clean_window_end, "intensity"]
-
-
-def masked_avg_intensity(mask):
-    mask_mwh = dff.loc[mask, "mwh"].sum()
-    mask_tco2e = dff.loc[mask, emission_col].sum()
-    return mask_tco2e / mask_mwh if mask_mwh > 0 else 0
 
 
 def to_decimal_hour(ts):
@@ -701,6 +673,7 @@ clean_window_start_hour = to_decimal_hour(clean_window_start) if clean_window_st
 clean_window_end_hour = (
     to_decimal_hour(clean_window_end) + (5 / 60) if clean_window_end is not None else 16
 )
+empty_mask = pd.Series(False, index=dff.index, dtype=bool)
 
 business_windows = [
     {
@@ -708,10 +681,6 @@ business_windows = [
         "display_label": "Night shift",
         "start": 0,
         "end": 6,
-        "color": "#1e40af",
-        "opacity": 0.76,
-        "text_color": "#FFFFFF",
-        "label_y_ratio": 0.54,
         "mask": time_window_mask(0, 6),
     },
     {
@@ -719,10 +688,6 @@ business_windows = [
         "display_label": "Standard hours",
         "start": 9,
         "end": 17,
-        "color": "#1d4ed8",
-        "opacity": 0.58,
-        "text_color": "#FFFFFF",
-        "label_y_ratio": 0.52,
         "mask": time_window_mask(9, 17),
     },
     {
@@ -730,10 +695,6 @@ business_windows = [
         "display_label": "Food operations",
         "start": 6,
         "end": 15,
-        "color": "#2563eb",
-        "opacity": 0.72,
-        "text_color": "#FFFFFF",
-        "label_y_ratio": 0.88,
         "mask": time_window_mask(6, 15),
     },
     {
@@ -741,10 +702,6 @@ business_windows = [
         "display_label": "Small site operations",
         "start": 8,
         "end": 16,
-        "color": "#60a5fa",
-        "opacity": 0.84,
-        "text_color": "#FFFFFF",
-        "label_y_ratio": 0.70,
         "mask": time_window_mask(8, 16),
     },
     {
@@ -752,24 +709,16 @@ business_windows = [
         "display_label": "Cheapest 4 hours",
         "start": clean_window_start_hour,
         "end": clean_window_end_hour,
-        "color": "#94a3b8",
-        "opacity": 1.0,
-        "text_color": "#0f172a",
-        "label_y_ratio": 0.45,
         "mask": (
             (dff["SETTLEMENTDATE"] >= clean_window_start) &
             (dff["SETTLEMENTDATE"] <= clean_window_end)
-        ) if clean_window_start is not None and clean_window_end is not None else pd.Series(False, index=dff.index),
+        ) if clean_window_start is not None and clean_window_end is not None else empty_mask,
     },
     {
         "window": "Late hours",
         "display_label": "Late hours",
         "start": 17,
         "end": 22,
-        "color": "#3b82f6",
-        "opacity": 0.76,
-        "text_color": "#FFFFFF",
-        "label_y_ratio": 0.54,
         "mask": time_window_mask(17, 22),
     },
 ]
@@ -831,7 +780,7 @@ st.markdown('<div id="introduction"></div>', unsafe_allow_html=True)
 st.markdown("""
 <div class="header-band">
   <div class="page-header">Australia East Emission Interactive Dashboard</div>
-  <div class='page-deck'>This is a personal project by Tanjim Islam, for demonstrational purposes only, and does not constitute professional advice</div>
+  <div class='page-deck'>This is a personal project by Tanjim Islam, for demonstration purposes only, and does not constitute professional advice</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -873,8 +822,11 @@ with reading_col:
         </p>
     </div>
     """, unsafe_allow_html=True)
-    dashboard_placeholder = st.container()
 
+dashboard_placeholder = st.container()
+
+_, reading_col, _ = st.columns([1, 5, 1])
+with reading_col:
     # ── ASRS tiers ───────────────────────────────────────────────
     st.markdown(
         "<p class='eyebrow'>ASRS Reporting Thresholds, Who Must Disclose</p>",
@@ -921,11 +873,15 @@ with reading_col:
 
     st.markdown("""
         <div class="methodology-note">
+        <p>
         A regional food manufacturer with 300 staff is already in scope under Group 2.
         The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.
-        Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.</p>
-        The expectation isn't ‘turn things off’, it's ‘time what you can, when the grid is cleanest.’</p>
-    
+        Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.
+        </p>
+        <p>
+        The expectation isn't "turn things off", it's "time what you can, when the grid is cleanest."
+        </p>
+        </div>
  """, unsafe_allow_html=True)
 
     st.markdown("""
@@ -1365,12 +1321,12 @@ with dashboard_placeholder:
        """, unsafe_allow_html=True)
 
     st.markdown(
-        f"<div class='chart-insight'>"
-        f"Businesses with flexible load operating during today's cleanest 4-hour window could avoid an estimated "
-        f"<strong>~30% of the Scope 2 emissions</strong> they would have incurred running the same load overnight "
-        f", rising above 50% on high-renewable days. "
-        f"Average derived from NEM dispatch data; low estimate ~20% (winter, low solar), high estimate ~50–55% (peak summer renewable days)."
-        f"</div>",
+        "<div class='chart-insight'>"
+        "Businesses with flexible load operating during today's cleanest 4-hour window could avoid an estimated "
+        "<strong>~30% of the Scope 2 emissions</strong> they would have incurred running the same load overnight, "
+        "rising above 50% on high-renewable days. "
+        "Average derived from NEM dispatch data; low estimate ~20% (winter, low solar), high estimate ~50–55% (peak summer renewable days)."
+        "</div>",
         unsafe_allow_html=True
     )
 
@@ -1480,7 +1436,7 @@ with bottom_text_col:
     <div class="section-text">
     <h3 class="section-heading">Data</h3>
     <b>Ingestion &amp; orchestration</b>: GitHub Actions orchestrates a daily job that fetches AEMO zip files via <code>urllib</code>, appends to a historical dataset, and writes curated CSV outputs.<br><br>
-    <b>Transform &amp; model</b>: Python code join dispatch_scada.csv, duid_lookup.csv, and emissions_factors.csv, joins SCADA and DUID, and Emissions on Technology Type. It converts dispatch MW into interval MWh with: mwh = SCADAVALUE * (5 / 60)<br><br>
+    <b>Transform &amp; model</b>: Python joins <code>dispatch_scada.csv</code>, <code>duid_lookup.csv</code>, and <code>emissions_factors.csv</code>. It maps SCADA records to DUID metadata, joins emissions factors on technology type, and converts dispatch MW into interval MWh with <code>mwh = SCADAVALUE * (5 / 60)</code>.<br><br>
     <b>Data Validation and Quality</b>: Power BI was used for manual validation.
     </div>
     """, unsafe_allow_html=True)
@@ -1518,7 +1474,7 @@ st.markdown("""
 <div class="page-footer">
   <div class="footer-inner">
     <div>
-      This is a personal project by Tanjim Islam, for demonstrational purposes only, and does not constitute professional advice.
+      This is a personal project by Tanjim Islam, for demonstration purposes only, and does not constitute professional advice.
     </div>
     <a class="linkedin-link" href="https://www.linkedin.com/in/tanjimislam/" target="_blank" rel="noopener noreferrer">
       <svg class="linkedin-icon" viewBox="0 0 24 24" aria-hidden="true">
