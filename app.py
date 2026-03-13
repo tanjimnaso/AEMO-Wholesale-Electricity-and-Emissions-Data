@@ -95,6 +95,28 @@ st.markdown("""
     line-height: var(--leading-base);
     margin-top: 0.65rem;
   }
+  .chart-title {
+    font-family: var(--font-family-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground);
+    line-height: 1.35;
+    margin: 0 0 0.55rem 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .chart-axis-notes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    margin: 0 0 0.4rem 0;
+  }
+  .chart-axis-notes span:last-child {
+    text-align: right;
+  }
 
   /* ── Metric cards ── */
   .metric-card {
@@ -456,8 +478,8 @@ st.markdown("""
   }
   @media (max-width: 900px) {
     .block-container {
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
+      padding-left: 0.65rem !important;
+      padding-right: 0.65rem !important;
       padding-top: 1.25rem !important;
       max-width: 100% !important;
     }
@@ -490,6 +512,30 @@ st.markdown("""
     }
     .section-text {
       max-width: 100% !important;
+    }
+    .usecase-grid {
+      max-width: 100% !important;
+    }
+    .usecase-item {
+      background: transparent !important;
+      border: 0 !important;
+      border-bottom: 1px solid var(--border) !important;
+      border-radius: 0 !important;
+      padding: 0 0 0.85rem 0 !important;
+    }
+    .chart-title {
+      font-size: 1.15rem;
+      margin-bottom: 0.35rem;
+    }
+    .chart-axis-notes {
+      margin-bottom: 0.25rem;
+    }
+    .chart-insight {
+      background: transparent;
+      border-left: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 0;
     }
     .js-plotly-plot .modebar,
     .js-plotly-plot .legend {
@@ -1250,6 +1296,12 @@ if not interval_agg.empty and period_low > 0:
 else:
     chart_title = "Generation Mix & Absolute Emissions"
 
+chart_tickvals = pd.date_range(
+    start=pd.Timestamp(selected_date),
+    end=pd.Timestamp(selected_date) + pd.Timedelta(hours=22),
+    freq="2h",
+)
+chart_ticktext = [str(ts.hour) for ts in chart_tickvals]
 
 # ─────────────────────────────────────────────────────────────
 # Combo chart, stacked bars (MWh) + absolute emissions line
@@ -1301,17 +1353,14 @@ fig.update_layout(
     barmode="stack",
     bargap=0,
     bargroupgap=0,
-    title=dict(
-        text=chart_title,
-        font=dict(family="Inter, sans-serif", color="#171717", size=15),
-        x=0,
-        xanchor="left",
-    ),
     xaxis=dict(
         showgrid=False,
         color="#6B7280",
-        tickformat="%H:%M",
-        dtick=3600000 * 2,
+        tickmode="array",
+        tickvals=chart_tickvals,
+        ticktext=chart_ticktext,
+        tickangle=0,
+        automargin=True,
     ),
     plot_bgcolor="#FFFFFF",
     paper_bgcolor="#FFFFFF",
@@ -1325,23 +1374,24 @@ fig.update_layout(
         xanchor="center",
         x=0.5,
     ),
-    margin=dict(l=10, r=10, t=92, b=86),
+    margin=dict(l=0, r=0, t=8, b=72),
     hovermode="x unified",
     height=520,
 )
 
 fig.update_yaxes(
-    title_text="MWh per interval",
+    title_text="",
     showgrid=True, gridcolor="#F3F4F6",
-    zeroline=False, color="#6B7280",
+    zeroline=False, color="#6B7280", automargin=True,
     secondary_y=False,
 )
 fig.update_yaxes(
-    title_text="t CO\u2082-e per interval",
+    title_text="",
     showgrid=False,
     zeroline=False,
     range=[0, int(((1600 * interval_minutes / 15) + 99) // 100) * 100],
     color="#9CA3AF",
+    automargin=True,
     secondary_y=True,
 )
 
@@ -1385,6 +1435,11 @@ with dashboard_placeholder:
                 "NGA 2025 specifies Scope 3 factors for coal fuels only."
             )
 
+    st.markdown(f"<div class='chart-title'>{chart_title}</div>", unsafe_allow_html=True)
+    st.markdown(
+        "<div class='chart-axis-notes'><span>Left, MWh</span><span>Right, t CO&#8322;-e</span></div>",
+        unsafe_allow_html=True,
+    )
     st.plotly_chart(fig, use_container_width=True)
 
     k1, k2, k3, k4, k5 = st.columns(5)
