@@ -537,6 +537,12 @@ RESOLUTIONS = {
     "30 minutes": "30min",
 }
 
+INTERVAL_MINUTES = {
+    "5 minutes": 5,
+    "15 minutes": 15,
+    "30 minutes": 30,
+}
+
 
 date_min = df["SETTLEMENTDATE"].dt.date.min()
 date_max = df["SETTLEMENTDATE"].dt.date.max()
@@ -559,6 +565,7 @@ if "sel_regions" not in st.session_state:
 selected_date = st.session_state.selected_date
 resolution_label = st.session_state.resolution_label
 resolution = RESOLUTIONS[resolution_label]
+interval_minutes = INTERVAL_MINUTES[resolution_label]
 scope_choice = st.session_state.scope_choice
 sel_regions = st.session_state.sel_regions
 
@@ -869,7 +876,7 @@ fig.update_yaxes(
     title_text="t CO\u2082-e per interval",
     showgrid=False,
     zeroline=False,
-    range=[0, 1600],
+    range=[0, int(((1600 * interval_minutes / 15) + 99) // 100) * 100],
     color="#9CA3AF",
     secondary_y=True,
 )
