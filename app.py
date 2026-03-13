@@ -572,7 +572,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-header_image_path = Path(__file__).parent / "photography" / "gettyimages-1340827964-2048x2048.jpg"
+header_image_path = Path(__file__).parent / "Photography" / "gettyimages-1340827964-2048x2048.jpg"
 if header_image_path.exists():
     _, header_image_col, _ = st.columns([1, 5, 1])
     with header_image_col:
