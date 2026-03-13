@@ -572,6 +572,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+header_image_path = Path(__file__).parent / "photography" / "gettyimages-1340827964-2048x2048.jpg"
+if header_image_path.exists():
+    _, header_image_col, _ = st.columns([1, 5, 1])
+    with header_image_col:
+        st.image(str(header_image_path), use_container_width=True)
+
 _, reading_col, _ = st.columns([1, 5, 1])
 with reading_col:
     st.title("NEM Scope 2 Timing Tool")
