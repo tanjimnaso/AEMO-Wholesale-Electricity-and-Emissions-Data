@@ -138,6 +138,29 @@ st.markdown("""
     color: var(--muted-foreground);
     font-family: var(--font-family-sans);
   }
+  .comparison-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    height: 100%;
+  }
+  .comparison-label {
+    font-size: var(--text-sm);
+    color: var(--muted-foreground);
+    margin-bottom: 0.4rem;
+  }
+  .comparison-value {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--foreground);
+    margin-bottom: 0.35rem;
+  }
+  .comparison-sub {
+    font-size: var(--text-base);
+    color: var(--muted-foreground);
+    line-height: var(--leading-base);
+  }
 
   /* ── Section text (bottom sections) ── */
   .section-text {
@@ -582,6 +605,40 @@ dff_all = df[mask_all].copy()
 
 emission_col = "tco2e_scope1" if scope_choice == "Scope 1 only" else "tco2e_total"
 
+business_hours_mask = (
+    (dff["SETTLEMENTDATE"].dt.hour >= 9) &
+    (dff["SETTLEMENTDATE"].dt.hour < 17)
+)
+after_hours_mask = ~business_hours_mask
+
+business_mwh = dff.loc[business_hours_mask, "mwh"].sum()
+business_tco2e = dff.loc[business_hours_mask, emission_col].sum()
+business_avg_intensity = business_tco2e / business_mwh if business_mwh > 0 else 0
+
+after_hours_mwh = dff.loc[after_hours_mask, "mwh"].sum()
+after_hours_tco2e = dff.loc[after_hours_mask, emission_col].sum()
+after_hours_avg_intensity = after_hours_tco2e / after_hours_mwh if after_hours_mwh > 0 else 0
+
+five_min_benchmark = (
+    dff.groupby(dff["SETTLEMENTDATE"].dt.floor("5min"))
+    .agg(mwh=("mwh", "sum"), tco2e=(emission_col, "sum"))
+    .sort_index()
+)
+five_min_benchmark["intensity"] = (
+    five_min_benchmark["tco2e"] / five_min_benchmark["mwh"]
+).where(five_min_benchmark["mwh"] > 0)
+
+clean_window_start = None
+clean_window_end = None
+clean_window_intensity = None
+if len(five_min_benchmark) >= 48:
+    rolling_window = five_min_benchmark[["mwh", "tco2e"]].rolling(window=48, min_periods=48).sum()
+    rolling_window["intensity"] = rolling_window["tco2e"] / rolling_window["mwh"]
+    if rolling_window["intensity"].notna().any():
+        clean_window_end = rolling_window["intensity"].idxmin()
+        clean_window_start = clean_window_end - pd.Timedelta(minutes=5 * 47)
+        clean_window_intensity = rolling_window.loc[clean_window_end, "intensity"]
+
 
 # ─────────────────────────────────────────────────────────────
 # Header
@@ -727,6 +784,47 @@ with reading_col:
     </div>
     """, unsafe_allow_html=True)
 
+    cmp1, cmp2, cmp3 = st.columns(3)
+    with cmp1:
+        st.markdown(
+            f"""
+            <div class="comparison-card">
+              <div class="comparison-label">Business Hours Avg</div>
+              <div class="comparison-value">{business_avg_intensity:.3f}</div>
+              <div class="comparison-sub">t CO&#8322;-e / MWh across 09:00 to 17:00.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with cmp2:
+        st.markdown(
+            f"""
+            <div class="comparison-card">
+              <div class="comparison-label">After-Hours Avg</div>
+              <div class="comparison-value">{after_hours_avg_intensity:.3f}</div>
+              <div class="comparison-sub">t CO&#8322;-e / MWh outside the standard workday.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with cmp3:
+        clean_window_value = f"{clean_window_intensity:.3f}" if clean_window_intensity is not None else "-"
+        clean_window_sub = (
+            f"Best 4-hour window: {clean_window_start.strftime('%H:%M')} to {clean_window_end.strftime('%H:%M')}."
+            if clean_window_start is not None and clean_window_end is not None
+            else "Best 4-hour window unavailable for this day."
+        )
+        st.markdown(
+            f"""
+            <div class="comparison-card">
+              <div class="comparison-label">Cleanest 4-Hour Window</div>
+              <div class="comparison-value">{clean_window_value}</div>
+              <div class="comparison-sub">{clean_window_sub}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
     st.markdown("<br>", unsafe_allow_html=True)
 
 
@@ -756,15 +854,6 @@ def kpi(col, label, value, sub=""):
         f'</div>',
         unsafe_allow_html=True
     )
-
-k1, k2, k3, k4, k5 = st.columns(5)
-kpi(k1, "Avg Intensity",       f"{avg_intensity:.3f}",   "t CO&#8322;-e / MWh")
-kpi(k2, "Daily Low",           f"{period_low:.3f}",      "t CO&#8322;-e / MWh")
-kpi(k3, "Daily High",          f"{period_high:.3f}",     "t CO&#8322;-e / MWh")
-kpi(k4, "Total Generation",    f"{total_mwh/1e3:.1f}k",  "MWh")
-kpi(k5, "Zero-Emission Share", f"{re_share:.1f}%",        "of total generation")
-st.markdown("<br>", unsafe_allow_html=True)
-
 
 # ─────────────────────────────────────────────────────────────
 # Aggregate to selected interval
@@ -904,7 +993,31 @@ with chart_col:
     with c4:
         st.multiselect("Regions", regions, key="sel_regions")
 
+    business_notice = (
+        f"Business hours average intensity is **{business_avg_intensity:.3f} t CO₂-e / MWh** "
+        f"versus **{after_hours_avg_intensity:.3f}** after hours."
+    )
+    st.info(business_notice)
+
+    if scope_choice == "Scope 1 + 3 (combined)":
+        s1 = dff["tco2e_scope1"].sum()
+        s3 = dff["tco2e_scope3"].sum()
+        if s1 > 0:
+            st.info(
+                f"Scope 3 adds **{100 * s3 / s1:.1f}%** on top of Scope 1 for {selected_date.strftime('%d %B %Y')} "
+                f"({s3:,.0f} t upstream vs {s1:,.0f} t direct). "
+                "NGA 2025 specifies Scope 3 factors for coal fuels only."
+            )
+
     st.plotly_chart(fig, use_container_width=True)
+
+    k1, k2, k3, k4, k5 = st.columns(5)
+    kpi(k1, "Avg Intensity",       f"{avg_intensity:.3f}",   "t CO&#8322;-e / MWh")
+    kpi(k2, "Daily Low",           f"{period_low:.3f}",      "t CO&#8322;-e / MWh")
+    kpi(k3, "Daily High",          f"{period_high:.3f}",     "t CO&#8322;-e / MWh")
+    kpi(k4, "Total Generation",    f"{total_mwh/1e3:.1f}k",  "MWh")
+    kpi(k5, "Zero-Emission Share", f"{re_share:.1f}%",       "of total generation")
+    st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown("""
        <div class="controls-note">
@@ -925,17 +1038,6 @@ with chart_col:
         f"</div>",
         unsafe_allow_html=True
     )
-
-
-if scope_choice == "Scope 1 + 3 (combined)":
-    s1 = dff["tco2e_scope1"].sum()
-    s3 = dff["tco2e_scope3"].sum()
-    if s1 > 0:
-        st.info(
-            f"Scope 3 adds **{100 * s3 / s1:.1f}%** on top of Scope 1 for {selected_date.strftime('%d %B %Y')} "
-            f"({s3:,.0f} t upstream vs {s1:,.0f} t direct). "
-            "NGA 2025 specifies Scope 3 factors for coal fuels only."
-        )
 
 
 # ─────────────────────────────────────────────────────────────
