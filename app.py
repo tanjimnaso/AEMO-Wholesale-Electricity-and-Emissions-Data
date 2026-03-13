@@ -697,6 +697,14 @@ business_window_df = pd.DataFrame(
 business_window_df["duration"] = business_window_df["end"] - business_window_df["start"]
 business_window_df["start_label"] = business_window_df["start"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
 business_window_df["end_label"] = business_window_df["end"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
+business_window_df["display_label"] = [
+    "Night shift",
+    "Early start",
+    "Standard hours",
+    "Cleanest 4hr\nWindow",
+    "Late hours",
+]
+business_window_df["y_position"] = [4.0, 3.1, 2.2, 1.3, 0.4]
 
 blue_scale = ["#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#1d4ed8"]
 ranked_windows = business_window_df["intensity"].rank(method="first", ascending=True).astype(int) - 1
@@ -850,19 +858,23 @@ with reading_col:
     business_windows_fig = go.Figure(
         go.Bar(
             x=business_window_df["duration"],
-            y=business_window_df["window"],
+            y=business_window_df["y_position"],
             base=business_window_df["start"],
             orientation="h",
             marker=dict(
                 color=business_window_df["color"],
                 line=dict(color="#FAFAF8", width=0.8),
             ),
-            width=0.68,
-            customdata=business_window_df[["start_label", "end_label", "intensity"]],
+            width=1.65,
+            text=business_window_df["display_label"],
+            textposition="inside",
+            textfont=dict(color="#FFFFFF", size=11, family="Inter, sans-serif"),
+            insidetextanchor="middle",
+            customdata=business_window_df[["display_label", "start_label", "end_label", "intensity"]],
             hovertemplate=(
-                "%{y}<br>"
-                "<b>%{customdata[0]} to %{customdata[1]}</b><br>"
-                "%{customdata[2]:.3f} t CO₂-e / MWh<extra></extra>"
+                "<b>%{customdata[0]}</b><br>"
+                "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+                "Emissions: %{customdata[3]:.3f} t CO₂-e / MWh<extra></extra>"
             ),
         )
     )
@@ -888,7 +900,13 @@ with reading_col:
             color="#6B7280",
             title_text="Time of day",
         ),
-        yaxis=dict(color="#6B7280", autorange="reversed"),
+        yaxis=dict(
+            color="#6B7280",
+            range=[-0.4, 4.8],
+            tickvals=[4, 3, 2, 1, 0],
+            ticktext=["Night shift", "Early", "Standard hours", "Cheapest 4 hours", "Late hours"],
+            showgrid=False,
+        ),
     )
     st.plotly_chart(business_windows_fig, use_container_width=True)
 
