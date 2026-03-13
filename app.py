@@ -568,7 +568,7 @@ st.markdown('<div id="introduction"></div>', unsafe_allow_html=True)
 st.markdown("""
 <div class="header-band">
   <div class="page-header">Australia East Emission Interactive Dashboard</div>
-  <div class='page-deck'>This is not professional advice</div>
+  <div class='page-deck'>This is a personal project by Tanjim Islam, for demonstrational purposes only, and does not constitute professional advice</div>
 </div>
 """, unsafe_allow_html=True)
 
