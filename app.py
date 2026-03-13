@@ -671,13 +671,6 @@ business_window_df = pd.DataFrame(
             "Cheapest 4 hours",
             "Late hours",
         ],
-        "intensity": [
-            night_shift_avg_intensity,
-            early_shift_avg_intensity,
-            business_avg_intensity,
-            clean_window_intensity if clean_window_intensity is not None else 0,
-            late_shift_avg_intensity,
-        ],
         "start": [
             0,
             6,
@@ -697,17 +690,22 @@ business_window_df = pd.DataFrame(
 business_window_df["duration"] = business_window_df["end"] - business_window_df["start"]
 business_window_df["start_label"] = business_window_df["start"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
 business_window_df["end_label"] = business_window_df["end"].map(lambda x: f"{int(x):02d}:{int(round((x % 1) * 60)):02d}")
-business_window_df["display_label"] = [
-    "Night shift",
-    "Early start",
-    "Standard hours",
-    "Cleanest 4hr\nWindow",
-    "Late hours",
+business_window_df["display_label"] = business_window_df["window"]
+
+window_masks = [
+    dff["SETTLEMENTDATE"].dt.hour < 6,
+    (dff["SETTLEMENTDATE"].dt.hour >= 6) & (dff["SETTLEMENTDATE"].dt.hour < 9),
+    (dff["SETTLEMENTDATE"].dt.hour >= 9) & (dff["SETTLEMENTDATE"].dt.hour < 17),
+    (
+        (dff["SETTLEMENTDATE"] >= clean_window_start) &
+        (dff["SETTLEMENTDATE"] <= clean_window_end)
+    ) if clean_window_start is not None and clean_window_end is not None else pd.Series(False, index=dff.index),
+    (dff["SETTLEMENTDATE"].dt.hour >= 17) & (dff["SETTLEMENTDATE"].dt.hour < 22),
 ]
-business_window_df["y_position"] = [4.0, 3.1, 2.2, 1.3, 0.4]
+business_window_df["emissions"] = [dff.loc[mask, emission_col].sum() for mask in window_masks]
 
 blue_scale = ["#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#1d4ed8"]
-ranked_windows = business_window_df["intensity"].rank(method="first", ascending=True).astype(int) - 1
+ranked_windows = business_window_df["emissions"].rank(method="first", ascending=True).astype(int) - 1
 business_window_df["color"] = ranked_windows.map(lambda idx: blue_scale[idx])
 
 
@@ -857,24 +855,22 @@ with reading_col:
 
     business_windows_fig = go.Figure(
         go.Bar(
-            x=business_window_df["duration"],
-            y=business_window_df["y_position"],
-            base=business_window_df["start"],
-            orientation="h",
+            x=business_window_df["start"] + (business_window_df["duration"] / 2),
+            y=business_window_df["emissions"],
             marker=dict(
                 color=business_window_df["color"],
                 line=dict(color="#FAFAF8", width=0.8),
             ),
-            width=1.65,
+            width=business_window_df["duration"],
             text=business_window_df["display_label"],
             textposition="inside",
             textfont=dict(color="#FFFFFF", size=11, family="Inter, sans-serif"),
             insidetextanchor="middle",
-            customdata=business_window_df[["display_label", "start_label", "end_label", "intensity"]],
+            customdata=business_window_df[["display_label", "start_label", "end_label", "emissions"]],
             hovertemplate=(
                 "<b>%{customdata[0]}</b><br>"
                 "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
-                "Emissions: %{customdata[3]:.3f} t CO₂-e / MWh<extra></extra>"
+                "Emissions: %{customdata[3]:,.0f} t CO₂-e<extra></extra>"
             ),
         )
     )
@@ -902,10 +898,10 @@ with reading_col:
         ),
         yaxis=dict(
             color="#6B7280",
-            range=[-0.4, 4.8],
-            tickvals=[4, 3, 2, 1, 0],
-            ticktext=["Night shift", "Early", "Standard hours", "Cheapest 4 hours", "Late hours"],
-            showgrid=False,
+            title_text="t CO₂-e",
+            showgrid=True,
+            gridcolor="#F3F4F6",
+            rangemode="tozero",
         ),
     )
     st.plotly_chart(business_windows_fig, use_container_width=True)
