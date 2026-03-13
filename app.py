@@ -339,8 +339,12 @@ st.markdown("""
   .hero-image-band img {
     display: block;
     width: 100%;
-    height: 112px;
+    height: 224px;
     object-fit: cover;
+    object-position: center top;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
   }
   .floating-nav {
     position: fixed;
@@ -591,7 +595,7 @@ if header_image_path.exists():
     st.markdown(
         f"""
         <div class="hero-image-band">
-          <img src="data:image/jpeg;base64,{header_image_b64}" alt="Header image">
+          <img src="data:image/jpeg;base64,{header_image_b64}" alt="Header image" draggable="false" oncontextmenu="return false;">
         </div>
         """,
         unsafe_allow_html=True,
