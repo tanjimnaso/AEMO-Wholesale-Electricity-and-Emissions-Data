@@ -533,14 +533,12 @@ ZERO_EMISSION = {"Wind", "Solar PV", "Hydro", "Battery Storage"}
 
 RESOLUTIONS = {
     "5 minutes":  "5min",
-    "15 minutes": "15min",
-    "30 minutes": "30min",
+    "1 hour": "1h",
 }
 
 INTERVAL_MINUTES = {
     "5 minutes": 5,
-    "15 minutes": 15,
-    "30 minutes": 30,
+    "1 hour": 60,
 }
 
 
@@ -556,7 +554,7 @@ elif default_selected_date > date_max:
 if "selected_date" not in st.session_state:
     st.session_state.selected_date = default_selected_date
 if "resolution_label" not in st.session_state:
-    st.session_state.resolution_label = "15 minutes"
+    st.session_state.resolution_label = "1 hour"
 if "scope_choice" not in st.session_state:
     st.session_state.scope_choice = "Scope 1 only"
 if "sel_regions" not in st.session_state:
