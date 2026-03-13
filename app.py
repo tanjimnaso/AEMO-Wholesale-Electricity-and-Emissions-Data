@@ -454,6 +454,91 @@ st.markdown("""
   @media (max-width: 1100px) {
     .floating-nav { display: none; }
   }
+  @media (max-width: 900px) {
+    .block-container {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      padding-top: 1.25rem !important;
+      max-width: 100% !important;
+    }
+    .header-band {
+      padding: 1.1rem 0 1rem 0;
+    }
+    .hero-image-band img {
+      height: 160px;
+    }
+    .usecase-grid,
+    .comparison-grid {
+      grid-template-columns: 1fr !important;
+      gap: 0.75rem !important;
+    }
+    .intro-hero,
+    .asrs-card,
+    .comparison-panel,
+    .usecase-item {
+      padding: 1rem;
+    }
+    .usecase-item {
+      min-height: 0 !important;
+    }
+    .metric-card {
+      min-height: 100px;
+      padding: 14px 16px;
+    }
+    .metric-sub {
+      min-height: 0;
+    }
+    .section-text {
+      max-width: 100% !important;
+    }
+    .js-plotly-plot .modebar,
+    .js-plotly-plot .legend {
+      display: none !important;
+    }
+    .js-plotly-plot,
+    .plot-container,
+    .plot-container .svg-container {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    div[data-testid="stHorizontalBlock"] {
+      flex-direction: column !important;
+      gap: 0.75rem !important;
+    }
+    div[data-testid="column"] {
+      width: 100% !important;
+      flex: 1 1 100% !important;
+    }
+    div[data-testid="stDateInput"],
+    div[data-testid="stSelectbox"],
+    div[data-testid="stMultiSelect"],
+    div[data-testid="stRadio"] {
+      width: 100% !important;
+    }
+  }
+  @media (min-width: 1800px) {
+    :root {
+      --text-sm: 0.78rem;
+      --text-base: 0.89rem;
+      --text-lg: 1.35rem;
+    }
+    .block-container {
+      max-width: 1280px !important;
+      padding-left: 2rem !important;
+      padding-right: 2rem !important;
+    }
+    .intro-hero,
+    .methodology-note,
+    .usecase-grid {
+      max-width: 940px;
+    }
+    .metric-card,
+    .comparison-panel,
+    .asrs-card,
+    .usecase-item {
+      padding: 0.9rem 1rem;
+    }
+  }
 
   footer { visibility: hidden; }
 </style>
