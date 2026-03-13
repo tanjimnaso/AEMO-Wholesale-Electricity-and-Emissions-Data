@@ -913,6 +913,13 @@ intensity_scale = ["#dbeafe", "#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1e3a
 window_ranks = business_window_df["avg_intensity"].rank(method="first", ascending=True).astype(int) - 1
 business_window_df["intensity_color"] = window_ranks.map(lambda idx: intensity_scale[idx])
 window_metrics = business_window_df.set_index("window").to_dict("index")
+plotly_config = {
+    "displayModeBar": False,
+    "displaylogo": False,
+    "scrollZoom": False,
+    "doubleClick": False,
+    "responsive": True,
+}
 
 ILLUSTRATIVE_CARBON_RATE = 75
 operation_profiles = {
@@ -968,302 +975,297 @@ if header_image_path.exists():
         unsafe_allow_html=True,
     )
 
-_, reading_col, _ = st.columns([1, 5, 1])
-with reading_col:
-    st.title("NEM Scope 2 Timing Tool")
-    st.markdown(
-        "<div class='page-deck'>The hour you draw power is as important as how much you use.</div>",
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        f"<div class='meta-line'>AEMO NEM  ·  {selected_date.strftime('%d %B %Y')}  ·  "
-        f"{', '.join(sel_regions) if sel_regions else 'No region selected'}  ·  "
-        f"{scope_choice}  ·  {resolution_label} intervals</div>",
-        unsafe_allow_html=True
-    )
+st.title("NEM Scope 2 Timing Tool")
+st.markdown(
+    "<div class='page-deck'>The hour you draw power is as important as how much you use.</div>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    f"<div class='meta-line'>AEMO NEM  ·  {selected_date.strftime('%d %B %Y')}  ·  "
+    f"{', '.join(sel_regions) if sel_regions else 'No region selected'}  ·  "
+    f"{scope_choice}  ·  {resolution_label} intervals</div>",
+    unsafe_allow_html=True
+)
 
-    # ── Hero statement ────────────────────────────────────────────
-    st.markdown("""
-    <div class="intro-hero">
-        <h2>Australian businesses might be paying a hidden Scope 2 premium, because they don't know <em>when</em> to use electricity.</h2>
-        <p>
-            Australia's grid varies by up to <strong>4&times; in emissions intensity</strong> across a single day.
-            If your business draws power flexibly, the hour you choose matters as much as how much you use.<br><br>
-            If your organisation is preparing for <strong>ASRS Scope 2 disclosure</strong>, the accuracy of your
-            calculation depends on when you drew power from the grid, not just how much.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+# ── Hero statement ────────────────────────────────────────────
+st.markdown("""
+<div class="intro-hero">
+    <h2>Australian businesses might be paying a hidden Scope 2 premium, because they don't know <em>when</em> to use electricity.</h2>
+    <p>
+        Australia's grid varies by up to <strong>4&times; in emissions intensity</strong> across a single day.
+        If your business draws power flexibly, the hour you choose matters as much as how much you use.<br><br>
+        If your organisation is preparing for <strong>ASRS Scope 2 disclosure</strong>, the accuracy of your
+        calculation depends on when you drew power from the grid, not just how much.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 dashboard_placeholder = st.container()
 
-_, reading_col, _ = st.columns([1, 5, 1])
-with reading_col:
-    # ── ASRS tiers ───────────────────────────────────────────────
-    st.markdown(
-        "<p class='eyebrow'>ASRS Reporting Thresholds, Who Must Disclose</p>",
-        unsafe_allow_html=True
-    )
-    st.markdown("""
-    <div class="asrs-grid">
-        <div class="asrs-card">
-            <div class="asrs-tag">In effect</div>
-            <div class="asrs-group">Group 1</div>
-            <div class="asrs-date">From January 2025</div>
-            <div class="asrs-threshold">
-                Revenue &gt; $1B<br>OR assets &gt; $500M<br>OR &gt; 500 employees
-            </div>
-        </div>
-        <div class="asrs-card">
-            <div class="asrs-tag">Coming soon</div>
-            <div class="asrs-group">Group 2</div>
-            <div class="asrs-date">From January 2026</div>
-            <div class="asrs-threshold">
-                Revenue &gt; $200M<br>OR assets &gt; $500M<br>OR &gt; 250 employees
-            </div>
-        </div>
-        <div class="asrs-card">
-            <div class="asrs-tag">On the horizon</div>
-            <div class="asrs-group">Group 3</div>
-            <div class="asrs-date">From January 2027</div>
-            <div class="asrs-threshold">
-                Smaller entities<br>Thresholds TBC<br>&nbsp;
-            </div>
+st.markdown(
+    "<p class='eyebrow'>ASRS Reporting Thresholds, Who Must Disclose</p>",
+    unsafe_allow_html=True
+)
+st.markdown("""
+<div class="asrs-grid">
+    <div class="asrs-card">
+        <div class="asrs-tag">In effect</div>
+        <div class="asrs-group">Group 1</div>
+        <div class="asrs-date">From January 2025</div>
+        <div class="asrs-threshold">
+            Revenue &gt; $1B<br>OR assets &gt; $500M<br>OR &gt; 500 employees
         </div>
     </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-        <div class="methodology-note">
-        <p>
-        A regional food manufacturer with 300 staff is already in scope under Group 2.
-        The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.
-        Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.
-        </p>
-        <p>
-        The expectation isn't "turn things off", it's "time what you can, when the grid is cleanest."
-        </p>
-        </div>
- """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="usecase-grid">
-        <div class="usecase-item">
-            <div class="usecase-sector">Cold Chain</div>
-            Schedule defrost cycles and pre-cooling loads to clean renewable windows
-        </div>
-        <div class="usecase-item">
-            <div class="usecase-sector">Food Manufacturing</div>
-            Time batch cooking, pasteurisation, and CIP cleaning runs to midday solar peaks
-        </div>
-        <div class="usecase-item">
-            <div class="usecase-sector">Construction</div>
-            Schedule EV fleet charging, concrete batching, and crane ops to low-intensity periods
-        </div>
-        <div class="usecase-item">
-            <div class="usecase-sector">Retail</div>
-            Pre-cool HVAC systems before peak dirty hours rather than reacting to heat
-        </div>
-        <div class="usecase-item">
-            <div class="usecase-sector">Data Centres</div>
-            Shift batch compute jobs and server cooling to renewable-heavy windows
-        </div>
-        <div class="usecase-item">
-            <div class="usecase-sector">Any Flexible Load</div>
-            Fixed loads are a sunk cost. Flexible loads are the opportunity. Every operation has some of both.
+    <div class="asrs-card">
+        <div class="asrs-tag">Coming soon</div>
+        <div class="asrs-group">Group 2</div>
+        <div class="asrs-date">From January 2026</div>
+        <div class="asrs-threshold">
+            Revenue &gt; $200M<br>OR assets &gt; $500M<br>OR &gt; 250 employees
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    <div class="asrs-card">
+        <div class="asrs-tag">On the horizon</div>
+        <div class="asrs-group">Group 3</div>
+        <div class="asrs-date">From January 2027</div>
+        <div class="asrs-threshold">
+            Smaller entities<br>Thresholds TBC<br>&nbsp;
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-    # ── Methodology note ──────────────────────────────────────────
-    st.markdown("""
+st.markdown("""
     <div class="methodology-note">
-        <h2>Why this calculation matters for your disclosure</h2>
-        Under ASRS, organisations must disclose Scope 2 using location-based or market-based methodology.
-        Location-based uses the annual average grid factor, blunt and typically unfavourable.
-        The more accurate approach rewards businesses that time consumption to cleaner windows.
-        This tool derives grid intensity from AEMO's live 5-minute dispatch data, mapped to
-        <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW, the same factors used in official Australian carbon accounting.
+    <p>
+    A regional food manufacturer with 300 staff is already in scope under Group 2.
+    The Safeguard Mechanism threshold of 100,000 tCO&#8322;-e is separate, and much higher.
+    Most mid-market operators are not Safeguard-covered, but all are ASRS-covered.
+    </p>
+    <p>
+    The expectation isn't "turn things off", it's "time what you can, when the grid is cleanest."
+    </p>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-    intensity_order = [
-        "Night shift",
-        "Food operations",
-        "Small site operations",
-        "Standard hours",
-        "Late hours",
-        "Cheapest 4 hours",
-    ]
-    intensity_df = (
-        business_window_df.set_index("window")
-        .loc[intensity_order]
-        .reset_index()
-    )
-    intensity_df["xpos"] = [0, 1, 2, 3, 4, 6]
-    st.markdown("<div style='height:1.1rem'></div>", unsafe_allow_html=True)
-    intensity_fig = go.Figure(
-        go.Bar(
-            x=intensity_df["xpos"],
-            y=intensity_df["avg_intensity"],
-            width=[0.78] * len(intensity_df),
-            marker=dict(
-                color=intensity_df["intensity_color"],
-                line=dict(color="#FFFFFF", width=0.8),
-            ),
-            customdata=intensity_df[["display_label", "start_label", "end_label", "avg_intensity"]],
-            hovertemplate=(
-                "<b>%{customdata[0]}</b><br>"
-                "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
-                "Average emissions: %{customdata[3]:.3f} t CO₂-e / MWh<extra></extra>"
-            ),
-        )
-    )
-    intensity_fig.update_layout(
-        title=dict(
-            text="Average Emissions Intensity by Operating Window",
-            font=dict(family="Inter, sans-serif", color="#171717", size=15),
-            x=0,
-            xanchor="left",
-        ),
-        plot_bgcolor="#FFFFFF",
-        paper_bgcolor="#FFFFFF",
-        font=dict(color="#374151", family="Inter, sans-serif"),
-        margin=dict(l=10, r=10, t=46, b=10),
-        height=320,
-        showlegend=False,
-        xaxis=dict(
-            showgrid=False,
-            color="#6B7280",
-            tickvals=intensity_df["xpos"],
-            ticktext=intensity_df["display_label"],
-            range=[-0.5, 6.6],
-        ),
-        yaxis=dict(
-            color="#6B7280",
-            title_text="t CO₂-e / MWh",
-            showgrid=True,
-            gridcolor="#F3F4F6",
-            rangemode="tozero",
-        ),
-    )
-    intensity_fig.update_xaxes(fixedrange=True)
-    intensity_fig.update_yaxes(fixedrange=True)
-    st.plotly_chart(intensity_fig, use_container_width=True, config=plotly_config)
+st.markdown("""
+<div class="usecase-grid">
+    <div class="usecase-item">
+        <div class="usecase-sector">Cold Chain</div>
+        Schedule defrost cycles and pre-cooling loads to clean renewable windows
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Food Manufacturing</div>
+        Time batch cooking, pasteurisation, and CIP cleaning runs to midday solar peaks
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Construction</div>
+        Schedule EV fleet charging, concrete batching, and crane ops to low-intensity periods
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Retail</div>
+        Pre-cool HVAC systems before peak dirty hours rather than reacting to heat
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Data Centres</div>
+        Shift batch compute jobs and server cooling to renewable-heavy windows
+    </div>
+    <div class="usecase-item">
+        <div class="usecase-sector">Any Flexible Load</div>
+        Fixed loads are a sunk cost. Flexible loads are the opportunity. Every operation has some of both.
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-    st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
-    selected_operation = st.session_state.operation_profile
-    scenario = operation_profiles[selected_operation]
-    current_metrics = window_metrics[scenario["current_window"]]
-    alternative_metrics = window_metrics[scenario["alternative_window"]]
-    flexible_load_mwh = scenario["flexible_load_mwh"]
-    current_emissions = flexible_load_mwh * current_metrics["avg_intensity"]
-    alternative_emissions = flexible_load_mwh * alternative_metrics["avg_intensity"]
-    emissions_delta = current_emissions - alternative_emissions
-    reduction_pct = (emissions_delta / current_emissions * 100) if current_emissions > 0 else 0
-    illustrative_cost_delta = emissions_delta * ILLUSTRATIVE_CARBON_RATE
+# ── Methodology note ──────────────────────────────────────────
+st.markdown("""
+<div class="methodology-note">
+    <h2>Why this calculation matters for your disclosure</h2>
+    Under ASRS, organisations must disclose Scope 2 using location-based or market-based methodology.
+    Location-based uses the annual average grid factor, blunt and typically unfavourable.
+    The more accurate approach rewards businesses that time consumption to cleaner windows.
+    This tool derives grid intensity from AEMO's live 5-minute dispatch data, mapped to
+    <strong>National Greenhouse Accounts (NGA) emission factors</strong> published by DCCEEW, the same factors used in official Australian carbon accounting.
+</div>
+""", unsafe_allow_html=True)
 
-    scenario_fig = go.Figure()
-    scenario_fig.add_trace(
-        go.Bar(
-            x=["Current timing", "Potential alternative"],
-            y=[current_emissions, alternative_emissions],
-            marker=dict(color=["#1e3a8a", "#93c5fd"]),
-            customdata=[
-                [
-                    scenario["current_window"],
-                    current_metrics["start_label"],
-                    current_metrics["end_label"],
-                    current_metrics["avg_intensity"],
-                ],
-                [
-                    scenario["alternative_window"],
-                    alternative_metrics["start_label"],
-                    alternative_metrics["end_label"],
-                    alternative_metrics["avg_intensity"],
-                ],
+intensity_order = [
+    "Night shift",
+    "Food operations",
+    "Small site operations",
+    "Standard hours",
+    "Late hours",
+    "Cheapest 4 hours",
+]
+intensity_df = (
+    business_window_df.set_index("window")
+    .loc[intensity_order]
+    .reset_index()
+)
+intensity_df["xpos"] = [0, 1, 2, 3, 4, 6]
+st.markdown("<div style='height:1.1rem'></div>", unsafe_allow_html=True)
+intensity_fig = go.Figure(
+    go.Bar(
+        x=intensity_df["xpos"],
+        y=intensity_df["avg_intensity"],
+        width=[0.78] * len(intensity_df),
+        marker=dict(
+            color=intensity_df["intensity_color"],
+            line=dict(color="#FFFFFF", width=0.8),
+        ),
+        customdata=intensity_df[["display_label", "start_label", "end_label", "avg_intensity"]],
+        hovertemplate=(
+            "<b>%{customdata[0]}</b><br>"
+            "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+            "Average emissions: %{customdata[3]:.3f} t CO₂-e / MWh<extra></extra>"
+        ),
+    )
+)
+intensity_fig.update_layout(
+    title=dict(
+        text="Average Emissions Intensity by Operating Window",
+        font=dict(family="Inter, sans-serif", color="#171717", size=15),
+        x=0,
+        xanchor="left",
+    ),
+    plot_bgcolor="#FFFFFF",
+    paper_bgcolor="#FFFFFF",
+    font=dict(color="#374151", family="Inter, sans-serif"),
+    margin=dict(l=10, r=10, t=46, b=10),
+    height=320,
+    showlegend=False,
+    xaxis=dict(
+        showgrid=False,
+        color="#6B7280",
+        tickvals=intensity_df["xpos"],
+        ticktext=intensity_df["display_label"],
+        range=[-0.5, 6.6],
+    ),
+    yaxis=dict(
+        color="#6B7280",
+        title_text="t CO₂-e / MWh",
+        showgrid=True,
+        gridcolor="#F3F4F6",
+        rangemode="tozero",
+    ),
+)
+intensity_fig.update_xaxes(fixedrange=True)
+intensity_fig.update_yaxes(fixedrange=True)
+st.plotly_chart(intensity_fig, use_container_width=True, config=plotly_config)
+
+st.markdown("<h3 class='section-heading'>What this means for my operation</h3>", unsafe_allow_html=True)
+selected_operation = st.session_state.operation_profile
+scenario = operation_profiles[selected_operation]
+current_metrics = window_metrics[scenario["current_window"]]
+alternative_metrics = window_metrics[scenario["alternative_window"]]
+flexible_load_mwh = scenario["flexible_load_mwh"]
+current_emissions = flexible_load_mwh * current_metrics["avg_intensity"]
+alternative_emissions = flexible_load_mwh * alternative_metrics["avg_intensity"]
+emissions_delta = current_emissions - alternative_emissions
+reduction_pct = (emissions_delta / current_emissions * 100) if current_emissions > 0 else 0
+illustrative_cost_delta = emissions_delta * ILLUSTRATIVE_CARBON_RATE
+
+scenario_fig = go.Figure()
+scenario_fig.add_trace(
+    go.Bar(
+        x=["Current timing", "Potential alternative"],
+        y=[current_emissions, alternative_emissions],
+        marker=dict(color=["#1e3a8a", "#93c5fd"]),
+        customdata=[
+            [
+                scenario["current_window"],
+                current_metrics["start_label"],
+                current_metrics["end_label"],
+                current_metrics["avg_intensity"],
             ],
-            hovertemplate=(
-                "<b>%{customdata[0]}</b><br>"
-                "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
-                "Average emissions: %{customdata[3]:.3f} t CO₂-e / MWh<br>"
-                "Scenario emissions: %{y:,.1f} t CO₂-e<extra></extra>"
-            ),
-        )
-    )
-    scenario_fig.update_layout(
-        title=dict(
-            text="Current versus alternative timing",
-            font=dict(family="Inter, sans-serif", color="#171717", size=15),
-            x=0,
-            xanchor="left",
-        ),
-        plot_bgcolor="#FFFFFF",
-        paper_bgcolor="#FFFFFF",
-        font=dict(color="#374151", family="Inter, sans-serif"),
-        margin=dict(l=10, r=10, t=46, b=10),
-        height=300,
-        showlegend=False,
-        xaxis=dict(showgrid=False, color="#6B7280"),
-        yaxis=dict(
-            color="#6B7280",
-            title_text="t CO₂-e for illustrative load",
-            showgrid=True,
-            gridcolor="#F3F4F6",
-            rangemode="tozero",
+            [
+                scenario["alternative_window"],
+                alternative_metrics["start_label"],
+                alternative_metrics["end_label"],
+                alternative_metrics["avg_intensity"],
+            ],
+        ],
+        hovertemplate=(
+            "<b>%{customdata[0]}</b><br>"
+            "Shift hours: %{customdata[1]} to %{customdata[2]}<br>"
+            "Average emissions: %{customdata[3]:.3f} t CO₂-e / MWh<br>"
+            "Scenario emissions: %{y:,.1f} t CO₂-e<extra></extra>"
         ),
     )
-    scenario_fig.update_xaxes(fixedrange=True)
-    scenario_fig.update_yaxes(fixedrange=True)
+)
+scenario_fig.update_layout(
+    title=dict(
+        text="Current versus alternative timing",
+        font=dict(family="Inter, sans-serif", color="#171717", size=15),
+        x=0,
+        xanchor="left",
+    ),
+    plot_bgcolor="#FFFFFF",
+    paper_bgcolor="#FFFFFF",
+    font=dict(color="#374151", family="Inter, sans-serif"),
+    margin=dict(l=10, r=10, t=46, b=10),
+    height=300,
+    showlegend=False,
+    xaxis=dict(showgrid=False, color="#6B7280"),
+    yaxis=dict(
+        color="#6B7280",
+        title_text="t CO₂-e for illustrative load",
+        showgrid=True,
+        gridcolor="#F3F4F6",
+        rangemode="tozero",
+    ),
+)
+scenario_fig.update_xaxes(fixedrange=True)
+scenario_fig.update_yaxes(fixedrange=True)
 
-    scenario_left, scenario_right = st.columns([1.5, 1], gap="large")
-    with scenario_left:
-        st.plotly_chart(scenario_fig, use_container_width=True, config=plotly_config)
-        st.markdown("<div style='height:0.45rem'></div>", unsafe_allow_html=True)
-        st.selectbox(
-            "Select an operating profile",
-            list(operation_profiles.keys()),
-            key="operation_profile",
-        )
-    with scenario_right:
-        st.markdown(
-            f"""
-            <div class="comparison-panel">
-                <div class="comparison-label">Illustrative operating case</div>
-                <div class="comparison-value">{selected_operation}</div>
-                <div class="comparison-sub">{scenario["description"]}</div>
-                <div class="comparison-grid">
-                    <div>
-                        <div class="comparison-item-label">Current window</div>
-                        <div class="comparison-item-value">{scenario["current_window"]}</div>
-                        <div class="comparison-item-copy">{current_metrics["start_label"]} to {current_metrics["end_label"]}<br>{current_metrics["avg_intensity"]:.3f} t CO&#8322;-e / MWh</div>
-                    </div>
-                    <div>
-                        <div class="comparison-item-label">Potential reduction</div>
-                        <div class="comparison-item-value">{reduction_pct:.0f}%</div>
-                        <div class="comparison-item-copy">{emissions_delta:,.1f} t CO&#8322;-e avoided for a {flexible_load_mwh:.0f} MWh flexible load</div>
-                    </div>
-                    <div style="grid-column:1 / -1;">
-                        <div class="comparison-item-label">Illustrative carbon-cost equivalent</div>
-                        <div class="comparison-item-value">A${illustrative_cost_delta:,.0f}</div>
-                        <div class="comparison-item-copy">Uses A${ILLUSTRATIVE_CARBON_RATE}/t CO&#8322;-e as a simple reference point. This is not an electricity tariff estimate.</div>
-                    </div>
+scenario_left, scenario_right = st.columns([1.5, 1], gap="large")
+with scenario_left:
+    st.plotly_chart(scenario_fig, use_container_width=True, config=plotly_config)
+    st.markdown("<div style='height:0.45rem'></div>", unsafe_allow_html=True)
+    st.selectbox(
+        "Select an operating profile",
+        list(operation_profiles.keys()),
+        key="operation_profile",
+    )
+with scenario_right:
+    st.markdown(
+        f"""
+        <div class="comparison-panel">
+            <div class="comparison-label">Illustrative operating case</div>
+            <div class="comparison-value">{selected_operation}</div>
+            <div class="comparison-sub">{scenario["description"]}</div>
+            <div class="comparison-grid">
+                <div>
+                    <div class="comparison-item-label">Current window</div>
+                    <div class="comparison-item-value">{scenario["current_window"]}</div>
+                    <div class="comparison-item-copy">{current_metrics["start_label"]} to {current_metrics["end_label"]}<br>{current_metrics["avg_intensity"]:.3f} t CO&#8322;-e / MWh</div>
+                </div>
+                <div>
+                    <div class="comparison-item-label">Potential reduction</div>
+                    <div class="comparison-item-value">{reduction_pct:.0f}%</div>
+                    <div class="comparison-item-copy">{emissions_delta:,.1f} t CO&#8322;-e avoided for a {flexible_load_mwh:.0f} MWh flexible load</div>
+                </div>
+                <div style="grid-column:1 / -1;">
+                    <div class="comparison-item-label">Illustrative carbon-cost equivalent</div>
+                    <div class="comparison-item-value">A${illustrative_cost_delta:,.0f}</div>
+                    <div class="comparison-item-copy">Uses A${ILLUSTRATIVE_CARBON_RATE}/t CO&#8322;-e as a simple reference point. This is not an electricity tariff estimate.</div>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
-    st.markdown(
-        """
-        <div class="chart-insight">
-            <strong>Operational caveat.</strong> The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations. This app models emissions timing, not your contracted tariff, so a decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.
         </div>
         """,
         unsafe_allow_html=True,
     )
+st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <div class="chart-insight">
+        <strong>Operational caveat.</strong> The cleanest window is not automatically the best business choice. Staffing, delivery cut-offs, product quality, thermal inertia and customer demand can outweigh emissions benefits in some operations. This app models emissions timing, not your contracted tariff, so a decision that reduces reported Scope 2 can still be operationally or financially wrong for a specific site.
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-    st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1334,13 +1336,6 @@ chart_tickvals = pd.date_range(
     freq="2h",
 )
 chart_ticktext = [str(ts.hour) for ts in chart_tickvals]
-plotly_config = {
-    "displayModeBar": False,
-    "displaylogo": False,
-    "scrollZoom": False,
-    "doubleClick": False,
-    "responsive": True,
-}
 
 # ─────────────────────────────────────────────────────────────
 # Combo chart, stacked bars (MWh) + absolute emissions line
