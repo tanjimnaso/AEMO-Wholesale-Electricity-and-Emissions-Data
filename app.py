@@ -7,6 +7,7 @@ Data flow:
   data/emissions_factors.csv → Technology Type → t CO₂-e/MWh (NGA Factors 2025)
 """
 
+import base64
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -586,9 +587,15 @@ st.markdown("""
 
 header_image_path = Path(__file__).parent / "Photography" / "gettyimages-1340827964-2048x2048.jpg"
 if header_image_path.exists():
-    st.markdown("<div class='hero-image-band'>", unsafe_allow_html=True)
-    st.image(str(header_image_path), use_container_width=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    header_image_b64 = base64.b64encode(header_image_path.read_bytes()).decode("utf-8")
+    st.markdown(
+        f"""
+        <div class="hero-image-band">
+          <img src="data:image/jpeg;base64,{header_image_b64}" alt="Header image">
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 _, reading_col, _ = st.columns([1, 5, 1])
 with reading_col:
