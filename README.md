@@ -5,7 +5,7 @@ Find app here:
 https://aemo-emissions-data.streamlit.app/
 
 ### What
-Built to demonstrate end-to-end pipeline ingesting AEMO wholesale electricity and emissions data into a SQL Server warehouse, with stored procedures surfacing grid emissions intensity by time-of-day for ESG reporting use cases, visualized in ~~Power BI~~ Streamlit.
+Built to demonstrate end-to-end pipeline ingesting AEMO wholesale electricity and emissions data into a SQL Server warehouse, with stored procedures surfacing grid emissions intensity by time-of-day for ESG reporting use cases, visualized in Streamlit.
 
 ### Why
 Energy sector market size predicted to be up 11% in 2026.
@@ -53,11 +53,9 @@ Python used to download and unzip files from NEMWEB, some columns not dropped, a
 
 GitHub actions, through the yaml file is set to run at 6am everyday.
 
-Initially intended to write to CSV, and create report on PowerBI. However publishing a public PowerBI report costs money on Microsoft's Power platform. Instead using Streamlit as a free workaround.
+Initially intended to write to CSV, and create report on PowerBI. However publishing a public PowerBI report costs money on Microsoft's Power platform. 
 
-#### 3. Streamlit Interactive Dashboard
-
-Fun and free interactive online dashboard.
+Instead using Streamlit as a free workaround.
 
 ### Limitations and Scope
 
@@ -80,5 +78,5 @@ It was not used for this project as data requirements and processing are differe
 This project is framed around ESG reporting obligations and demonstrates an end-to-end data engineering pipeline:
 * Ingestion
 * Warehouse schema
-* Python stored procedures to ~~Azure SQL Server~~ GitHub Actions as orchestration, writing out daily data file for reporting
+* Python stored procedures to GitHub Actions as orchestration, writing out daily data file for reporting
 #
